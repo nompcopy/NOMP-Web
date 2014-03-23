@@ -1,2 +1,11 @@
 This is a Needs-Offers Matcher Plateform.
 
+To start the project, you should:
+1. Get your node.js ready in your pc, you may download the node.js install file on the web site, or you may use git shell to down load node.js like this:
+    npm install -g express
+2. Get your MongoDB ready, this may take a while cause MongoDB allocate more storage:
+    http://mongodb.org/
+
+Note: Each time you run a test session in your local server, you should run two thing:
+    mongod --dbpath ~/Web/data # This will get you database ready
+    express app.js # This will launch your local server with a port (usually 3000, according to the server configuration)
