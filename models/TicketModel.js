@@ -1,6 +1,6 @@
 // Ticket.js
 var mongoose = require('mongoose');
-
+extend = require('mongoose-schema-extend');
 var Schema = mongoose.Schema;
 var ObjectId = Schema.ObjectId;
 
@@ -8,7 +8,7 @@ var ObjectId = Schema.ObjectId;
 // TicketModel schema
 var TicketModelSchema = new Schema({
     name: {type: String, default: '', trim: true},
-    class: {
+    classification: {
         class_id: {type: Number}, // TODO: new class model
         class_name: {type: String, trim: true}
     },
@@ -104,5 +104,13 @@ function addDate() {
     return dt;
 }
 
+
+// Built and exports Model from Schema
 mongoose.model('TicketModel', TicketModelSchema);
-var TicketModel = exports.TicketModel = mongoose.model('TicketModel');
+exports.TicketModel = mongoose.model('TicketModel');
+// var TicketModel = exports.TicketModel = mongoose.model('TicketModel');
+
+// Export Schema
+exports.TicketModelSchema = TicketModelSchema;
+
+
