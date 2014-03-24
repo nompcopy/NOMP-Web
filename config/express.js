@@ -10,7 +10,6 @@ var pkg = require('../package.json')
 module.exports = function(app, config) {
 
     app.set('showStackError', true);
-    app.set('port', process.env.PORT || 3000);
 
     // set views path, template engine and default layout
     app.set('views', config.root + '/views');
@@ -26,6 +25,7 @@ module.exports = function(app, config) {
     app.use(express.json());
     app.use(express.urlencoded());
     app.use(express.methodOverride());
+
     app.use(app.router);
     app.use(express.static(config.root + '/public'));
 }
