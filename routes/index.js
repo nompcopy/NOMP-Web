@@ -2,13 +2,14 @@
 /*
  * GET home page.
  */
-var model = require('../models/BaseModel');
+var model = require('../models/TicketModel');
 
 exports.index = function(req, res) {
 
-    var testticket = new model.BaseModel({title: 'test ticket', body: 'test body'});
-    console.log(testticket.title);
-    res.render('index', { title: testticket.title });
+    var testticket = new model.TicketModel({name: 'test ticket', description: 'test body'});
+    console.log(testticket.description);
+    testticket.creatAndSave({what: 'ever'});
+    res.render('index', { title: testticket.name });
 };
     // res.render('index', { title: 'Express'});
     // return function(req, res) {
