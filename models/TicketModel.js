@@ -13,8 +13,8 @@ var TicketModelSchema = new Schema({
         class_name: {type: String, trim: true}
     },
     actor_type: {
-        actorType_id: {type: Number},
-        actorType_name: {type: String, trim: true}
+        actor_type_id: {type: Number},
+        actor_type_name: {type: String, trim: true}
     },
     contact: {
         phone: {type: String},
@@ -71,7 +71,7 @@ validate_fields.forEach(function(field_datas) {
  * Methods
  */
 TicketModelSchema.inherits = {
-    creatAndSave: function (cb) {
+    creatAndSave: function(cb) {
         console.log('Save');
         this.save(cb);
     }
@@ -82,7 +82,6 @@ TicketModelSchema.inherits = {
  * Statics
  */
 TicketModelSchema.statics = {
-
     // Find ticket by id
     // TODO: .populate('_user');
     load: function(id, cb) {
@@ -93,8 +92,13 @@ TicketModelSchema.statics = {
     // TODO: pagination, populate(_user)
     list: function (options, cb) {
         var criteria = options.criteria || {};
-
         this.find(criteria).exec(cb);
+    },
+
+    // List to Json
+    listToJson: function(options, cb) {
+        var criteria = options.criteria || {};
+        this.find(criteria).lean().exec(cb)
     }
 }
 
