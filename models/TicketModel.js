@@ -70,8 +70,9 @@ validate_fields.forEach(function(field_datas) {
 /**
  * Methods
  */
-TicketModelSchema.methods = {
+TicketModelSchema.inherits = {
     creatAndSave: function (cb) {
+        console.log('Save');
         this.save(cb);
     }
 };
