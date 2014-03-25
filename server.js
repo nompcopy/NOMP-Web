@@ -7,7 +7,6 @@ var express = require('express');
 
 // Load configuration
 var config = require('./config/config')
-var user = require('./routes/user');
 var http = require('http');
 
 // ==== Connection DB =====//
@@ -35,7 +34,7 @@ var app = express();
 require('./config/express')(app, config);
 
 // All routes here
-require('./config/routes')(app);
+require('./config/routes')(app, config);
 
 // development only
 if ('development' == app.get('env')) {
