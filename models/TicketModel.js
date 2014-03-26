@@ -68,7 +68,7 @@ validate_fields.forEach(function(field_datas) {
 
 
 /**
- * Methods
+ * Inheritance
  */
 TicketModelSchema.inherits = {
     creatAndSave: function(cb) {
@@ -85,7 +85,7 @@ TicketModelSchema.statics = {
     // Find ticket by id
     // TODO: .populate('_user');
     load: function(id, cb) {
-        this.findOne({ _id: id }).exec(cb);
+        return this.findOne({ _id: id });
     },
 
     // List articles
@@ -99,6 +99,16 @@ TicketModelSchema.statics = {
     listToJson: function(options, cb) {
         var criteria = options.criteria || {};
         this.find(criteria).lean().exec(cb)
+    },
+
+    // find key in fields
+    findKey: function(keys, fields) {
+        var this_key = 'name';
+        var fields = {};
+        fields[this_key] = new RegExp('test', 'i');
+        console.log(fields);
+        // console.log(this.find(fields));
+        return this.find(fields);
     }
 }
 
@@ -117,5 +127,3 @@ exports.TicketModel = mongoose.model('TicketModel');
 
 // Export Schema
 exports.TicketModelSchema = TicketModelSchema;
-
-
