@@ -91,7 +91,7 @@ TicketModelSchema.statics = {
 
     loadJson: function(id, cb) {
         this.find({ _id: id }).lean().exec(cb);
-    }
+    },
 
     // List articles
     // TODO: pagination, populate(_user)
