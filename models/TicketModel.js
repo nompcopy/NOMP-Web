@@ -84,9 +84,14 @@ TicketModelSchema.inherits = {
 TicketModelSchema.statics = {
     // Find ticket by id
     // TODO: .populate('_user');
+    // TODO: set a variable option to decide a load of json or not
     load: function(id, cb) {
-        return this.findOne({ _id: id });
+        this.findOne({ _id: id }).exec(cb);
     },
+
+    loadJson: function(id, cb) {
+        this.find({ _id: id }).lean().exec(cb);
+    }
 
     // List articles
     // TODO: pagination, populate(_user)
@@ -98,17 +103,16 @@ TicketModelSchema.statics = {
     // List to Json
     listToJson: function(options, cb) {
         var criteria = options.criteria || {};
-        this.find(criteria).lean().exec(cb)
+        this.find(criteria).lean().exec(cb);
     },
 
     // find key in fields
-    findKey: function(keys, fields) {
-        var this_key = 'name';
-        var fields = {};
-        fields[this_key] = new RegExp('test', 'i');
-        console.log(fields);
-        // console.log(this.find(fields));
-        return this.find(fields);
+    findObjectByKeyword: function(field, key, cb) {
+        var rule = {};
+        rule[field] = new RegExp(key, 'i');
+        this.find(rule)
+            .distinct('_id')
+            .exec(cb);
     }
 }
 
