@@ -31,6 +31,22 @@ MatchingModelSchema.methods = {
 }
 
 
+// uills functions
+function calculateScore(ticket, key) {
+    var matching_result = {}
+    // We may use a iterator here but is annoying
+    // name parse
+    var term = ticket.name.match(new RegExp(key, 'ig'));
+    var name_frequency = term ? term.length : 0;
+    // description parse
+    term = ticket.description.match(new RegExp(data.keys, 'ig'));
+    var description_frequency = term? term.length : 0;
+    matching_result[ticket._id] = name_frequency * 1 + description_frequency * 0.2;
+
+    return matching_result;
+}
+
+
 // Built and exports Model from Schema
 mongoose.model('MatchingModel', MatchingModelSchema);
 exports.MatchingModel = mongoose.model('MatchingModel');
@@ -49,6 +65,7 @@ var data = {
 
 
 // Search the tickets by key word from name and description
+function searchEngine(cb) {
 async.waterfall([
     // Search name field by keys
     function(callback) {
@@ -64,48 +81,37 @@ async.waterfall([
             callback(null, search_results);
         });
     },
-    // Load tickets
+    // Load tickets and matching the result
     function(search_results, callback) {
-        for (index in search_results) {
-            NeedModel.load(search_results[index], function(err, ticket) {
-                var tickets = [];
-                tickets.push(ticket);
-                callback(null, tickets);
+        // Tickets container
+        var tickets = [];
+        async.each(search_results, function(search_result, callback1) {
+            // Load ticket into search_result
+            async.waterfall([
+                function(load_ticket) {
+                    NeedModel.load(search_result, function(err, ticket) {
+                        load_ticket (null, ticket);
+                    });
+                },
+                function(ticket, push_to_array) {
+                    // TODO: need optimize, use another async.each to calculate scores and push back
+                    tickets.push(calculateScore(ticket, data.keys));
+                    // We only callback the final result of array push
+                    if (tickets.length == search_results.length) {
+                        push_to_array (null, tickets);
+                    }
+                }
+            ], function(err, results) {
+                // Now we have the final load, callback to higher lever of async
+                callback (null, results);
             });
-        }
-    },
-    // Search fields
-    // Matching result with score = { id, score}
-    function(tickets, callback) {
-        var matching_results = {}
-        for (index in tickets) {
-            var ticket = tickets[index];
-            // We may use a iterator here but is annoying
-            // name parse
-            var term = ticket.name.match(new RegExp(data.keys, 'ig'));
-            var name_frequency = term ? term.length : 0;
-            // description parse
-            term = ticket.description.match(new RegExp(data.keys, 'ig'));
-            var description_frequency = term? term.length : 0;
-            matching_results[ticket._id] = name_frequency * 1 + description_frequency * 0.2;
-        }
-        callback(null, matching_results);
-    },
-], function(err, matching_results) {
-    console.log(matching_results);
-});
+        });
+    }
+    // handy point to define the final cb function
+    // cb = function(err, results) { do the process here};
+], cb)}
 
-
-
-// Initial model
-// async.waterfall([
-    // function(callback) {
-        // console.log('start async task');
-        // NeedModel.load(id, function(err, need) {
-            // callback(null, need)
-        // });
-    // },
-    // function(need, callback) {
-        // console.log(need);
-    // }
-// ]);
+var t = function(err, callback) {
+    console.log('callback: ' + callback);
+};
+searchEngine(t);
