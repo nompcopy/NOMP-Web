@@ -7,12 +7,15 @@ var utils = require('../lib/utils');
 var TicketModel = mongoose.model('TicketModel');
 var NeedModel = mongoose.model('NeedModel');
 var OfferModel = mongoose.model('OfferModel');
+var ClassificationModel = mongoose.model('ClassificationModel');
+var ActorTypeModel = mongoose.model('ActorTypeModel');
 
 /*
  * Logic: the index ticket page is empty concerning mongoose
  * We may use REST conception to get the list of tickets
  */
 exports.index = function(req, res) {
+    // load test need ticket
     res.render('tickets/index', { title: 'Tickets Index' });
 };
 

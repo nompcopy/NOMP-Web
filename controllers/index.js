@@ -5,6 +5,9 @@
 var model = require('../models/TicketModel');
 var model = require('../models/NeedModel');
 var model = require('../models/OfferModel');
+var model = require('../models/MatchingModel');
+var model = require('../models/ActorTypeModel');
+var model = require('../models/ClassificationModel');
 
 exports.index = function(req, res) {
     res.render('index', { title: 'Welcome !' });
