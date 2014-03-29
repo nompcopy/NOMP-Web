@@ -8,7 +8,7 @@ var extend = require('mongoose-schema-extend');
 var ticketModel = require('./TicketModel');
 
 var NeedModelSchema = ticketModel.TicketModelSchema.extend({
-    test_field: String 
+    budget: {type: Number} 
 });
 
 // Test of adding methods to NeedModel which inherits TicketModelSchema

@@ -8,21 +8,16 @@ var ObjectId = Schema.ObjectId;
 // TicketModel schema
 var TicketModelSchema = new Schema({
     name: {type: String, default: '', trim: true},
-    classification: {
-        class_id: {type: Number}, // TODO: new class model
-        class_name: {type: String, trim: true}
-    },
+    classification: { type: Schema.ObjectId, ref: 'classification'},
     actor_type: {
-        actor_type_id: {type: Number},
-        actor_type_name: {type: String, trim: true}
-    },
+        type: Schema.ObjectId, ref: 'actor_type'},
     contact: {
         phone: {type: String},
         mobile: {type: String},
         email: {type: String}
     },
-    cost: {}, // TODO: need confirmation
-    description: {type: String, default: '', trim: true},
+    quantity: {type: Number},
+    description: {type: String},
     dates: {
         creation_date: {type: Date, default: Date.now},
         end_date: {type: Date, default: addDate()},
@@ -31,8 +26,9 @@ var TicketModelSchema = new Schema({
     },
 
     is_active: {type: Number, default: 1},
-    reference: {type: String}
-    // TODO: reference to User
+    statut: {type: Number, default: 0},
+    reference: {type: String},
+    user: {type: Schema.ObjectId, ref: 'user'}
 });
 
 
@@ -40,31 +36,31 @@ var TicketModelSchema = new Schema({
  * Validations
  */
 // Fields to validate
-var errorCount = 0;
-var validate_fields = [
-    {'name': [
-        { 'max_length': 50 },
-        { 'require': true }
-    ]},
-    {'description': [
-        { 'max_length': 144 },
-        { 'require': true }
-    ]}
-];
-validate_fields.forEach(function(field_datas) {
-    for (field in field_datas) {
-        field_datas[field].forEach(function(data) {
-            for (rule in data) {
-                if (rule === 'require') {
-                    TicketModelSchema.path(field).required(data[rule], field + ' cannot be blank');
-                }
-                else if (rule === 'max_length') {
+// var errorCount = 0;
+// var validate_fields = [
+    // {'name': [
+        // { 'max_length': 50 },
+        // { 'require': true }
+    // ]},
+    // {'description': [
+        // { 'max_length': 144 },
+        // { 'require': true }
+    // ]}
+// ];
+// validate_fields.forEach(function(field_datas) {
+    // for (field in field_datas) {
+        // field_datas[field].forEach(function(data) {
+            // for (rule in data) {
+                // if (rule === 'require') {
+                    // TicketModelSchema.path(field).required(data[rule], field + ' cannot be blank');
+                // }
+                // else if (rule === 'max_length') {
                     // TODO
-                }
-            };
-        });
-    }
-});
+                // }
+            // };
+        // });
+    // }
+// });
 
 
 /**

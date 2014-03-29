@@ -7,7 +7,7 @@ var ticketModel = require('./TicketModel');
 
 // TODO: Special fields for Offer
 var OfferModelSchema = ticketModel.TicketModelSchema.extend({
-    test : String
+    cost : {type: Number},
 });
 
 OfferModelSchema.methods = {
