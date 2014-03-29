@@ -124,9 +124,16 @@ TicketModelSchema.statics = {
             .exec(cb);
     },
     // Find tickets by author type id
-    findByAuthorType: function(author_id, cb) {
+    findByActorType: function(actor_id, cb) {
         this.find()
-            .where('actor_type').equals(author_id)
+            .where('actor_type').equals(actor_id)
+            .exec(cb);
+    },
+    // Find tickets by author type and classification (matching)
+    findByActorTypeAndClassification: function(actor_id, classification_id, cb) {
+        this.find()
+            .where('classification').equals(classification_id)
+            .where('actor_type').equals(actor_id)
             .exec(cb);
     }
 }
