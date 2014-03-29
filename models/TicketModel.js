@@ -70,6 +70,13 @@ TicketModelSchema.inherits = {
     creatAndSave: function(cb) {
         console.log('Save');
         this.save(cb);
+    },
+    // data = {name: String, description: String, actor_type: ObjectId}
+    update: function(data) {
+        for (property in data) {
+            this[property] = data[property];
+        }
+        this.save();
     }
 };
 
