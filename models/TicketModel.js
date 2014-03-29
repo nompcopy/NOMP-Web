@@ -77,7 +77,7 @@ TicketModelSchema.inherits = {
             this[property] = data[property];
         }
         this.save();
-    }
+    },
 };
 
 
@@ -115,6 +115,12 @@ TicketModelSchema.statics = {
         rule[field] = new RegExp(key, 'i');
         this.find(rule)
             .distinct('_id')
+            .exec(cb);
+    },
+    // Find tickets by classification_id
+    findByClassification: function(classification_id, cb) {
+        this.find()
+            .where('classification').equals(classification_id)
             .exec(cb);
     }
 }
