@@ -10,6 +10,13 @@ var ClassificationModelSchema = new Schema({
 });
 
 
+ClassificationModelSchema.statics = {
+    list: function (cb) {
+        this.find().exec(cb);
+    },
+};
+
 // Built and exports Model from Schema
 mongoose.model('ClassificationModel', ClassificationModelSchema);
 exports.ClassificationModel = mongoose.model('ClassificationModel');
+
