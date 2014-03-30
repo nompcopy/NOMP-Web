@@ -9,25 +9,24 @@ var NeedModel = mongoose.model('NeedModel');
 var OfferModel = mongoose.model('OfferModel');
 
 var MatchingModelSchema = new Schema({
-    source: ObjectId,
-    target_type: String,
+    source_id: {type: Schema.ObjectId},
+    is_match: {type: Boolean, default: true},
     results: [{
-        result_id: ObjectId,
+        result_id: Schema.ObjectId,
         result_score: Number
     }]
 });
 
 
 MatchingModelSchema.methods = {
-    // First try for a search
-    // matchEngine: function(options, cb) {
-        // var results = function(cb) {
-            // return function(err, data) {
-                // var keys = {};
-                // var queries = NeedModel.findObjectByKeyword(keys);
-                
-            // };
-    // }
+    match: function(cb) {
+        searchKeyWords(cb);
+    }
+};
+
+
+function matchEngine(cb) {
+
 }
 
 
@@ -79,7 +78,6 @@ function mergeResults(results) {
             score: 0
         });
     }
-
     // Add up the score from old results, unique the array
     for (var id_index=0; id_index<new_result.length; id_index++) {
         for (var index=0; index<arr.length; index++) {
@@ -97,13 +95,6 @@ function mergeResults(results) {
 mongoose.model('MatchingModel', MatchingModelSchema);
 exports.MatchingModel = mongoose.model('MatchingModel');
 
-// Async test
-var id = '533183829aa528f022af50a3';
-
-var data = {
-    keys: ['test', 'description', 'search'],
-    fields: ['name', 'description']
-};
 
 
 // Search the tickets by one key word from name and description
@@ -125,6 +116,10 @@ async.waterfall([
     },
     // Load tickets and matching the result
     function(search_results, callback) {
+        // If no results, callback []
+        if (search_results.length == 0) {
+            callback(null, search_results);
+        }
         // Tickets container
         var tickets = [];
         async.each(search_results, function(search_result, callback1) {
@@ -163,7 +158,7 @@ function searchKeyWords(cb) {
             var index = 0;
             async.each(data.keys, function(key, iterator_key_callback) {
                 searchKeyWord(key, function(err, one_key_results) {
-                    index ++;
+                    index++;
                     // We only care the final result to call back
                     results.push(one_key_results);
                     if (data.keys.length == index) {
@@ -179,8 +174,29 @@ function searchKeyWords(cb) {
     ], cb);
 }
 
+// Async test
+var id = '5337e0acf1033e643fff6705';
+
+var data = {
+    keys: ['1', 'shit', 'fuck', 'description', 'need'],
+    fields: ['name', 'description']
+};
 
 // Launch
 searchKeyWords(function(err, results) {
+    console.log('results=============');
     console.log(results);
 });
+    // load test need ticket
+
+// var id = '5337e0acf1033e643fff6705';
+// var actor_id = '5336b94ac1bde7b41d90377a';
+// var class_id = '5336b94ac1bde7b41d90377b';
+// var m = new this.MatchingModel({
+    // source_id: id,
+    // is_match: false,
+// });
+// m.match(function(err, result) {
+    // console.log(result);
+    // console.log('result=============');
+// });
