@@ -117,12 +117,22 @@ TicketModelSchema.statics = {
     },
 
     // find key in fields
-    findObjectByKeyword: function(field, key, cb) {
+    findObjectByKeyword: function(field, key, list, cb) {
+        var target_list = list || [];
         var rule = {};
         rule[field] = new RegExp(key, 'i');
-        this.find(rule)
-            .distinct('_id')
-            .exec(cb);
+
+        if (target_list.length == 0) {
+            this.find(rule)
+                .distinct('_id')
+                .exec(cb);
+        }
+        else {
+            this.find(rule)
+                .where('_id').in(target_list)
+                .distinct('_id')
+                .exec(cb);
+        }
     },
     // Find tickets by classification_id
     findByClassification: function(classification_id, cb) {
@@ -141,6 +151,13 @@ TicketModelSchema.statics = {
         this.find()
             .where('classification').equals(classification_id)
             .where('source_actor_type').equals(actor_id)
+            .exec(cb);
+    },
+    findIdByActorTypeAndClassification: function(actor_id, classification_id, cb) {
+        this.find()
+            .where('classification').equals(classification_id)
+            .where('source_actor_type').equals(actor_id)
+            .distinct('_id')
             .exec(cb);
     }
 }
