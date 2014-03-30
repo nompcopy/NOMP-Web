@@ -1,4 +1,6 @@
 // Ticket.js
+var utils = require('../lib/utils');
+
 var mongoose = require('mongoose');
 extend = require('mongoose-schema-extend');
 var Schema = mongoose.Schema;
@@ -19,6 +21,7 @@ var TicketModelSchema = new Schema({
 
     quantity: {type: Number},
     description: {type: String},
+    keywords: [{type: String}],
 
     creation_date: {type: Date, default: Date.now},
     end_date: {type: Date, default: addDate()},
@@ -67,15 +70,18 @@ var TicketModelSchema = new Schema({
  * Inheritance
  */
 TicketModelSchema.inherits = {
-    creatAndSave: function(cb) {
+    creatAndSave: function() {
         console.log('Save');
-        this.save(cb);
+        // auto generate keywords
+        this.keywords = generateKeyWords(this.name);
+        this.save();
     },
     // data = {name: String, description: String, actor_type: ObjectId}
     update: function(data) {
         for (property in data) {
             this[property] = data[property];
         }
+        this.keywords = generateKeyWords(this.name);
         this.save();
     },
 };
@@ -88,6 +94,7 @@ TicketModelSchema.statics = {
     // Find ticket by id
     // TODO: .populate('_user');
     // TODO: set a variable option to decide a load of json or not
+    // TODO: id not found
     load: function(id, cb) {
         this.findOne({ _id: id }).exec(cb);
     },
@@ -143,6 +150,22 @@ function addDate() {
     var now = new Date()
     var dt = new Date(now.getFullYear(), now.getMonth() + 3, now.getDate());
     return dt;
+}
+
+
+// For the first step we generate keywords by name
+// eliminating the worthless words in French language
+// TODO: count occur times of keywords
+function generateKeyWords(name) {
+    var keywords = [];
+    name = name.toLowerCase();
+    var arr = name.split(' ');
+    for (var index=0; index<arr.length; index++) {
+        if (utils.worthlesswords.indexOf(arr[index]) < 0) {
+            keywords.push(arr[index]);
+        }
+    }
+    return keywords;
 }
 
 
