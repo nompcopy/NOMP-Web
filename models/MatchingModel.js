@@ -12,6 +12,7 @@ var TicketModel = mongoose.model('TicketModel');
 
 var MatchingModelSchema = new Schema({
     source_id: {type: Schema.ObjectId},
+    source_type: {type: String},
     is_match: {type: Boolean, default: true},
     results: [{
         result_id: Schema.ObjectId,
@@ -37,20 +38,38 @@ MatchingModelSchema.methods = {
         };
         match(data, cb);
     },
+    // TODO: I know those if statements are shit
     matchEngine: function(cb) {
         var source_id = this.source_id;
+        var source_type = this.source_type;
         async.waterfall([
             function(callback) {
-                NeedModel.load(source_id, function(err, ticket) {
-                    // Prepare data
-                    var data = {
-                        keywords: ticket.keywords,
-                        classification: ticket.classification,
-                        target_actor_type: ticket.target_actor_type,
-                        is_match: true
-                    }
-                    callback(null, data);
-                });
+                if (source_type == 'need') {
+                    NeedModel.load(source_id, function(err, ticket) {
+                        // Prepare data
+                        var data = {
+                            keywords: ticket.keywords,
+                            classification: ticket.classification,
+                            target_actor_type: ticket.target_actor_type,
+                            source_type: source_type,
+                            is_match: true
+                        }
+                        callback(null, data);
+                    });
+                }
+                else if (source_type == 'offer') {
+                    OfferModel.load(source_id, function(err, ticket) {
+                        // Prepare data
+                        var data = {
+                            keywords: ticket.keywords,
+                            classification: ticket.classification,
+                            target_actor_type: ticket.target_actor_type,
+                            source_type: source_type,
+                            is_match: true
+                        }
+                        callback(null, data);
+                    });
+                }
             },
             function(data, callback) {
                 match(data, callback);
@@ -65,12 +84,20 @@ function match(data, cb) {
         // Matcher a list of tickets with same classification and target actor type
         function(callback) {
             if (data.is_match) {
-                //TODO modify to offermodel
-                NeedModel.findIdByActorTypeAndClassification(
-                    data.target_actor_type,
-                    data.classification, function(err, list) {
-                        callback(null, data, list);
-                    });
+                if (data.source_type == 'offer') {
+                    NeedModel.findIdByActorTypeAndClassification(
+                        data.target_actor_type,
+                        data.classification, function(err, list) {
+                            callback(null, data, list);
+                        });
+                }
+                else if (data.source_type == 'need') {
+                    OfferModel.findIdByActorTypeAndClassification(
+                        data.target_actor_type,
+                        data.classification, function(err, list) {
+                            callback(null, data, list);
+                        });
+                }
             }
             else {
                 callback(null, data, null);
@@ -93,7 +120,7 @@ function searchKeyWords(data, list, cb) {
             console.log('Start iteration keys words search');
             var index = 0;
             async.eachSeries(data.keywords, function(keyword, iterator_key_callback) {
-                searchKeyWord(keyword, target_list, function(err, one_key_results) {
+                searchKeyWord(keyword, target_list, data.source_type, function(err, one_key_results) {
                     index++;
                     // We only care the final result to call back
                     results.push(one_key_results);
@@ -114,23 +141,38 @@ function searchKeyWords(data, list, cb) {
 
 
 // Search the tickets by one key word from name and description
-function searchKeyWord(keyword, list, cb) {
+function searchKeyWord(keyword, list, source_type, cb) {
     var target_list = list || [];
 
 async.waterfall([
     // Search name field by keys
     function(callback) {
         console.log('Start One Key Word Search');
-        NeedModel.findObjectByKeyword('name', keyword, target_list, function(err, name_results) {
-            callback(null, name_results);
-        });
+        if (source_type == 'offer') {
+            NeedModel.findObjectByKeyword('name', keyword, target_list, function(err, name_results) {
+                callback(null, name_results);
+            });
+        }
+        else if (source_type == 'need') {
+            OfferModel.findObjectByKeyword('name', keyword, target_list, function(err, name_results) {
+                callback(null, name_results);
+            });
+        }
     },
     // Search description field by key
     function(name_results, callback) {
-        NeedModel.findObjectByKeyword('description', keyword, target_list, function(err, description_results) {
-            var search_results = utils.union_arrays(name_results, description_results);
-            callback(null, search_results);
-        });
+        if (source_type == 'offer') {
+            NeedModel.findObjectByKeyword('description', keyword, target_list, function(err, description_results) {
+                var search_results = utils.union_arrays(name_results, description_results);
+                callback(null, search_results);
+            });
+        }
+        else if (source_type == 'need') {
+            OfferModel.findObjectByKeyword('description', keyword, target_list, function(err, description_results) {
+                var search_results = utils.union_arrays(name_results, description_results);
+                callback(null, search_results);
+            });
+        }
     },
     // Load tickets and matching the result
     function(search_results, callback) {
@@ -144,9 +186,16 @@ async.waterfall([
             // Load ticket into search_result
             async.waterfall([
                 function(load_ticket) {
-                    NeedModel.load(search_result, function(err, ticket) {
-                        load_ticket (null, ticket);
-                    });
+                    if (source_type == 'offer') {
+                        NeedModel.load(search_result, function(err, ticket) {
+                            load_ticket (null, ticket);
+                        });
+                    }
+                    else if (source_type == 'need') {
+                        OfferModel.load(search_result, function(err, ticket) {
+                            load_ticket (null, ticket);
+                        });
+                    }
                 },
                 function(ticket, push_to_array) {
                     // TODO: need optimize, use another async.each to calculate scores and push back
