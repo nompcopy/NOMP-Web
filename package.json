@@ -11,6 +11,7 @@
     "mongodb": "*",
     "mongoose": "*",
     "mongoose-schema-extend": "*",
-    "async": "*"
+    "async": "*",
+    "node-xlsx": "*"
   }
 }
