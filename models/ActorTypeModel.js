@@ -13,6 +13,9 @@ ActorTypeModelSchema.statics = {
     list: function (cb) {
         this.find().exec(cb);
     },
+    retrieveByValue: function(val, cb) {
+        this.findOne({ name: val }).exec(cb);
+    }
 };
 
 

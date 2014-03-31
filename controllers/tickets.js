@@ -9,6 +9,7 @@ var NeedModel = mongoose.model('NeedModel');
 var OfferModel = mongoose.model('OfferModel');
 var ClassificationModel = mongoose.model('ClassificationModel');
 var ActorTypeModel = mongoose.model('ActorTypeModel');
+var MatchingModel = mongoose.model('MatchingModel');
 
 /*
  * Logic: the index ticket page is empty concerning mongoose

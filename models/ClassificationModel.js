@@ -11,9 +11,15 @@ var ClassificationModelSchema = new Schema({
 
 
 ClassificationModelSchema.statics = {
+    load: function(id, cb) {
+        this.findOne({ _id: id }).exec(cb);
+    },
     list: function (cb) {
         this.find().exec(cb);
     },
+    retrieveByValue: function(val, cb) {
+        this.findOne({ name: val }).exec(cb);
+    }
 };
 
 // Built and exports Model from Schema
