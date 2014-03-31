@@ -12,6 +12,7 @@
     "mongoose": "*",
     "mongoose-schema-extend": "*",
     "async": "*",
-    "node-xlsx": "*"
+    "node-xlsx": "*",
+    "crypto": "*"
   }
 }
