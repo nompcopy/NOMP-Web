@@ -1,5 +1,5 @@
 {
-  "name": "application-name",
+  "name": "Need-Offer-Matcher-Platform",
   "version": "0.0.1",
   "private": true,
   "scripts": {
@@ -10,6 +10,7 @@
     "jade": "*",
     "mongodb": "*",
     "mongoose": "*",
+    "connect-mongo": "*",
     "mongoose-schema-extend": "*",
     "connect-flash": "*",
     "async": "*",
