@@ -1,12 +1,12 @@
 // UserModel.js
-var cripto = require('crypto');
+var crypto = require('crypto');
 var mongoose = require('mongoose');
 var Schema = mongoose.Schema;
 
 var oAuthTypes = ['github', 'twitter', 'facebook', 'google', 'linkedin'];
 
 // UserModelSchema
-var UserModelSchema({
+var UserModelSchema = new Schema({
     name: {type: String, default: '', trim: true},
     email: {type: String, default: '', trim: true},
     provider: {type: String, default: ''},
@@ -21,11 +21,13 @@ var UserModelSchema({
     linkedin: {}
 });
 
-UserSchema.virtual('password')
+
+UserModelSchema
+    .virtual('password')
     .set(function(password) {
         this._password = password;
         this.salt = this.makeSalt();
-        this.hashed_password = this.encryptPassword(passowrd)
+        this.hashed_password = this.encryptPassword(password)
     })
     .get(function() { return this._password });
 
@@ -37,29 +39,29 @@ var validatePresenceOf = function(value) {
     return value && value.length;
 }
 
-UserSchema.path('name').validate(function (name) {
+UserModelSchema.path('name').validate(function (name) {
     if (this.doesNotRequireValidation()) {
         return true;
     }
     return name.length;
 }, 'Name cannot be blank');
 
-UserSchema.path('email').validate(function (email) {
+UserModelSchema.path('email').validate(function (email) {
     if (this.doesNotRequireValidation()) {
         return true;
     }
     return email.length;
 }, 'Email cannot be blank');
 
-UserSchema.path('email').validate(function (email, fn) {
-    var User = mongoose.model('User');
+UserModelSchema.path('email').validate(function (email, fn) {
+    var UserModel = mongoose.model('UserModel');
     if (this.doesNotRequireValidation()) {
         fn(true);
     }
 
     // Check only when it is a new user or when email field is modified
     if (this.isNew || this.isModified('email')) {
-        User.find({ email: email }).exec(function (err, users) {
+        UserModel.find({ email: email }).exec(function (err, users) {
             fn(!err && users.length === 0);
         })
     }
@@ -68,14 +70,14 @@ UserSchema.path('email').validate(function (email, fn) {
     }
 }, 'Email already exists');
 
-UserSchema.path('username').validate(function (username) {
+UserModelSchema.path('username').validate(function (username) {
     if (this.doesNotRequireValidation()) {
         return true;
     }
     return username.length;
 }, 'Username cannot be blank');
 
-UserSchema.path('hashed_password').validate(function (hashed_password) {
+UserModelSchema.path('hashed_password').validate(function (hashed_password) {
     if (this.doesNotRequireValidation()) {
         return true;
     }
@@ -86,7 +88,7 @@ UserSchema.path('hashed_password').validate(function (hashed_password) {
 /*
  * Pre-save
  */
-UserSchema.pre('save', function(next) {
+UserModelSchema.pre('save', function(next) {
     if (!this.isNew) {
         return next();
     }
@@ -104,7 +106,7 @@ UserSchema.pre('save', function(next) {
 /*
  * Methods
  */
-UserSchema.methods = {
+UserModelSchema.methods = {
     // Authenticate
     authenticate: function(plainText) {
         return this.encryptPassword(plainText) === this.hashed_password;
@@ -123,6 +125,7 @@ UserSchema.methods = {
             encrypred = crypto.createHmac('sha1', this.salt).update(password).digest('hex');
             return encrypred;
         } catch(err) {
+            console.log(err);
             return '';
         }
     },
