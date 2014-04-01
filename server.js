@@ -2,12 +2,13 @@
 /**
  * Module dependencies.
  */
-
+var fs = require('fs');
 var express = require('express');
 
 // Load configuration
 var config = require('./config/config')
 var http = require('http');
+var passport = require('passport');
 
 // ==== Connection DB =====//
 // Connect to mongodb
@@ -29,12 +30,25 @@ mongoose.connection.on('disconnected', function() {
 });
 // ==== End Connection DB=====//
 
+// Load all models
+require(__dirname + '/models/BaseModel');
+// var models_path = __dirname + '/models';
+// fs.readdirSync(models_path).forEach(function(file) {
+    // if (~file.indexOf('.js')) {
+        // console.log(models_path + '/' + file);
+        // require(models_path + '/' + file);
+    // }
+// });
+
+// Passport config
+require('./config/passport')(passport, config);
+
 // Express settings
 var app = express();
-require('./config/express')(app, config);
+require('./config/express')(app, config, passport);
 
 // All routes here
-require('./config/routes')(app, config);
+require('./config/routes')(app, passport, config);
 
 // development only
 if ('development' == app.get('env')) {
