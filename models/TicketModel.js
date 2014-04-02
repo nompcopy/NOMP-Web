@@ -23,6 +23,8 @@ var TicketModelSchema = new Schema({
     description: {type: String},
     keywords: [{type: String}],
 
+    address: { type: String, trim: true},
+
     creation_date: {type: Date, default: Date.now},
     end_date: {type: Date, default: addDate()},
     start_date: {type: Date, default: Date.now},
@@ -38,42 +40,42 @@ var TicketModelSchema = new Schema({
 /**
  * Validations
  */
-// Fields to validate
-// var errorCount = 0;
-// var validate_fields = [
-    // {'name': [
-        // { 'max_length': 50 },
-        // { 'require': true }
-    // ]},
-    // {'description': [
-        // { 'max_length': 144 },
-        // { 'require': true }
-    // ]}
-// ];
-// validate_fields.forEach(function(field_datas) {
-    // for (field in field_datas) {
-        // field_datas[field].forEach(function(data) {
-            // for (rule in data) {
-                // if (rule === 'require') {
-                    // TicketModelSchema.path(field).required(data[rule], field + ' cannot be blank');
-                // }
-                // else if (rule === 'max_length') {
-                    // TODO
-                // }
-            // };
-        // });
-    // }
-// });
+var validation_fields = [
+    'name',
+    'classification',
+    'source_actor_type',
+    'target_actor_type',
+    'description',
+];
+
+var validatePresenceOf = function(value) {
+    return value && value.length;
+}
+for (var index=0; index<validation_fields.length; index++) {
+    TicketModelSchema.path('name').validate(function(value) {
+        return value.length
+    }, 'Field: ' + validation_fields[index].toUpperCase() + ' cannot be blank');
+}
+
+/**
+ * Pre save
+ */
+TicketModelSchema.pre('save', function(next) {
+    console.log('========pre save=======');
+    this.keywords = this.generateKeyWords();
+    next();
+});
 
 
 /**
  * Inheritance
  */
 TicketModelSchema.inherits = {
+    // TODO, create pre save to update and generateKeyWords
     creatAndSave: function() {
         console.log('Save');
         // auto generate keywords
-        this.keywords = generateKeyWords(this.name);
+        // this.keywords = generateKeyWords(this.name);
         this.save();
     },
     // data = {name: String, description: String, actor_type: ObjectId}
@@ -81,9 +83,20 @@ TicketModelSchema.inherits = {
         for (property in data) {
             this[property] = data[property];
         }
-        this.keywords = generateKeyWords(this.name);
+        // this.keywords = generateKeyWords(this.name);
         this.save();
     },
+    generateKeyWords: function() {
+        var keywords = [];
+        var name = this.name.toLowerCase();
+        var arr = name.split(' ');
+        for (var index=0; index<arr.length; index++) {
+            if (utils.worthlesswords.indexOf(arr[index]) < 0) {
+                keywords.push(arr[index]);
+            }
+        }
+        return keywords;
+    }
 };
 
 
@@ -124,13 +137,11 @@ TicketModelSchema.statics = {
 
         if (target_list.length == 0) {
             this.find(rule)
-                .distinct('_id')
                 .exec(cb);
         }
         else {
             this.find(rule)
                 .where('_id').in(target_list)
-                .distinct('_id')
                 .exec(cb);
         }
     },
@@ -157,7 +168,6 @@ TicketModelSchema.statics = {
         this.find()
             .where('classification').equals(classification_id)
             .where('source_actor_type').equals(actor_id)
-            .distinct('_id')
             .exec(cb);
     }
 }
@@ -173,17 +183,17 @@ function addDate() {
 // For the first step we generate keywords by name
 // eliminating the worthless words in French language
 // TODO: count occur times of keywords
-function generateKeyWords(name) {
-    var keywords = [];
-    name = name.toLowerCase();
-    var arr = name.split(' ');
-    for (var index=0; index<arr.length; index++) {
-        if (utils.worthlesswords.indexOf(arr[index]) < 0) {
-            keywords.push(arr[index]);
-        }
-    }
-    return keywords;
-}
+// function generateKeyWords(name) {
+    // var keywords = [];
+    // name = name.toLowerCase();
+    // var arr = name.split(' ');
+    // for (var index=0; index<arr.length; index++) {
+        // if (utils.worthlesswords.indexOf(arr[index]) < 0) {
+            // keywords.push(arr[index]);
+        // }
+    // }
+    // return keywords;
+// }
 
 
 // Built and exports Model from Schema
