@@ -11,8 +11,6 @@ var NeedModelSchema = ticketModel.TicketModelSchema.extend({
     budget: {type: Number} 
 });
 
-console.log(NeedModelSchema);
-
 // Test of adding methods to NeedModel which inherits TicketModelSchema
 NeedModelSchema.methods = {
     testFunction : function(cb) {
