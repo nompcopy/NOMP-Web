@@ -1,5 +1,13 @@
-extends layout
+extends ../layout
 
 block content
   h1= title
-  p Welcome to #{title}
+  p= ticket.__t
+  table#ticketContent
+    each key,val in ticket
+      tr
+        td 
+          //p= key
+  a(href='/' + ticket_type + '/' + ticket._id + '/edit') Modify
+  br
+  a(href='/' + ticket_type + '/matching/' + ticket._id) Matching

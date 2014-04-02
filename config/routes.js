@@ -62,8 +62,25 @@ module.exports = function (app, passport, config) {
     // app.get('/ticket', tickets.index);
     app.get('/:type(need|offer|ticket)', tickets.index);
     app.get('/:type(need|offer)/list', tickets.list);
-    app.get('/:type(need|offer|ticket)/new', tickets.new);
-    app.get('/:type(need|offer|ticket)/:id', tickets.show);
-    app.get('/:type(need|offer|ticket)/:id/edit', tickets.edit);
 
+    app.get('/:type(need|offer)/new', tickets.new);
+    app.post('/:type(need|offer|ticket)/create', tickets.create);
+
+    app.get('/:type(need|offer)/:id', tickets.show);
+
+    app.get('/:type(need|offer)/:id/edit', tickets.edit);
+    // update
+    app.put('/:type(need|offer)/:id', tickets.update);
+
+/*
+ * Matching and Searching
+ */
+    app.get('/:type(need|offer)/matching/:id', tickets.matching);
+/*
+ * Others
+ */
+    // class list
+    app.get('/classification/list', tickets.class_list);
+    // actor type list
+    app.get('/actortype/list', tickets.actor_type_list);
 };

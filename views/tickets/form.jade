@@ -1,0 +1,16 @@
+extends ../layout
+
+block content
+  - var action = '/' + post_action
+  h1= title
+  p= error
+  form(action=action, method="post")
+    input(type='hidden', name='ticket_type', value=ticket_type)
+    - if (!ticket.isNew)
+      input(type='hidden', name='_method', value='PUT')
+    input#name(type='text', name='name', placeholder='Title', value=ticket.name)
+    select(name='classification')#classificationList
+    select(name='source_actor_type')#actorTypeSourceList
+    select(name='target_actor_type')#actorTypeTargetList
+    textarea#description(name='description', placeholder='Description', rows=20) #{ticket.description}
+    button#btnNewUser(type='submit') Submit
