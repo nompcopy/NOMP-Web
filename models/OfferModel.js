@@ -24,5 +24,4 @@ OfferModelSchema.methods = utils.mergeObjects(
 // Export Schema
 exports.OfferModelSchema = OfferModelSchema
 // Build and Export Model
-mongoose.model('OfferModel', OfferModelSchema);
-var OfferModel = exports.OfferModel = mongoose.model('OfferModel');
+exports.OfferModel = mongoose.model('OfferModel', OfferModelSchema);
