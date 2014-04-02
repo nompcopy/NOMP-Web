@@ -149,6 +149,10 @@ function match(data, cb) {
                 quantity_score_results = computeQuantity(data, date_score_results);
                 callback(null, quantity_score_results);
             }
+        },
+        // Order the results
+        function(quantity_score_results, callback) {
+            callback(null, utils.sortMatchingResults(quantity_score_results));
         }
     ], cb);
 }
