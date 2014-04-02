@@ -73,12 +73,12 @@ TicketModelSchema.inherits = {
         this.save();
     },
     // data = {name: String, description: String, actor_type: ObjectId}
-    update: function(data) {
+    update: function(data, cb) {
         for (property in data) {
             this[property] = data[property];
         }
         // this.keywords = generateKeyWords(this.name);
-        this.save();
+        this.save(cb);
     },
     generateKeyWords: function() {
         var keywords = [];
