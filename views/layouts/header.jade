@@ -1,0 +1,27 @@
+nav.navbar.navbar-default.navbar-top(role='navigation')
+  .container
+    .navbar-header
+      button.navbar-toggle(type='button', data-toggle='collapse', data-target='.navbar-collapse')
+        span.sr-only Toggle navigation
+        span.icon-bar
+        span.icon-bar
+        span.icon-bar
+      a.navbar-brand(href='/') NOMP WEB
+    .collapse.navbar-collapse
+      ul(class=active).nav.navbar-nav
+        li
+          a(href="/", title="Home") Home
+        li
+          a(href="/need", title="Need") Need
+        li
+          a(href="/offer", title="Offer") Offer
+
+      ul.nav.navbar-nav.navbar-right
+        - if (req.isAuthenticated())
+          li
+            a(href="/user/"+req.user.id, title="Account") Account
+          li
+            a(href="logout", title="Logout") Logout
+        - else
+          li
+            a(href="/login") Login

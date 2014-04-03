@@ -10,7 +10,10 @@ var ActorTypeModelSchema = new Schema({
 
 
 ActorTypeModelSchema.statics = {
-    list: function (cb) {
+    load: function(id, cb) {
+        this.findOne({ _id: id }).exec(cb);
+    },
+    list: function(cb) {
         this.find().exec(cb);
     },
     listToJson: function(cb) {

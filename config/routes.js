@@ -7,9 +7,16 @@ var mongoose = require('mongoose');
 var routes = require('../controllers/index');
 var tickets = require('../controllers/tickets');
 var user = require('../controllers/user');
+var auth = require('./middlewares/authorization');
 
+/*
+ * Route middlewares
+ */
+
+/*
+ * Routes
+ */
 module.exports = function (app, passport, config) {
-    app.get('/', routes.index);
     /*
      * User routes
      */
@@ -51,8 +58,7 @@ module.exports = function (app, passport, config) {
         }), user.authCallback)
 
     app.get('/user/:userId', user.show);
-
-    app.param('userId', user.user)
+    app.param('userId', user.user);
 
 
 /*
@@ -60,22 +66,24 @@ module.exports = function (app, passport, config) {
  * Use Regex in order to deal with need and offer at same time
  */
     // app.get('/ticket', tickets.index);
-    app.get('/:type(need|offer|ticket)', tickets.index);
+    app.get('/', tickets.index);
+    app.get('/:type(need|offer)', tickets.display);
     app.get('/:type(need|offer)/list', tickets.list);
 
     app.get('/:type(need|offer)/new', tickets.new);
     app.post('/:type(need|offer|ticket)/create', tickets.create);
 
-    app.get('/:type(need|offer)/:id', tickets.show);
+    app.get('/:type(need|offer)/:ticketId', tickets.show);
 
-    app.get('/:type(need|offer)/:id/edit', tickets.edit);
+    app.get('/:type(need|offer)/:ticketId/edit', tickets.edit);
     // update
-    app.put('/:type(need|offer)/:id', tickets.update);
+    app.put('/:type(need|offer)/:ticketId', tickets.update);
+    app.param('ticketId');
 
 /*
  * Matching and Searching
  */
-    app.get('/:type(need|offer)/matching/:id', tickets.matching);
+    app.get('/:type(need|offer)/matching/:ticketId', tickets.matching);
 /*
  * Others
  */

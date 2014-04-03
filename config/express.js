@@ -5,9 +5,7 @@
 var express = require('express');
 var mongoStore = require('connect-mongo')(express)
 var flash = require('connect-flash');
-var http = require('http');
-var path = require('path');
-var pkg = require('../package.json')
+var pkg = require('../package.json');
 
 module.exports = function(app, config, passport) {
 
@@ -45,6 +43,15 @@ module.exports = function(app, config, passport) {
     // connect flash for flash message
     // should be after session
     app.use(flash());
+
+    app.use(express.csrf());
+
+    // This could be moved to view-helpers :-)
+    app.use(function(req, res, next){
+        res.locals.csrf_token = req.csrfToken();
+        next();
+    });
+
     app.use(express.favicon());
     app.use(express.logger('dev'));
     app.use(express.json());

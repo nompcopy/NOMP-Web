@@ -5,6 +5,7 @@ block content
   h1= title
   p= error
   form(action=action, method="post")
+    input(type='hidden', name='_csrf', value="#{csrf_token}")
     input(type='hidden', name='ticket_type', value=ticket_type)
     - if (!ticket.isNew)
       input(type='hidden', name='_method', value='PUT')
