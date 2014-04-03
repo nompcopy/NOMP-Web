@@ -27,7 +27,8 @@ exports.authCallback = login
 exports.login = function(req, res) {
     res.render('users/login', {
         title: 'Login',
-        message: req.flash('error')
+        message: req.flash('error'),
+        req: req
     });
 }
 
@@ -37,7 +38,8 @@ exports.login = function(req, res) {
 exports.signup = function(req, res) {
     res.render('users/signup', {
         title: 'Sign up',
-        user: new UserModel()
+        user: new UserModel(),
+        req: req
     });
 }
 
@@ -46,7 +48,7 @@ exports.signup = function(req, res) {
  */
 exports.logout = function(req, res) {
     req.logout();
-    res.redirect('/login');
+    res.redirect('/');
 }
 
 /*
@@ -66,7 +68,8 @@ exports.create = function(req, res) {
             return res.render('users/signup', {
                 error: utils.errors(err.errors),
                 user: user,
-                title: 'Sign up'
+                title: 'Sign up',
+                req: req
             });
         }
         else {
@@ -90,7 +93,8 @@ exports.show = function(req, res) {
     var user = req.profile
     res.render('users/show', {
         title: user.name,
-        user: user
+        user: user,
+        req: req
     });
 }
 
