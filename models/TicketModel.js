@@ -65,6 +65,7 @@ for (var index=0; index<validation_fields.length; index++) {
  */
 TicketModelSchema.pre('save', function(next) {
     this.keywords = this.generateKeyWords();
+    this.reference = utils.makeRef();
     next();
 });
 
