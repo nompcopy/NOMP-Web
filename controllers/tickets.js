@@ -18,13 +18,27 @@ var MatchingModel = mongoose.model('MatchingModel');
  * Load
  */
 exports.load = function(req, res, next, id) {
-    Need.load(id, function (err, article) {
+    async.waterfall([
+        function(callback) {
+            if(req.params.type === 'need') {
+                NeedModel.load(req.params.ticketId, function(err, ticket) {
+                    callback(null, ticket);
+                });
+            }
+            else if(req.params.type === 'offer') {
+                OfferModel.load(req.params.ticketId, function(err, ticket) {
+                    callback(null, ticket);
+                });
+            }
+        }
+    ], function(err, ticket) {
         if (err) {
-            return next(err);}
-        if (!article) {
+            return next(err);
+        }
+        if (!ticket) {
             return next(new Error('not found'));
         }
-        req.need = article
+        req.ticket = ticket;
         next();
     });
 };
@@ -33,25 +47,33 @@ exports.load = function(req, res, next, id) {
  * We may use REST conception to get the list of tickets
  */
 exports.index = function(req, res) {
-    var options = {};
-    NeedModel.list(options, function(err, list) {
-        if (err) {
-            res.render('tickets/index', { title: 'error' });
-        }
-        else {
-            res.render('tickets/index', {
-                title: 'Tickets',
-                tickets: list,
-                req: req
-            });
-        }
+    var ticket_type = req.params.type;
+    if (typeof(ticket_type) === undefined) {
+        var title = 'HomePage';
+    }
+    else {
+        var title = 'List of ' + ticket_type;
+    }
+    res.render('tickets/index', {
+        title: '',
+        ticket_type: ticket_type,
+        req: req
     });
+    // var options = {};
+    // NeedModel.list(options, function(err, list) {
+        // if (err) {
+            // res.render('tickets/index', { title: 'error' });
+        // }
+        // else {
+            // res.render('tickets/index', {
+                // title: 'Tickets',
+                // tickets: list,
+                // req: req
+            // });
+        // }
+    // });
 };
 
-
-exports.display = function(req, res) {
-    res.render('tickets/index', { title: 'Tickets Display' });
-};
 
 exports.list = function(req, res) {
     // TODO: pagination or limit of data size

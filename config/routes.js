@@ -12,7 +12,7 @@ var auth = require('./middlewares/authorization');
 /*
  * Route middlewares
  */
-
+var ticketAuth = [auth.requiresLogin, auth.ticket.hasAuthorization];
 /*
  * Routes
  */
@@ -61,13 +61,12 @@ module.exports = function (app, passport, config) {
     app.param('userId', user.user);
 
 
-/*
- * Ticket routes
- * Use Regex in order to deal with need and offer at same time
- */
-    // app.get('/ticket', tickets.index);
+    /*
+     * Ticket routes
+     * Use Regex in order to deal with need and offer at same time
+     */
     app.get('/', tickets.index);
-    app.get('/:type(need|offer)', tickets.display);
+    app.get('/:type(need|offer)', tickets.index);
     app.get('/:type(need|offer)/list', tickets.list);
 
     app.get('/:type(need|offer)/new', tickets.new);
@@ -75,10 +74,10 @@ module.exports = function (app, passport, config) {
 
     app.get('/:type(need|offer)/:ticketId', tickets.show);
 
-    app.get('/:type(need|offer)/:ticketId/edit', tickets.edit);
+    app.get('/:type(need|offer)/:ticketId/edit', ticketAuth, tickets.edit);
     // update
-    app.put('/:type(need|offer)/:ticketId', tickets.update);
-    app.param('ticketId');
+    app.put('/:type(need|offer)/:ticketId', ticketAuth, tickets.update);
+    app.param('ticketId', tickets.load);
 
 /*
  * Matching and Searching
