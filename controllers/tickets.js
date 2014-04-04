@@ -138,6 +138,16 @@ exports.create = function(req, res) {
                 ticket.target_actor_type_name = target_actor_type.name;
                 callback(null, ticket);
             });
+        },
+        // associate user if req is authenticated
+        function(ticket, callback) {
+            if (req.isAuthenticated()) {
+                ticket.user = req.user._id;
+                callback(null, ticket);
+            }
+            else {
+                callback(null, ticket);
+            }
         }
     ], function(err, ticket) {
         ticket.save(function(err) {
@@ -204,7 +214,19 @@ exports.edit = function(req, res) {
             }
         },
     ], function(err, ticket) {
-        if (req.body.reference !== ticket.reference) {
+        // Two ways to edit a ticket
+        // the req is authenticated or the entered reference is right
+        if ((req.isAuthenticated())
+            || (typeof(req.body.reference) !== 'undefined' && req.body.reference === ticket.reference)) {
+            return res.render('tickets/form', {
+                ticket: ticket,
+                ticket_type: req.params.type,
+                title: ticket.name,
+                post_action: (req.params.type + '/' + ticket._id).toString(),
+                req: req,
+            });
+        }
+        else if (req.body.reference !== ticket.reference) {
             req.flash('warning', 'The reference is not right');
             return res.render('users/login', {
                 ticket: ticket,
@@ -213,13 +235,7 @@ exports.edit = function(req, res) {
                 req: req
             });
         }
-        return res.render('tickets/form', {
-            ticket: ticket,
-            ticket_type: req.params.type,
-            title: ticket.name,
-            post_action: (req.params.type + '/' + ticket._id).toString(),
-            req: req,
-        });
+
     });
 };
 

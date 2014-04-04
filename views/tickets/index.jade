@@ -2,10 +2,15 @@ extends ../layout
 
 block content
   .row
-    .col-md-6#needList
-      h3 Needs available
-      ul
-    .col-md-5#offerList
-      h3 Offers available
-      ul
+    - if (!ticket_type)
+      .col-md-5#needList
+        h3 Needs available
+        ul
+      .col-md-5#offerList
+        h3 Offers available
+        ul
+    - else
+      .col-md-6(id=ticket_type + 'List')
+        h3= ticket_type.toUpperCase() + ' available'
+        ul
 
