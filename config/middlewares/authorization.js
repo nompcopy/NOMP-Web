@@ -32,7 +32,7 @@ exports.user = {
  */
 exports.ticket = {
     hasAuthorization: function(req, res, next) {
-        if (req.ticket.user !== req.user._id || typeof(req.ticket.user) === 'undefined') {
+        if (req.ticket.user.toString !== req.user._id.toString || typeof(req.ticket.user) === 'undefined') {
             req.flash('info', 'You are not authorized')
             return res.redirect('/' + req.params.type + '/' + req.ticket.id)
         }
