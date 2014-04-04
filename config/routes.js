@@ -74,6 +74,7 @@ module.exports = function (app, passport, config) {
 
     app.get('/:type(need|offer)/:ticketId', tickets.show);
 
+    app.post('/:type(need|offer)/:ticketId/edit', tickets.edit);
     app.get('/:type(need|offer)/:ticketId/edit', ticketAuth, tickets.edit);
     // update
     app.put('/:type(need|offer)/:ticketId', ticketAuth, tickets.update);

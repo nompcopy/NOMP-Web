@@ -12,6 +12,7 @@ exports.requiresLogin = function (req, res, next) {
     res.redirect('/login');
 }
 
+
 /*
  *  User authorization routing middleware
  */
@@ -31,9 +32,7 @@ exports.user = {
  */
 exports.ticket = {
     hasAuthorization: function(req, res, next) {
-        console.log(req.ticket);
-        console.log(req.user);
-        if (req.ticket.user != req.user.id) {
+        if (req.ticket.user !== req.user._id || typeof(req.ticket.user) === 'undefined') {
             req.flash('info', 'You are not authorized')
             return res.redirect('/' + req.params.type + '/' + req.ticket.id)
         }

@@ -204,6 +204,15 @@ exports.edit = function(req, res) {
             }
         },
     ], function(err, ticket) {
+        if (req.body.reference !== ticket.reference) {
+            req.flash('warning', 'The reference is not right');
+            return res.render('users/login', {
+                ticket: ticket,
+                title: ticket.name,
+                ticket_type: req.params.type,
+                req: req
+            });
+        }
         return res.render('tickets/form', {
             ticket: ticket,
             ticket_type: req.params.type,
