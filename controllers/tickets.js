@@ -161,6 +161,7 @@ exports.create = function(req, res) {
                     req: req
                 });
             } else {
+                req.flash('info', 'Please remember this reference: <b>' + ticket.reference + '</b> in order to modify the ' + req.body.ticket_type + ' in the future')
                 // load ticket view once created
                 return res.redirect(req.body.ticket_type + '/' + ticket._id);
             }
