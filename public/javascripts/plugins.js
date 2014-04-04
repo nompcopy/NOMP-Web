@@ -43,56 +43,6 @@ var displayDates = [
 ];
 
 
-function populateOfferList() {
-    var tableContent = '';
-    $.getJSON('/offer/list', function(offers) {
-        $.each(offers, function() {
-            tableContent += '<li>';
-            tableContent += '<a href="/offer/' + this._id + '", title=' + this._name + '>' + this.name + '</a>';
-            tableContent += '</li>';
-        });
-        $('#offerList ul').html(tableContent);
-    });
-}
-
-
-function populateNeedList() {
-    var tableContent = '';
-    $.getJSON('/need/list', function(needs) {
-        $.each(needs, function() {
-            tableContent += '<li>';
-            tableContent += '<a href="/need/' + this._id + '", title=' + this._name + '>' + this.name + '</a>';
-            // class, actor types
-            tableContent += '<ul>';
-            for (var i=0; i<displayFields.length; i++) {
-                tableContent += '<li>';
-                for (key in displayFields[i]) {
-                    tableContent += displayFields[i][key] + this[key];
-                }
-                tableContent += '</li>'
-            }
-            tableContent += '</ul>';
-            tableContent += '<p>';
-            tableContent += cutDescription(this.description);
-            tableContent += '</p>';
-            // dates
-            tableContent += '<ul>';
-            for (var i=0; i<displayDates.length; i++) {
-                tableContent += '<li>';
-                for (key in displayDates[i]) {
-                    tableContent += displayDates[i][key];
-                    tableContent += $.format.date(this[key], "dd/MM/yyyy");
-                }
-                tableContent += '</li>';
-            }
-            tableContent += '</ul>';
-            tableContent += '</li>';
-        });
-        $('#needList ul').html(tableContent);
-    });
-}
-
-
 function populateTicketList() {
     var ticket_types = ['need', 'offer'];
     for (var type_index=0; type_index<ticket_types.length; type_index++) {
@@ -101,7 +51,7 @@ function populateTicketList() {
             var tableContent = '';
             $.each(tickets, function() {
                 tableContent += '<li>';
-                tableContent += '<a href="/' + ticket_type + '/' + this._id + '", title=' + this._name + '>' + this.name + '</a>';
+                tableContent += '<a href="/' + ticket_type + '/' + this._id + '", title=' + this.name + '>' + this.name + '</a>';
                 // class, actor types
                 tableContent += '<ul>';
                 for (var i=0; i<displayFields.length; i++) {
