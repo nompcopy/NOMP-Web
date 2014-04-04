@@ -1,14 +1,15 @@
 extends ../layout
 
 block main
-  center
-    h1= title
 
 block content
-  center
-    br
-    //h2 OR
-    br
-
-  .login
-    block auth
+  .row
+    - if (typeof(req.session.returnTo) !== 'undefined' && req.session.returnTo.length)
+      .col-md-4#referenceAuth
+        form(action=req.session.returnTo, method='post')
+          input(type='hidden', name='_csrf', value='#{csrf_token}')
+          input#reference(type='text', placeholder='Reference', name='reference')
+          button#btnLogin(type='submit') Edit
+    .col-md-5#userAuth
+      .login
+        block auth

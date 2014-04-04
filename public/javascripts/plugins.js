@@ -51,6 +51,12 @@ function populateTicketList() {
             var tableContent = '';
             $.each(tickets, function() {
                 tableContent += '<li>';
+                var ticket_type;
+                if (this.__t === 'needModel') {
+                    ticket_type = this.__t.substr(0,4).toLowerCase()
+                } else {
+                    ticket_type = this.__t.substr(0,5).toLowerCase()
+                }
                 tableContent += '<a href="/' + ticket_type + '/' + this._id + '", title=' + this.name + '>' + this.name + '</a>';
                 // class, actor types
                 tableContent += '<ul>';
@@ -93,7 +99,6 @@ function cutDescription(description) {
 }
 
 function parseUrl(url) {
-    console.log(url);
     var reg = new RegExp('\/(.*)\/', 'i');
     return url.match(reg)[1];
     // return arr;
