@@ -18,10 +18,21 @@ nav.navbar.navbar-default.navbar-top(role='navigation')
 
       ul.nav.navbar-nav.navbar-right
         - if (req.isAuthenticated())
-          li
-            a(href="/user/"+req.user.id, title="Account") Account
-          li
-            a(href="/logout", title="Logout") Logout
+          li.dropdown 
+            a.dropdown-toggle(href="#", data-toggle="dropdown", title="Actions")= req.user.username
+              strong.caret
+            ul.dropdown-menu
+              li
+                a(href="/user/"+req.user.id, title="My account") My account
+              li
+                // need to add routes & controller methods for a list of tickets of a certain user(by id or email)
+                a(href="#", title="My tickets") My tickets
+              li
+                // same as above
+                a(href="#", title="My favorites") My favorites
+              li.divider
+              li
+                a(href="/logout", title="Logout") Logout
         - else
           li
             a(href="/login") Login
