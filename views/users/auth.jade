@@ -1,15 +1,15 @@
 extends ../layout
 
 block main
+  .col-md-8.col-md-offset-2.col-sm-6.col-sm-offset-3
+    .panel.panel-primary
 
-block content
-  .row
-    - if (typeof(req.session.returnTo) !== 'undefined' && req.session.returnTo.length)
-      .col-md-4#referenceAuth
-        form(action=req.session.returnTo, method='post')
-          input(type='hidden', name='_csrf', value='#{csrf_token}')
-          input#reference(type='text', placeholder='Reference', name='reference')
-          button#btnLogin(type='submit') Edit
-    .col-md-5#userAuth
-      .login
-        block auth
+      .panel-heading
+        strong= title
+
+      .panel-body
+
+        block content
+
+        .login
+          block auth
