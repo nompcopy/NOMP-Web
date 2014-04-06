@@ -13,6 +13,7 @@ var auth = require('./middlewares/authorization');
  * Route middlewares
  */
 var ticketAuth = [auth.requiresLogin, auth.ticket.hasAuthorization];
+var cleanReturnUrl = [auth.clearReturnTo];
 /*
  * Routes
  */
@@ -65,11 +66,11 @@ module.exports = function (app, passport, config) {
      * Ticket routes
      * Use Regex in order to deal with need and offer at same time
      */
-    app.get('/', tickets.index);
-    app.get('/:type(need|offer)', tickets.index);
+    app.get('/', cleanReturnUrl, tickets.index);
+    app.get('/:type(need|offer)', cleanReturnUrl, tickets.index);
     app.get('/:type(need|offer)/list', tickets.list);
 
-    app.get('/:type(need|offer)/new', tickets.new);
+    app.get('/:type(need|offer)/new', cleanReturnUrl, tickets.new);
     app.post('/:type(need|offer|ticket)/create', tickets.create);
 
     app.get('/:type(need|offer)/:ticketId', tickets.show);

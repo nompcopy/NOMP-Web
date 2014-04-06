@@ -11,7 +11,13 @@ exports.requiresLogin = function (req, res, next) {
     res.redirect('/login');
 }
 
-
+/*
+ * Clean session returnTo url middleware
+ */
+exports.clearReturnTo = function (req, res, next) {
+    req.session.returnTo = null;
+    next();
+}
 /*
  *  User authorization routing middleware
  */
