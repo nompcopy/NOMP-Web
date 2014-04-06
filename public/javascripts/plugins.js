@@ -51,13 +51,13 @@ function populateTicketList() {
             var tableContent = '';
             $.each(tickets, function() {
                 tableContent += '<li>';
-                var ticket_type;
-                if (this.__t === 'needModel') {
-                    ticket_type = this.__t.substr(0,4).toLowerCase()
+                var tmp_type;
+                if (this.__t === 'NeedModel') {
+                    tmp_type = this.__t.substr(0,4).toLowerCase()
                 } else {
-                    ticket_type = this.__t.substr(0,5).toLowerCase()
+                    tmp_type = this.__t.substr(0,5).toLowerCase()
                 }
-                tableContent += '<a href="/' + ticket_type + '/' + this._id + '", title=' + this.name + '>' + this.name + '</a>';
+                tableContent += '<a href="/' + tmp_type + '/' + this._id + '", title=' + this.name + '>' + this.name + '</a>';
                 // class, actor types
                 tableContent += '<ul>';
                 for (var i=0; i<displayFields.length; i++) {

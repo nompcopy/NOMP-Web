@@ -4,11 +4,14 @@ var utils = require('../lib/utils');
 var mongoose = require('mongoose');
 var UserModel = mongoose.model('UserModel');
 
-var login = function(req, res) {
-    var redirectTo = req.session.returnTo ? req.session.returnTo : '/';
-    delete req.session.returnTo;
-    res.redirect(redirectTo);
-}
+var login = function (req, res) {
+    if (req.session.returnTo) {
+        res.redirect(req.session.returnTo)
+        delete req.session.returnTo
+        return
+    }
+  res.redirect('/')
+};
 
 /*
  * Sign in route
@@ -47,6 +50,7 @@ exports.signup = function(req, res) {
  * Logout
  */
 exports.logout = function(req, res) {
+    req.session.returnTo == null;
     req.logout();
     res.redirect('/');
 }

@@ -201,6 +201,43 @@ exports.show = function(req, res) {
 };
 
 exports.edit = function(req, res) {
+    // Use ref to modify directly
+    if (typeof(req.params.ticketId) == 'undefined') {
+        async.waterfall([
+            function(callback) {
+                OfferModel.findTicketByReference(req.body.reference, function(err, ticket) {
+                    if (ticket !== null) {
+                        callback(null, ticket);
+                    }
+                    else {
+                        NeedModel.findTicketByReference(req.body.reference, function(err, ticket) {
+                            if (ticket !== null) {
+                                callback(null, ticket);
+                            }
+                            else {
+                                req.flash('warning', 'The reference is not right');
+                                return res.render('users/login', {
+                                    title: 'Login',
+                                    message: req.flash('error'),
+                                    req: req
+                                });
+                            }
+                        });
+                    }
+                });
+            }
+        ], function(err, ticket) {
+            var ticket_type = utils.getTicketType(ticket);
+            return res.render('tickets/form', {
+                ticket: ticket,
+                ticket_type: ticket_type,
+                title: ticket.name,
+                post_action: (ticket_type + '/' + ticket._id).toString(),
+                req: req,
+            });
+        });
+    }
+    // Modify -> Auth
     async.waterfall([
         function(callback) {
             if(req.params.type === 'need') {

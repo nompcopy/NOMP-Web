@@ -1,28 +1,27 @@
 extends auth
 
 block auth
-  - if (typeof(req.session.returnTo) !== 'undefined' && req.session.returnTo.length)
-    form(action=req.session.returnTo, method='post', role="form")
-      input(type='hidden', name='_csrf', value='#{csrf_token}')
-      .form-group
-        label.sr-only(for="reference")
-        input#reference.form-control(type='text', placeholder='Reference', name='reference')
-      button#btnLogin.btn-primary(type='submit') Edit
-  -else
-    form(action="/user/session", method="post", role="form")
-      input(type='hidden', name='_csrf', value='#{csrf_token}')
-      p= message
-      .form-group
-        label(for="email") Email
-        input#email.form-control(type='email', placeholder='Enter email address', name='email')
-      .form-group
-        label(for="password") Password
-        input#password.form-control(type='password', placeholder='Password', name='password')
-      .form-group
-        .checkbox
-          label
-            input#remember(type='checkbox', name='remember')
-            |Remember me
-      button#btnLogin.btn.btn-primary(type='submit') Log in
-      | &nbsp; or &nbsp;
-      a.show-signup(href="/signup") Sign up
+  form(action='/ticket/edit', method='post', role="form")
+    input(type='hidden', name='_csrf', value='#{csrf_token}')
+    .form-group
+      label.sr-only(for="reference")
+      input#reference.form-control(type='text', placeholder='Reference', name='reference')
+    button#btnLogin.btn-primary(type='submit') Edit
+
+  form(action="/user/session", method="post", role="form")
+    input(type='hidden', name='_csrf', value='#{csrf_token}')
+    p= message
+    .form-group
+      label(for="email") Email
+      input#email.form-control(type='email', placeholder='Enter email address', name='email')
+    .form-group
+      label(for="password") Password
+      input#password.form-control(type='password', placeholder='Password', name='password')
+    .form-group
+      .checkbox
+        label
+          input#remember(type='checkbox', name='remember')
+          |Remember me
+    button#btnLogin.btn.btn-primary(type='submit') Log in
+    | &nbsp; or &nbsp;
+    a.show-signup(href="/signup") Sign up
