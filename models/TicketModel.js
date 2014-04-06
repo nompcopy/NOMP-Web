@@ -173,6 +173,9 @@ TicketModelSchema.statics = {
             .where('classification').equals(classification_id)
             .where('source_actor_type').equals(actor_id)
             .exec(cb);
+    },
+    findTicketByReference: function(ref, cb) {
+        this.findOne({ reference: ref }).exec(cb);
     }
 }
 
