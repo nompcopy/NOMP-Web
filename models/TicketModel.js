@@ -37,7 +37,9 @@ var TicketModelSchema = new Schema({
     start_date: {type: Date, default: Date.now},
     expiration_date: {type: Date, default: addDate()},
 
+    // 1 is active and 0 is inactive
     is_active: {type: Number, default: 1},
+    // 0 is open, 1 in progress, 2 closed -> inactive
     statut: {type: Number, default: 0},
     reference: {type: String},
     user: {type: Schema.ObjectId, ref: 'user'}
@@ -65,7 +67,9 @@ for (var index=0; index<validation_fields.length; index++) {
  */
 TicketModelSchema.pre('save', function(next) {
     this.keywords = this.generateKeyWords();
-    this.reference = utils.makeRef();
+    if (!this.reference) {
+        this.reference = utils.makeRef();
+    }
     next();
 });
 
@@ -100,6 +104,17 @@ TicketModelSchema.inherits = {
             }
         }
         return keywords;
+    },
+    // Delete function. We don't really delete tickets in the DB
+    desactive: function(cb) {
+        var data = { statut: 0 };
+        this.update(data, cb);
+    },
+    // Re-active function, in case of change mind
+    // TODO, update the dates
+    reactive: function(cb) {
+        var data = { statut: 1 };
+        this.update(data, cb);
     }
 };
 

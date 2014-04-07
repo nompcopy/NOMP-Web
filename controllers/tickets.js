@@ -170,34 +170,13 @@ exports.create = function(req, res) {
 };
 
 exports.show = function(req, res) {
-    if (req.params.type === 'need') {
-        NeedModel.load(req.params.ticketId, function(err, ticket) {
-            if (err) {
-                //TODO
-            } else {
-                return res.render('tickets/show', {
-                    ticket: ticket,
-                    title: ticket.name,
-                    ticket_type: req.params.type,
-                    req: req
-                });
-            }
-        });
-    }
-    else if (req.params.type === 'offer') {
-        OfferModel.load(req.params.ticketId, function(err, ticket) {
-            if (err) {
-                //TODO
-            } else {
-                return res.render('tickets/show', {
-                    ticket: ticket,
-                    title: ticket.name,
-                    ticket_type: req.params.type,
-                    req: req
-                });
-            }
-        });
-    }
+    var ticket = req.ticket;
+    return res.render('tickets/show', {
+        ticket: ticket,
+        title: ticket.name,
+        ticket_type: req.params.type,
+        req: req
+    });
 };
 
 exports.edit = function(req, res) {
@@ -238,110 +217,69 @@ exports.edit = function(req, res) {
         });
     }
     // Modify -> Auth
-    async.waterfall([
-        function(callback) {
-            if(req.params.type === 'need') {
-                NeedModel.load(req.params.ticketId, function(err, ticket) {
-                    callback(null, ticket);
-                });
-            }
-            else if(req.params.type === 'offer') {
-                OfferModel.load(req.params.ticketId, function(err, ticket) {
-                    callback(null, ticket);
-                });
-            }
-        },
-    ], function(err, ticket) {
-        // Two ways to edit a ticket
-        // the req is authenticated or the entered reference is right
-        if ((req.isAuthenticated())
-            || (typeof(req.body.reference) !== 'undefined' && req.body.reference === ticket.reference)) {
+    if (typeof(req.ticket) !== 'undefined') {
+        var ticket = req.ticket;
+        if (req.body.reference === req.ticket || req.isAuthenticated()) {
+            var ticket_type = utils.getTicketType(ticket);
             return res.render('tickets/form', {
                 ticket: ticket,
-                ticket_type: req.params.type,
+                ticket_type: ticket_type,
                 title: ticket.name,
-                post_action: (req.params.type + '/' + ticket._id).toString(),
+                post_action: (ticket_type + '/' + ticket._id).toString(),
                 req: req,
             });
         }
-        else if (req.body.reference !== ticket.reference) {
+        else {
             req.flash('warning', 'The reference is not right');
             return res.render('users/login', {
-                ticket: ticket,
-                title: ticket.name,
-                ticket_type: req.params.type,
+                title: 'Login',
+                message: req.flash('error'),
                 req: req
             });
         }
-
-    });
+    }
 };
+
+exports.delete = function(req, res) {
+    var ticketToDelete = req.ticket;
+    ticketToDelete.desactive(function(err) {
+        return res.redirect('/');
+    });
+}
 
 exports.update = function(req, res) {
     var ticket_type = req.params.type;
-    // Load
-    async.waterfall([
-        function(callback) {
-            if (ticket_type === 'need') {
-                NeedModel.load(req.params.ticketId, function(err, ticket) {
-                    callback(null, ticket);
-                });
-            }
-            else if (ticket_type === 'offer') {
-                OfferModel.load(req.params.ticketId, function(err, ticket) {
-                    callback(null, ticket);
-                });
-            }
-        },
-    ], function(err, ticket) {
-        ticket.update(req.body, function(err) {
-            if (!err) {
-                return res.redirect('/' + ticket_type + '/' + ticket._id);
-            }
-            return res.render('tickets/form', {
-                error: utils.errors(err.errors),
-                ticket: ticket,
-                title: ticket.name,
-                ticket_type: ticket_type,
-                post_action: (ticket_type + '/' + ticket._id).toString(),
-                req: req
-            });
+    var ticket = req.ticket;
+    ticket.update(req.body, function(err) {
+        if (!err) {
+            return res.redirect('/' + ticket_type + '/' + ticket._id);
+        }
+        return res.render('tickets/form', {
+            error: utils.errors(err.errors),
+            ticket: ticket,
+            title: ticket.name,
+            ticket_type: ticket_type,
+            post_action: (ticket_type + '/' + ticket._id).toString(),
+            req: req
         });
     });
 }
 
 exports.matching = function(req, res) {
     var ticket_type = req.params.type;
-    async.waterfall([
-        function(callback) {
-            if (ticket_type === 'need') {
-                NeedModel.load(req.params.ticketId, function(err, ticket) {
-                    callback(null, ticket);
-                });
-            }
-            else if (ticket_type === 'offer') {
-                OfferModel.load(req.params.ticketId, function(err, ticket) {
-                    callback(null, ticket);
-                });
-            }
-        },
-        function(ticket, callback) {
-            var m = new MatchingModel({
-                source_id: req.params.ticketId,
-                source_type: ticket_type,
-            });
-            m.matchEngine(function(err, results) {
-                var render_data = {
-                    source_ticket: ticket,
-                    ticket_type: ticket_type,
-                    matching_results: results,
-                    title: ticket.name,
-                    req: req
-                };
-                callback(null, render_data);
-            });
-        }
-    ], function(err, render_data) {
+    var ticket = req.ticket;
+    var m = new MatchingModel({
+        source_id: req.params.ticketId,
+        source_type: ticket_type,
+    });
+    m.matchEngine(function(err, results) {
+        var render_data = {
+            source_ticket: ticket,
+            ticket_type: ticket_type,
+            matching_results: results,
+            title: ticket.name,
+            req: req
+        };
         return res.render('tickets/matching', render_data);
     });
 }

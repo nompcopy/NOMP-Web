@@ -2,6 +2,7 @@ extends ../layout
 
 block content
   - var action = '/' + post_action
+  - var delete_url = '/' + post_action + '/delete'
   h1= title
   p= error
   form(action=action, method="post")
@@ -15,3 +16,4 @@ block content
     select(name='target_actor_type')#actorTypeTargetList
     textarea#description(name='description', placeholder='Description', rows=20) #{ticket.description}
     button#btnNewUser(type='submit') Submit
+  a.btn.btn-lg.btn-danger(href=delete_url role='button') Delete
