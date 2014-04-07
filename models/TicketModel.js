@@ -1,4 +1,6 @@
 // Ticket.js
+var path = require('path');
+var fs = require('fs');
 var utils = require('../lib/utils');
 var async = require('async');
 var gm = require('googlemaps');
@@ -9,6 +11,8 @@ var ObjectId = Schema.ObjectId;
 
 var ClassificationModel = mongoose.model('ClassificationModel');
 var ActorTypeModel = mongoose.model('ActorTypeModel');
+
+var imageDir = './public/images/';
 
 
 // TicketModel schema
@@ -32,6 +36,11 @@ var TicketModelSchema = new Schema({
 
     address: {type: String, trim: true},
     geolocation: {},
+
+    media: {
+        image: [],
+        // TODO, video, files, docs etc.
+    },
 
     creation_date: {type: Date, default: Date.now},
     end_date: {type: Date, default: addDate()},
@@ -94,11 +103,24 @@ TicketModelSchema.pre('save', function(next) {
  * Inheritance
  */
 TicketModelSchema.inherits = {
-    // TODO, create pre save to update and generateKeyWords
-    creatAndSave: function() {
-        // auto generate keywords
-        // this.keywords = generateKeyWords(this.name);
-        this.save();
+    creatAndSave: function(cb) {
+        var img_arr = this.media.image;
+        this.media.image = [];
+        if (typeof(img_arr) !== 'undefined') {
+            for (var index=0; index<img_arr.length; index++) {
+                var originalPath = img_arr[index];
+                var ext = originalPath.split('.').pop();
+                var targetPath = path.resolve(imageDir + utils.makeRef() + '.' + ext);
+                this.media.image.push(targetPath);
+                fs.rename(originalPath, targetPath, function(err) {
+                    if (err) {
+                        throw err;
+                    }
+                    console.log("Upload completed");
+                });
+            }
+        }
+        this.save(cb);
     },
     // data = {name: String, description: String, actor_type: ObjectId}
     update: function(data, cb) {

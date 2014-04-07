@@ -5,7 +5,7 @@ block content
   - var delete_url = '/' + post_action + '/delete'
   h1= title
   p= error
-  form(action=action, method="post")
+  form(action=action, enctype="multipart/form-data", method="post")
     input(type='hidden', name='_csrf', value="#{csrf_token}")
     input(type='hidden', name='ticket_type', value=ticket_type)
     - if (!ticket.isNew)
@@ -14,6 +14,8 @@ block content
     select(name='classification')#classificationList
     select(name='source_actor_type')#actorTypeSourceList
     select(name='target_actor_type')#actorTypeTargetList
+    input#address(type='text', name='address', placeholder='address')
     textarea#description(name='description', placeholder='Description', rows=20) #{ticket.description}
+    input#image(type='file', name='image[]')
     button#btnNewUser(type='submit') Submit
   a.btn.btn-lg.btn-danger(href=delete_url role='button') Delete

@@ -2,6 +2,7 @@
 /*
  * GET ticket home page.
  */
+var path = require('path');
 var async = require('async');
 
 var mongoose = require('mongoose');
@@ -119,6 +120,7 @@ exports.create = function(req, res) {
     else if (req.body.ticket_type === 'offer') {
         var ticket = new OfferModel(req.body);
     }
+
     // fetch class, actorType names
     async.waterfall([
         function(callback) {
@@ -139,6 +141,13 @@ exports.create = function(req, res) {
                 callback(null, ticket);
             });
         },
+        // associate image temp path
+        function(ticket, callback) {
+            for (var index=0; index<req.files.image.length; index++) {
+                ticket.media.image.push(req.files.image[index].path)
+            }
+            callback(null, ticket);
+        },
         // associate user if req is authenticated
         function(ticket, callback) {
             if (req.isAuthenticated()) {
@@ -150,7 +159,7 @@ exports.create = function(req, res) {
             }
         }
     ], function(err, ticket) {
-        ticket.save(function(err) {
+        ticket.creatAndSave(function(err) {
             if (err) {
                 return res.render('tickets/form', {
                     error: utils.errors(err.errors),
