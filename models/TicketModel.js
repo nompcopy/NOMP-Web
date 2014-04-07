@@ -1,9 +1,9 @@
 // Ticket.js
 var utils = require('../lib/utils');
 var async = require('async');
-
+var gm = require('googlemaps');
 var mongoose = require('mongoose');
-extend = require('mongoose-schema-extend');
+var extend = require('mongoose-schema-extend');
 var Schema = mongoose.Schema;
 var ObjectId = Schema.ObjectId;
 
@@ -30,7 +30,8 @@ var TicketModelSchema = new Schema({
     description: {type: String},
     keywords: [{type: String}],
 
-    address: { type: String, trim: true},
+    address: {type: String, trim: true},
+    geolocation: {},
 
     creation_date: {type: Date, default: Date.now},
     end_date: {type: Date, default: addDate()},
@@ -55,12 +56,27 @@ var validation_fields = [
     'source_actor_type',
     'target_actor_type',
     'description',
+    'address',
 ];
 
 for (var index=0; index<validation_fields.length; index++) {
     TicketModelSchema.path(validation_fields[index]).required(true, 'Field ' + validation_fields[index] + ' cannot be blank')
 }
-
+// If is a valid custom address
+TicketModelSchema.path('address').validate(function(address, fn) {
+    gm.geocode(address, function(err, result) {
+        if (result.results.length === 0) {
+            fn(false);
+        }
+        // TODO: 2 or 1
+        else if (result.results.length > 2) {
+            fn(false);
+        }
+        else {
+            fn(true);
+        }
+    }, false);
+}, 'Invalid address - address not found or ambiguous');
 
 /**
  * Pre save
