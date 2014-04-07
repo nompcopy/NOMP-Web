@@ -24,6 +24,7 @@
     "passport-google-oauth": "*",
     "passport-linkedin": "*",
     "googlemaps": "*",
-    "google-distance": "*"
+    "google-distance": "*",
+    "imager": "*"
   }
 }
