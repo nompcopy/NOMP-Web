@@ -14,7 +14,7 @@ block content
     select(name='classification')#classificationList
     select(name='source_actor_type')#actorTypeSourceList
     select(name='target_actor_type')#actorTypeTargetList
-    input#address(type='text', name='address', placeholder='address')
+    input#address(type='text', name='address', placeholder='address', value=ticket.address)
     textarea#description(name='description', placeholder='Description', rows=20) #{ticket.description}
     input#image(type='file', name='image[]')
     button#btnNewUser(type='submit') Submit

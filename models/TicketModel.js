@@ -95,6 +95,24 @@ TicketModelSchema.pre('save', function(next) {
     if (!this.reference) {
         this.reference = utils.makeRef();
     }
+    // manage image upload
+    var img_arr = this.media.image;
+    this.media.image = [];
+    if (typeof(img_arr) !== 'undefined') {
+        for (var index=0; index<img_arr.length; index++) {
+            var originalPath = img_arr[index];
+            var ext = originalPath.split('.').pop();
+            var targetPath = imageDir + utils.makeRef() + '.' + ext;
+            console.log(targetPath);
+            this.media.image.push(targetPath);
+            fs.rename(originalPath, targetPath, function(err) {
+                if (err) {
+                    throw err;
+                }
+                console.log("Upload completed");
+            });
+        }
+    }
     next();
 });
 
@@ -104,22 +122,6 @@ TicketModelSchema.pre('save', function(next) {
  */
 TicketModelSchema.inherits = {
     creatAndSave: function(cb) {
-        var img_arr = this.media.image;
-        this.media.image = [];
-        if (typeof(img_arr) !== 'undefined') {
-            for (var index=0; index<img_arr.length; index++) {
-                var originalPath = img_arr[index];
-                var ext = originalPath.split('.').pop();
-                var targetPath = path.resolve(imageDir + utils.makeRef() + '.' + ext);
-                this.media.image.push(targetPath);
-                fs.rename(originalPath, targetPath, function(err) {
-                    if (err) {
-                        throw err;
-                    }
-                    console.log("Upload completed");
-                });
-            }
-        }
         this.save(cb);
     },
     // data = {name: String, description: String, actor_type: ObjectId}

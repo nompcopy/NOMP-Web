@@ -261,6 +261,13 @@ exports.delete = function(req, res) {
 exports.update = function(req, res) {
     var ticket_type = req.params.type;
     var ticket = req.ticket;
+    if (typeof(req.files.image) !== 'undefined') {
+        req.body.media = {};
+        req.body.media.image = [];
+        for (var index=0; index<req.files.image.length; index++) {
+            req.body.media.image.push(req.files.image[index].path);
+        }
+    }
     ticket.update(req.body, function(err) {
         if (!err) {
             return res.redirect('/' + ticket_type + '/' + ticket._id);
