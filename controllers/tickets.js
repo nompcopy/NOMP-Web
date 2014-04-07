@@ -180,16 +180,18 @@ exports.show = function(req, res) {
 };
 
 exports.edit = function(req, res) {
+    // Trim the reference body
+    var reference = req.body.reference.trim();
     // Use ref to modify directly
     if (typeof(req.params.ticketId) == 'undefined') {
         async.waterfall([
             function(callback) {
-                OfferModel.findTicketByReference(req.body.reference, function(err, ticket) {
+                OfferModel.findTicketByReference(reference, function(err, ticket) {
                     if (ticket !== null) {
                         callback(null, ticket);
                     }
                     else {
-                        NeedModel.findTicketByReference(req.body.reference, function(err, ticket) {
+                        NeedModel.findTicketByReference(reference, function(err, ticket) {
                             if (ticket !== null) {
                                 callback(null, ticket);
                             }
@@ -219,7 +221,7 @@ exports.edit = function(req, res) {
     // Modify -> Auth
     if (typeof(req.ticket) !== 'undefined') {
         var ticket = req.ticket;
-        if (req.body.reference === req.ticket || req.isAuthenticated()) {
+        if (reference === req.ticket || req.isAuthenticated()) {
             var ticket_type = utils.getTicketType(ticket);
             return res.render('tickets/form', {
                 ticket: ticket,
