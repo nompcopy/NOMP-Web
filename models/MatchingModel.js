@@ -203,10 +203,10 @@ function computeDistance(data, target_list, cb) {
                             target_ticket.score += 1;
                         }
                         distance_score_results.push(target_ticket);
-                        // callback to higher level if complete
-                        if (distance_score_results.length === index) {
-                            callback(null, distance_score_results);
-                        }
+                    }
+                    // callback to higher level if complete
+                    if (distance_score_results.length === index) {
+                        callback(null, distance_score_results);
                     }
                 });
                 iterator_callback();
