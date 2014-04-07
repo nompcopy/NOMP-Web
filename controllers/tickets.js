@@ -277,6 +277,15 @@ exports.edit = function(req, res) {
     });
 };
 
+
+exports.delete = function(req, res) {
+    var ticketToDelete = req.ticket;
+    ticketToDelete.desactive(function(err) {
+        return res.redirect('/');
+    });
+}
+
+
 exports.update = function(req, res) {
     var ticket_type = req.params.type;
     // Load
