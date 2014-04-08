@@ -2,6 +2,25 @@ extends ../layout
 
 block content
   .row
+    ul.nav.nav-tabs
+      li(class=ticket_type ? '' : 'active')
+        a(href="/") Matching results
+      li(class=ticket_type === 'need' ? 'active' : '')
+        a(href="/need") Needs
+      li(class=ticket_type === 'offer' ? 'active' : '')
+        a(href="/offer") Offers
+      li.pull-right
+        button.btn.btn-default.link-btn(type="button")
+          a.no-underline(href="/need/new")
+            span.glyphicon.glyphicon-plus
+            | Create Need
+      li.pull-right
+        button.btn.btn-default.link-btn(type="button")
+          a.no-underline(href="/offer/new")
+            span.glyphicon.glyphicon-plus
+            | Create Offer
+
+  .row
     - if (!ticket_type)
       .col-md-5#needList
         h3 Needs available

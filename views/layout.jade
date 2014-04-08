@@ -4,13 +4,13 @@ html
   body
     #wrap
       include ./layouts/header
-      .row
-        .col-sm-10
-          .container
-            .main-content
-              include ./layouts/messages
-              .main-head
-                block main
-              block content
-        include ./layouts/sidebar
+      //.row
+      //  .col-sm-10
+      .container
+        .main-content
+           include ./layouts/messages
+          .main-head
+            block main
+           block content
+        //include ./layouts/sidebar
       include ./layouts/foot
