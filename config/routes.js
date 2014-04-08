@@ -68,8 +68,11 @@ module.exports = function (app, passport, config) {
      */
     // All list without inactive tickets
     app.get('/:type(need|offer)/list', tickets.list);
-    // User owns list
-    app.get('/user/:type(need|offer)/list', listAuth, tickets.ownerList);
+    // User owns list RESTful
+    app.get('/user/:type(need|offer)/list', listAuth, tickets.ownerJsonList);
+    // User owns list display
+    app.get('/user/:userId/ticket', listAuth, user.ownerList);
+
 
     /*
      * Ticket routes
@@ -77,7 +80,6 @@ module.exports = function (app, passport, config) {
      */
     app.get('/', cleanReturnUrl, tickets.index);
     app.get('/:type(need|offer)', cleanReturnUrl, tickets.index);
-
 
     app.get('/:type(need|offer)/new', cleanReturnUrl, tickets.new);
     app.post('/:type(need|offer|ticket)/create', tickets.create);

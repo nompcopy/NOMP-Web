@@ -116,7 +116,7 @@ exports.show = function(req, res) {
  */
 exports.user = function(req, res, next, id) {
     UserModel
-        .findOne({ _id: id })
+        .findOne({ _id: req.params.userId })
         .exec(function(err, user) {
             if (err) {
                 return next(err);
@@ -127,6 +127,14 @@ exports.user = function(req, res, next, id) {
             req.profile = user;
             next();
         });
+}
+
+
+exports.ownerList = function(req, res) {
+    return res.render('users/owner_list', {
+        title: 'My tickets',
+        req: req
+    });
 }
 
 
@@ -151,6 +159,7 @@ function handleAssociation(req, user_id) {
         delete req.session.ticket;
     }
 }
+
 
 /*
  * TODO: RESTful GET users listing.

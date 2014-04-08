@@ -276,10 +276,11 @@ exports.matching = function(req, res) {
     });
 }
 
+
 exports.list = function(req, res) {
     // TODO: pagination or limit of data size
     // This is a REST conception
-    var options = {};
+    var options = { criteria: { is_active: 1 }};
     var dataToDisplay = {};
     if (req.params.type == 'need') {
         NeedModel.listToJson(options, function(err, items) {
@@ -296,8 +297,8 @@ exports.list = function(req, res) {
     }
 }
 
-exports.ownerList = function(req, res) {
-    var options = { criteria: { user: req.user._id} };
+exports.ownerJsonList = function(req, res) {
+    var options = { criteria: { user: req.user._id } };
     if (req.params.type === 'need') {
         NeedModel.listToJson(options, function(err, items) {
             res.json(items);
