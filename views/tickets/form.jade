@@ -2,16 +2,33 @@ extends ../layout
 
 block content
   - var action = '/' + post_action
-  h1= title
-  p= error
-  form(action=action, method="post")
-    input(type='hidden', name='_csrf', value="#{csrf_token}")
-    input(type='hidden', name='ticket_type', value=ticket_type)
-    - if (!ticket.isNew)
-      input(type='hidden', name='_method', value='PUT')
-    input#name(type='text', name='name', placeholder='Title', value=ticket.name)
-    select(name='classification')#classificationList
-    select(name='source_actor_type')#actorTypeSourceList
-    select(name='target_actor_type')#actorTypeTargetList
-    textarea#description(name='description', placeholder='Description', rows=20) #{ticket.description}
-    button#btnNewUser(type='submit') Submit
+  
+    .panel.panel-primary
+
+      .panel-heading
+        strong= title
+        - if (error)
+          p.alert.alert-danger= error
+
+      .panel-body
+        form(action=action, method="post", role="form")
+          input(type='hidden', name='_csrf', value="#{csrf_token}")
+          input(type='hidden', name='ticket_type', value=ticket_type)
+          - if (!ticket.isNew)
+            input(type='hidden', name='_method', value='PUT')
+          .form-group
+            label(for="name")= ticket_type + ' title'
+            input#name.form-control(type='text', name='name', placeholder='Title', value=ticket.name)
+          .form-group
+            label(for="classification") Choose class
+            select.form-control(name='classification')#classificationList
+          .form-group
+            label(for="source_actor_type") Source actor
+            select.form-control(name='source_actor_type')#actorTypeSourceList
+          .form-group
+            label(for="target_actor_type") Target actor
+            select.form-control(name='target_actor_type')#actorTypeTargetList
+          .form-group
+            label(for="description") Description
+            textarea#description.form-control(name='description', placeholder='Describe your ' + ticket_type, rows=20) #{ticket.description}
+          button#btnNewUser.btn.btn-primary(type='submit') Submit
