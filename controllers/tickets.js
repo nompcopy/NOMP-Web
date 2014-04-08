@@ -170,7 +170,14 @@ exports.create = function(req, res) {
                     req: req
                 });
             } else {
-                req.flash('info', 'Please remember this reference: <b>' + ticket.reference + '</b> in order to modify the ' + req.body.ticket_type + ' in the future')
+                req.flash('info', 'Please remember this reference: <b>' + ticket.reference + '</b> in order to modify the ' + req.body.ticket_type + ' in the future');
+                if (!req.isAuthenticated()) {
+                    req.session.ticket = ticket;
+                    // TODO: with a form
+                    var signup_link = '<a href="/signup"><b>Sign up</b></a>';
+                    var login_link = '<a href="/login"><b>Login</b></a>';
+                    req.flash('info', 'Or do you want to ' + signup_link + ' or ' + login_link + '?');
+                }
                 // load ticket view once created
                 return res.redirect(req.body.ticket_type + '/' + ticket._id);
             }
@@ -189,8 +196,10 @@ exports.show = function(req, res) {
 };
 
 exports.edit = function(req, res) {
-    // Trim the reference body
-    var reference = req.body.reference.trim();
+    if (typeof(req.body.reference) !== 'undefined') {
+        // Trim the reference body
+        var reference = req.body.reference.trim();
+    }
     // Use ref to modify directly
     if (typeof(req.params.ticketId) == 'undefined') {
         async.waterfall([
