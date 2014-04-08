@@ -7,7 +7,7 @@ block auth
       .form-group
         label.sr-only(for="reference")
         input#reference.form-control(type='text', placeholder='Reference', name='reference')
-      button#btnLogin.btn-primary(type='submit') Edit
+      button#btnLogin.btn.btn-primary(type='submit') Edit
   -else
     form(action="/user/session", method="post", role="form")
       input(type='hidden', name='_csrf', value='#{csrf_token}')
