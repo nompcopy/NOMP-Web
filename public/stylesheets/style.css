@@ -1,3 +1,4 @@
+/*
 body {
   padding: 50px;
   font: 14px "Lucida Grande", Helvetica, Arial, sans-serif;
@@ -6,3 +7,23 @@ body {
 a {
   color: #00B7FF;
 }
+*/
+
+
+/*  Custom styles for link buttons in nav tabs bar  */
+
+button.link-btn {
+  padding: 0;
+  margin-left: 8px;
+}
+
+a.no-underline {
+  text-decoration: none;
+}
+
+button.link-btn a.no-underline {
+  display: inline-block;
+  padding: 6px 12px;
+}
+
+/***************************************************************/
