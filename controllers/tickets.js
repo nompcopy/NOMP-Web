@@ -60,42 +60,7 @@ exports.index = function(req, res) {
         ticket_type: ticket_type,
         req: req
     });
-    // var options = {};
-    // NeedModel.list(options, function(err, list) {
-        // if (err) {
-            // res.render('tickets/index', { title: 'error' });
-        // }
-        // else {
-            // res.render('tickets/index', {
-                // title: 'Tickets',
-                // tickets: list,
-                // req: req
-            // });
-        // }
-    // });
 };
-
-
-exports.list = function(req, res) {
-    // TODO: pagination or limit of data size
-    // This is a REST conception
-    var options = {};
-    var dataToDisplay = {};
-    if (req.params.type == 'need') {
-        NeedModel.listToJson(options, function(err, items) {
-            res.json(items);
-        });
-    }
-    else if (req.params.type == 'offer') {
-        OfferModel.listToJson(options, function(err, items) {
-            res.json(items);
-        });
-    }
-    else {
-        //TODO, 404 or redirection
-    }
-}
-
 
 exports.new = function(req, res) {
     if (req.params.type === 'need') {
@@ -309,6 +274,41 @@ exports.matching = function(req, res) {
         };
         return res.render('tickets/matching', render_data);
     });
+}
+
+
+exports.list = function(req, res) {
+    // TODO: pagination or limit of data size
+    // This is a REST conception
+    var options = { criteria: { is_active: 1 }};
+    var dataToDisplay = {};
+    if (req.params.type == 'need') {
+        NeedModel.listToJson(options, function(err, items) {
+            res.json(items);
+        });
+    }
+    else if (req.params.type == 'offer') {
+        OfferModel.listToJson(options, function(err, items) {
+            res.json(items);
+        });
+    }
+    else {
+        //TODO, 404 or redirection
+    }
+}
+
+exports.ownerJsonList = function(req, res) {
+    var options = { criteria: { user: req.user._id } };
+    if (req.params.type === 'need') {
+        NeedModel.listToJson(options, function(err, items) {
+            res.json(items);
+        });
+    }
+    else if (req.params.type === 'offer') {
+        OfferModel.listToJson(options, function(err, items) {
+            res.json(items);
+        })
+    }
 }
 
 exports.class_list = function(req, res) {

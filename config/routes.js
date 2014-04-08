@@ -12,6 +12,7 @@ var auth = require('./middlewares/authorization');
 /*
  * Route middlewares
  */
+var listAuth = [auth.requiresLogin];
 var ticketAuth = [auth.requiresLogin, auth.ticket.hasAuthorization];
 var cleanReturnUrl = [auth.clearReturnTo];
 /*
@@ -63,12 +64,22 @@ module.exports = function (app, passport, config) {
 
 
     /*
+     * RESTful list (ticket, users)
+     */
+    // All list without inactive tickets
+    app.get('/:type(need|offer)/list', tickets.list);
+    // User owns list RESTful
+    app.get('/user/:type(need|offer)/list', listAuth, tickets.ownerJsonList);
+    // User owns list display
+    app.get('/user/:userId/ticket', listAuth, user.ownerList);
+
+
+    /*
      * Ticket routes
      * Use Regex in order to deal with need and offer at same time
      */
     app.get('/', cleanReturnUrl, tickets.index);
     app.get('/:type(need|offer)', cleanReturnUrl, tickets.index);
-    app.get('/:type(need|offer)/list', tickets.list);
 
     app.get('/:type(need|offer)/new', cleanReturnUrl, tickets.new);
     app.post('/:type(need|offer|ticket)/create', tickets.create);

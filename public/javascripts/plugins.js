@@ -5,8 +5,8 @@ $(document).ready(function() {
     populateClassificationList();
     populateActorTypeList();
     populateTicketList();
-    // populateOfferList();
-    // populateNeedList();
+    $('#showoffer').on('click', showOwnerOffer);
+    $('#showneed').on('click', showOwnerNeed);
 });
 
 
@@ -87,6 +87,35 @@ function populateTicketList() {
             $('#' + parseUrl(this.url) + 'List ul').html(tableContent);
         });
     }
+}
+
+
+function showOwnerOffer(event) {
+    event.preventDefault();
+    var tableContent = '';
+    $.getJSON('/user/offer/list', function(offers) {
+        $.each(offers, function() {
+            tableContent += '<tr>';
+            tableContent += '<td><a href="/offer/' + this._id + '">' + this.name + '</a></td>';
+            tableContent += '</tr>';
+        });
+        $('#ownerOfferList').html(tableContent);
+    });
+}
+
+
+function showOwnerNeed(event) {
+    event.preventDefault();
+
+    var tableContent = '';
+    $.getJSON('/user/need/list', function(offers) {
+        $.each(offers, function() {
+            tableContent += '<tr>';
+            tableContent += '<td><a href="/need/' + this._id + '">' + this.name + '</a></td>';
+            tableContent += '</tr>';
+        });
+        $('#ownerNeedList').html(tableContent);
+    });
 }
 
 

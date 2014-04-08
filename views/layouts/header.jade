@@ -23,10 +23,9 @@ nav.navbar.navbar-default.navbar-top(role='navigation')
               strong.caret
             ul.dropdown-menu
               li
-                a(href="/user/"+req.user.id, title="My account") My account
+                a(href="/user/"+req.user._id, title="My account") My account
               li
-                // need to add routes & controller methods for a list of tickets of a certain user(by id or email)
-                a(href="#", title="My tickets") My tickets
+                a(href="/user/" + req.user._id + "/ticket", title="My tickets") My tickets
               li
                 // same as above
                 a(href="#", title="My favorites") My favorites
