@@ -108,8 +108,10 @@ exports.create = function(req, res) {
         },
         // associate image temp path
         function(ticket, callback) {
-            for (var index=0; index<req.files.image.length; index++) {
-                ticket.media.image.push(req.files.image[index].path)
+            for (var index=0; index<req.files.image[0].length; index++) {
+                if (req.files.image[0][index].size > 0) {
+                    ticket.media.image.push(req.files.image[0][index].path);
+                }
             }
             callback(null, ticket);
         },

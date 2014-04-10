@@ -72,7 +72,7 @@ for (var index=0; index<validation_fields.length; index++) {
     TicketModelSchema.path(validation_fields[index]).required(true, 'Field ' + validation_fields[index] + ' cannot be blank')
 }
 // If is a valid custom address
-TicketModelSchema.path('address').validate(function(address, fn) {
+/*TicketModelSchema.path('address').validate(function(address, fn) {
     gm.geocode(address, function(err, result) {
         if (result.results.length === 0) {
             fn(false);
@@ -85,7 +85,7 @@ TicketModelSchema.path('address').validate(function(address, fn) {
             fn(true);
         }
     }, false);
-}, 'Invalid address - address not found or ambiguous');
+}, 'Invalid address - address not found or ambiguous');*/
 
 /**
  * Pre save
@@ -104,13 +104,26 @@ TicketModelSchema.pre('save', function(next) {
             if (originalPath.split('.').length > 1) {
                 var ext = originalPath.split('.').pop();
                 var targetPath = imageDir + utils.makeRef() + '.' + ext;
-                // console.log(targetPath);
+                console.log(targetPath);
                 this.media.image.push(targetPath);
+                /*
                 fs.rename(originalPath, targetPath, function(err) {
                     if (err) {
                         throw err;
                     }
                     console.log("Upload completed");
+                });
+                */
+                var is = fs.createReadStream(originalPath);
+                var os = fs.createWriteStream(targetPath);
+                is.pipe(os);
+                is.on('end', function() {
+                    fs.unlink(originalPath, function(err) {
+                        if (err) {
+                            // TODO: handle the error but not suspend the server
+                        }
+                        console.log('Upload completed');
+                    })
                 });
             }
         }
