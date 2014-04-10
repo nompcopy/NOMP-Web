@@ -3,19 +3,53 @@ extends ../layout
 block content
   - var action = '/' + post_action
   - var delete_url = '/' + post_action + '/delete'
-  h1= title
-  p= error
-  form(action=action, enctype="multipart/form-data", method="post")
-    input(type='hidden', name='_csrf', value="#{csrf_token}")
-    input(type='hidden', name='ticket_type', value=ticket_type)
-    - if (!ticket.isNew)
-      input(type='hidden', name='_method', value='PUT')
-    input#name(type='text', name='name', placeholder='Title', value=ticket.name)
-    select(name='classification')#classificationList
-    select(name='source_actor_type')#actorTypeSourceList
-    select(name='target_actor_type')#actorTypeTargetList
-    input#address(type='text', name='address', placeholder='address', value=ticket.address)
-    textarea#description(name='description', placeholder='Description', rows=20) #{ticket.description}
-    input#image(type='file', name='image[]')
-    button#btnNewUser(type='submit') Submit
-  a.btn.btn-lg.btn-danger(href=delete_url role='button') Delete
+  
+    .panel.panel-primary
+
+      .panel-heading
+        strong= title
+        - if (error)
+          p.alert.alert-danger= error
+
+      .panel-body
+        form(action=action, enctype="multipart/form-data", method="post", role="form")
+          input(type='hidden', name='_csrf', value="#{csrf_token}")
+          input(type='hidden', name='ticket_type', value=ticket_type)
+          - if (!ticket.isNew)
+            input(type='hidden', name='_method', value='PUT')
+          .form-group
+            label(for="name")= ticket_type + ' title'
+            input#name.form-control(type='text', name='name', placeholder='Title', value=ticket.name)
+          .form-group
+            label(for="classification") Choose class
+            select.form-control(name='classification')#classificationList
+          .form-group
+            label(for="source_actor_type") Source actor
+            select.form-control(name='source_actor_type')#actorTypeSourceList
+          .form-group
+            label(for="target_actor_type") Target actor
+            select.form-control(name='target_actor_type')#actorTypeTargetList
+          .form-group
+            label(for="address") Address
+            input#address.form-control(type='text', name='address', placeholder='Address', value=ticket.address)
+          .form-group
+            label(for="description") Description
+            textarea#description.form-control(name='description', placeholder='Describe your ' + ticket_type, rows=20) #{ticket.description}
+          .form-group
+            label(for="image") Images
+            .row
+              -for (var i = 0; i < 3; i++)
+                .col-sm-6.col-md-4.fileinput.fileinput-new(data-provides="fileinput")
+                  .thumbnail.fileinput-new(style="width: 100%;")
+                    img(data-src="holder.js/300x200/text:photo-preview")
+                  .thumbnail.fileinput-preview.fileinput-exists(style="max-width: 100%;")
+                  div
+                    label= i == 0 ? 'Main photo' : 'Photo' + i
+                    span.fileinput-new
+                      input.btn.btn-default.btn-file.form-control(type="file", name="image[]")
+                    a.btn.btn-danger.pull-right.fileinput-exists(href="#", data-dismiss="fileinput") Remove
+          .form-group
+            button#btnNewUser.btn.btn-primary(type='submit') Submit
+          -if (!ticket.isNew)
+            //need to change the method to "delete" to respect REST (also in router and controllers)
+            //a.btn.btn-lg.btn-danger(href=delete_url role='button') Delete
