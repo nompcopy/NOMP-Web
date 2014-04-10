@@ -46,7 +46,7 @@ block content
                   div
                     label= i == 0 ? 'Main photo' : 'Photo' + i
                     span.fileinput-new
-                      input.btn.btn-default.btn-file.form-control(type="file", name="image[]")
+                      input.btn.btn-default.btn-file.form-control(type="file", name="image[]", accept="image/png, image/gif, image/jpg, image/jpeg")
                     a.btn.btn-danger.pull-right.fileinput-exists(href="#", data-dismiss="fileinput") Remove
           .form-group
             button#btnNewUser.btn.btn-primary(type='submit') Submit
