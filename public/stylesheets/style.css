@@ -40,3 +40,44 @@ button.link-btn a.no-underline {
 button.delete-btn {
 	margin-left: 8px;
 }
+
+/******************************************/
+
+/*    Custom styles in ticket list    */
+
+a.list-ticket-title {
+  font-size: 1.4em;
+}
+
+img.list-ticket-photo {
+  width: 200px;
+  height: 150px;
+}
+
+p.list-ticket-description {
+  text-align: justify;
+}
+
+.overview-list img.list-ticket-photo {
+  display: none;
+}
+
+/***************************************/
+
+/*    Custom styles in ticket show    */
+
+.table.borderless td {
+  border: 0;
+}
+
+#carousel-ticket-photos {
+  padding: 0;
+  height: 300px;
+}
+
+#carousel-ticket-photos .carousel-inner .item img {
+  width: 100%;
+  height: 300px;
+}
+
+/***************************************/
