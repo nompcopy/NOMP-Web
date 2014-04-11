@@ -4,3 +4,11 @@ block main
   - var name = user.name ? user.name : user.username
   h1= name
   a(href='/user/' + user._id.toString() + '/edit') Edit your profile
+
+  h3 Upload tickets
+  form(enctype='multipart/form-data', action='/import', method='post')
+    input(type='hidden', name='_csrf', value="#{csrf_token}")
+    input(type='file', name='file')
+    button.btn.btn-default(type='submit') Import
+  h3 DownLoad my tickets
+  a(href='/export') Export
