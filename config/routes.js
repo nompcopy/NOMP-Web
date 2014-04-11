@@ -8,6 +8,7 @@ var routes = require('../controllers/index');
 var tickets = require('../controllers/tickets');
 var user = require('../controllers/user');
 var matchs = require('../controllers/matchs');
+var shiftings = require('../controllers/shiftings');
 var auth = require('./middlewares/authorization');
 
 /*
@@ -105,6 +106,10 @@ module.exports = function (app, passport, config) {
  */
     app.get('/:type(need|offer)/matching/:ticketId', matchs.matching);
     app.get('/search', matchs.searching);
+/*
+ * Import and Export
+ */
+    app.post('/import', shiftings.import);
 
 /*
  * Others
