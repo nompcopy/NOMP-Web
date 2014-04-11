@@ -204,7 +204,7 @@ exports.edit = function(req, res) {
     // Modify -> Auth
     if (typeof(req.ticket) !== 'undefined') {
         var ticket = req.ticket;
-        if (reference === req.ticket || req.isAuthenticated()) {
+        if (reference === req.ticket.reference || req.isAuthenticated()) {
             var ticket_type = utils.getTicketType(ticket);
             return res.render('tickets/form', {
                 ticket: ticket,
