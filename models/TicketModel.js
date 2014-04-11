@@ -104,7 +104,6 @@ TicketModelSchema.pre('save', function(next) {
             if (originalPath.split('.').length > 1) {
                 var ext = originalPath.split('.').pop();
                 var targetPath = imageDir + utils.makeRef() + '.' + ext;
-                // console.log(targetPath);
                 this.media.image.push(targetPath);
                 fs.rename(originalPath, targetPath, function(err) {
                     if (err) {
