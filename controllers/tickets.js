@@ -240,8 +240,10 @@ exports.update = function(req, res) {
     if (typeof(req.files.image) !== 'undefined') {
         req.body.media = {};
         req.body.media.image = [];
-        for (var index=0; index<req.files.image.length; index++) {
-            req.body.media.image.push(req.files.image[index].path);
+        for (var index=0; index<req.files.image[0].length; index++) {
+            if (req.files.image[0][index].size > 0) {
+                req.body.media.image.push(req.files.image[0][index].path);
+            }
         }
     }
     ticket.update(req.body, function(err) {
@@ -256,25 +258,6 @@ exports.update = function(req, res) {
             post_action: (ticket_type + '/' + ticket._id).toString(),
             req: req
         });
-    });
-}
-
-exports.matching = function(req, res) {
-    var ticket_type = req.params.type;
-    var ticket = req.ticket;
-    var m = new MatchingModel({
-        source_id: req.params.ticketId,
-        source_type: ticket_type,
-    });
-    m.matchEngine(function(err, results) {
-        var render_data = {
-            source_ticket: ticket,
-            ticket_type: ticket_type,
-            matching_results: results,
-            title: ticket.name,
-            req: req
-        };
-        return res.render('tickets/matching', render_data);
     });
 }
 

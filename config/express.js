@@ -60,4 +60,28 @@ module.exports = function(app, config, passport) {
 
     app.use(app.router);
     app.use(express.static(config.root + '/public'));
+
+    // Create a 404-500 middleware to handle the errors
+    app.use(function(err, req, res, next) {
+        // if Object not found, treat as 404
+        if (err.message
+            && (~err.message.indexOf('not found')
+            || (~err.message.indexOf('Cast to ObjectId failed')))) {
+                return next();
+        }
+        // log
+        // send emails if want
+        console.error(err.stack)
+        // error page
+        res.status(500).render('500', { error: err.stack });
+    });
+    // assume 404 since no middleware responded
+    app.use(function(req, res, next) {
+        res.status(404).render('404', {
+            url: req.originalUrl,
+            error: 'Page Not Found',
+            req: req
+        });
+    });
+
 }

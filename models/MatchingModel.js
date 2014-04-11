@@ -31,9 +31,6 @@ var MatchingModelSchema = new Schema({
 MatchingModelSchema.methods = {
     // TODO: With Matching Engine, we have the possibility of a search advanced
     searchEngine: function(data, cb) {
-        var data = {
-
-        };
         match(data, cb);
     },
     // TODO: I know those if statements are shit
@@ -122,7 +119,7 @@ function match(data, cb) {
         function(data, search_score_results, callback) {
             // if search, we do nothing here
             if (data.is_match === false) {
-                callback(null, search_score_results);
+                callback(null, data, search_score_results);
             }
             else {
                 computeDistance(data, search_score_results, function(err, distance_score_results) {
@@ -133,7 +130,7 @@ function match(data, cb) {
         // Compute the dates
         function(data, distance_score_results, callback) {
             if (data.is_match === false) {
-                callback(null, distance_score_results);
+                callback(null, data, distance_score_results);
             }
             else {
                 date_score_results = computeDates(data, distance_score_results);
@@ -142,7 +139,7 @@ function match(data, cb) {
         },
         // Compute quantity
         function(data, date_score_results, callback) {
-            if (data.is_match === false) {
+            if (data.is_match == false) {
                 callback(null, date_score_results);
             }
             else {
@@ -252,64 +249,82 @@ function searchKeyWords(data, list, cb) {
 function searchKeyWord(keyword, list, source_type, cb) {
     var target_list = list || [];
 
-async.waterfall([
-    // Search name field by keys
-    function(callback) {
-        console.log('Start One Key Word Search');
-        if (source_type == 'offer') {
-            NeedModel.findObjectByKeyword('name', keyword, target_list, function(err, name_results) {
-                callback(null, name_results);
-            });
-        }
-        else if (source_type == 'need') {
-            OfferModel.findObjectByKeyword('name', keyword, target_list, function(err, name_results) {
-                callback(null, name_results);
-            });
-        }
-    },
-    // Search description field by key
-    function(name_results, callback) {
-        if (source_type == 'offer') {
-            NeedModel.findObjectByKeyword('description', keyword, target_list, function(err, description_results) {
-                var search_results = utils.union_arrays(name_results, description_results);
+    async.waterfall([
+        // Search name field by keys
+        function(callback) {
+            console.log('Start One Key Word Search');
+            if (source_type == 'offer') {
+                NeedModel.findObjectByKeyword('name', keyword, target_list, function(err, name_results) {
+                    callback(null, name_results);
+                });
+            }
+            else if (source_type == 'need') {
+                OfferModel.findObjectByKeyword('name', keyword, target_list, function(err, name_results) {
+                    callback(null, name_results);
+                });
+            } else {
+                var name_results = [];
+                OfferModel.findObjectByKeyword('name', keyword, target_list, function(err, offer_name_results) {
+                    NeedModel.findObjectByKeyword('name', keyword, target_list, function(err, need_name_results) {
+                        callback(null, need_name_results.concat(offer_name_results));
+                    });
+                });
+            }
+        },
+        // Search description field by key
+        function(name_results, callback) {
+            if (source_type == 'offer') {
+                NeedModel.findObjectByKeyword('description', keyword, target_list, function(err, description_results) {
+                    var search_results = utils.union_arrays(name_results, description_results);
+                    callback(null, search_results);
+                });
+            }
+            else if (source_type == 'need') {
+                OfferModel.findObjectByKeyword('description', keyword, target_list, function(err, description_results) {
+                    var search_results = utils.union_arrays(name_results, description_results);
+                    callback(null, search_results);
+                });
+            } else {
+                var search_results = [];
+                var description_results;
+                OfferModel.findObjectByKeyword('description', keyword, target_list, function(err, offer_description_results) {
+                    NeedModel.findObjectByKeyword('description', keyword, target_list, function(err, need_description_results) {
+                        description_results = offer_description_results.concat(need_description_results);
+                        search_results = utils.union_arrays(name_results, description_results);
+                        callback(null, search_results);
+                    });
+                });
+            }
+        },
+        // Load tickets and matching the result
+        function(search_results, callback) {
+            // If no results, callback []
+            if (search_results.length == 0) {
                 callback(null, search_results);
-            });
-        }
-        else if (source_type == 'need') {
-            OfferModel.findObjectByKeyword('description', keyword, target_list, function(err, description_results) {
-                var search_results = utils.union_arrays(name_results, description_results);
-                callback(null, search_results);
-            });
-        }
-    },
-    // Load tickets and matching the result
-    function(search_results, callback) {
-        // If no results, callback []
-        if (search_results.length == 0) {
-            callback(null, search_results);
-        }
-        // Tickets container
-        var tickets = [];
-        async.each(search_results, function(ticket, callback1) {
-            // Load ticket into search_result
-            async.waterfall([
-                function(push_to_array) {
-                    // TODO: need optimize, use another async.each to calculate scores and push back
-                    tickets.push(calculateScore(ticket, keyword));
-                    // We only callback the final result of array push
-                    if (tickets.length == search_results.length) {
-                        push_to_array(null, tickets);
+            }
+            // Tickets container
+            var tickets = [];
+            async.each(search_results, function(ticket, callback1) {
+                // Load ticket into search_result
+                async.waterfall([
+                    function(push_to_array) {
+                        // TODO: need optimize, use another async.each to calculate scores and push back
+                        tickets.push(calculateScore(ticket, keyword));
+                        // We only callback the final result of array push
+                        if (tickets.length == search_results.length) {
+                            push_to_array(null, tickets);
+                        }
                     }
-                }
-            ], function(err, results) {
-                // Now we have the final load, callback to higher lever of async
-                callback (null, results);
+                ], function(err, results) {
+                    // Now we have the final load, callback to higher lever of async
+                    callback (null, results);
+                });
             });
-        });
-    }
-    // handy point to define the final cb function
-    // cb = function(err, results) { do the process here};
-], cb)}
+        }
+        // handy point to define the final cb function
+        // cb = function(err, results) { do the process here};
+    ], cb);
+}
 
 
 // uills functions

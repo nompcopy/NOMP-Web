@@ -104,7 +104,6 @@ TicketModelSchema.pre('save', function(next) {
             if (originalPath.split('.').length > 1) {
                 var ext = originalPath.split('.').pop();
                 var targetPath = imageDir + utils.makeRef() + '.' + ext;
-                console.log(targetPath);
                 this.media.image.push(targetPath);
                 /*
                 fs.rename(originalPath, targetPath, function(err) {
@@ -150,13 +149,7 @@ TicketModelSchema.inherits = {
     generateKeyWords: function() {
         var keywords = [];
         if (this.name) {
-            var name = this.name.toLowerCase();
-            var arr = name.split(' ');
-            for (var index=0; index<arr.length; index++) {
-                if (utils.worthlesswords.indexOf(arr[index]) < 0) {
-                    keywords.push(arr[index]);
-                }
-            }
+            keywords = utils.generateKeywords(this.name);
         }
         return keywords;
     },
