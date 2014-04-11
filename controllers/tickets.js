@@ -109,7 +109,9 @@ exports.create = function(req, res) {
         // associate image temp path
         function(ticket, callback) {
             for (var index=0; index<req.files.image[0].length; index++) {
-                ticket.media.image.push(req.files.image[0][index].path)
+                if (req.files.image[0][index].size > 0) {
+                    ticket.media.image.push(req.files.image[0][index].path);
+                }
             }
             callback(null, ticket);
         },
@@ -239,7 +241,9 @@ exports.update = function(req, res) {
         req.body.media = {};
         req.body.media.image = [];
         for (var index=0; index<req.files.image[0].length; index++) {
-            req.body.media.image.push(req.files.image[0][index].path);
+            if (req.files.image[0][index].size > 0) {
+                req.body.media.image.push(req.files.image[0][index].path);
+            }
         }
     }
     ticket.update(req.body, function(err) {

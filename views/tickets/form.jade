@@ -44,10 +44,10 @@ block content
                     img(data-src="holder.js/300x200/text:photo-preview")
                   .thumbnail.fileinput-preview.fileinput-exists(style="max-width: 100%;")
                   div
-                    label= i == 0 ? 'Main photo' : 'Photo' + i
-                    span.fileinput-new
-                      input.btn.btn-default.btn-file.form-control(type="file", name="image[]", accept="image/png, image/gif, image/jpg, image/jpeg")
-                    a.btn.btn-danger.pull-right.fileinput-exists(href="#", data-dismiss="fileinput") Remove
+                    label.col-sm-6.col-md-8= i == 0 ? 'Main photo' : 'Photo' + i
+                    button.close.fileinput-exists.pull-right(type="button", aria-hidden="true", data-dismiss="fileinput") &times;
+                    input.btn.btn-default.btn-file.form-control(type="file", name="image[]", accept="image/png, image/gif, image/jpg, image/jpeg")
+                    a.sr-only.btn.btn-danger.pull-right.fileinput-exists(href="#", data-dismiss="fileinput") Remove
           .form-group
             button#btnNewUser.btn.btn-primary(type='submit') Submit
           -if (!ticket.isNew)
