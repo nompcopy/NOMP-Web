@@ -1,8 +1,11 @@
 extends auth
 
 block auth
-  form(action="/user", method="post" role="form")
+  - var action= post_action
+  form(action=action, method="post" role="form")
     input(type='hidden', name='_csrf', value='#{csrf_token}')
+    - if (!user.isNew)
+      input(type='hidden', name='_method', value='PUT')
     .form-group
       label(for="name") Full name
       input#name.form-control(type='text', name='name', placeholder='Full name', value=user.name)
@@ -12,9 +15,24 @@ block auth
     .form-group
       label(for="username") Username
       input#username.form-control(type='text', name='username', placeholder='Username', value=user.username)
-    .form-group
-      label(for="password") Password
-      input#password.form-control(type='password', name='password', placeholder='Password')
-    button#btnNewUser.btn.btn-primary(type='submit') Sign up
-    | &nbsp; or &nbsp;
-    a.show-login(href="/login") Log in
+    - if (user.isNew)
+      .form-group
+        label(for="password") Password
+        input#password.form-control(type='password', name='password', placeholder='Password')
+    - else
+      .form-group
+        label(for="old_password") Old Password
+        input#password.form-control(type='password', name='old_password', placeholder='Old password')
+      .form-group
+        label(for="new_password") New Password
+        input#password.form-control(type='password', name='new_password', placeholder='New password')
+      .form-group
+        label(for="confirm_new_password") Confirme new Password
+        input#password.form-control(type='password', name='confirm_password', placeholder='Confirme new password')
+
+    - if (user.isNew)
+      button#btnNewUser.btn.btn-primary(type='submit') Sign up
+      | &nbsp; or &nbsp;
+      a.show-login(href="/login") Log in
+    - else
+      button#btnNewUser.btn.btn-primary(type='submit') Edit

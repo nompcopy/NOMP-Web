@@ -3,3 +3,4 @@ extends ../layout
 block main
   - var name = user.name ? user.name : user.username
   h1= name
+  a(href='/user/' + user._id.toString() + '/edit') Edit your profile
