@@ -1,13 +1,63 @@
 extends ../layout
 
 block content
-  h1= title
-  p= ticket.__t
-  table#ticketContent
-    each key,val in ticket
-      tr
-        td 
-          //p= key
-  a(href='/' + ticket_type + '/' + ticket._id + '/edit') Modify
-  br
-  a(href='/' + ticket_type + '/matching/' + ticket._id) Matching
+  .page-header
+    h1= title
+      small &nbsp;
+        strong= ticket.classification_name
+    small
+      // TODO: make status indicated by icons
+      span= 'Status: ' + ticket.statut
+      |&nbsp;
+      span= 'Posted at ' + ticket.creation_date
+      span.pull-right
+        a(href='/' + ticket_type + '/matching/' + ticket._id) Matching
+      span.pull-right &nbsp;|&nbsp;
+      span.pull-right
+        a(href='/' + ticket_type + '/' + ticket._id + '/edit') Modify
+
+  // basic info
+  .row
+    .col-md-8
+      table.table.table-bordered.table-condensed.info-box
+        each key in ['user', 'source_actor_type_name', 'target_actor_type_name', 'start_date', 'end_date', 'address']
+          tr
+            td
+              strong= key
+            td= ticket[key]
+        tr
+          td(colspan="2")
+            strong Description
+        tr
+          td(colspan="2")
+            p.list-ticket-description= ticket.description
+  
+    // display photos
+    - if (ticket.media !== undefined && ticket.media.image !== undefined && ticket.media.image.length > 0)
+      .col-md-4
+        #carousel-ticket-photos.carousel.slide(data-ride="carousel")
+          ol.carousel-indicators
+            each val, index in ticket.media.image
+              li(data-target="#carousel-ticket-photos", data-slide-to=index, class=index==0?"active":"")
+          .carousel-inner
+            each val, index in ticket.media.image
+              - var image_url = val.replace(/^\.\/public/, '')
+              .item(class=index==0?"active":"")
+                img(src="#{image_url}", alt=title, title=title)
+          -if (ticket.media.image.length > 1)
+            a.left.carousel-control(href="#carousel-ticket-photos", data-slide="prev")
+              span.glyphicon.glyphicon-chevron-left
+            a.right.carousel-control(href="#carousel-ticket-photos", data-slide="next")
+              span.glyphicon.glyphicon-chevron-right
+      // contact info
+      .col-md-4(style="margin-top: 15px;")
+        .panel.panel-default
+          .panel-heading Contact
+          .table.table-bordered.table-condensed
+            each key in ['contact_phone', 'contact_mobile', 'contact_email']
+              if (ticket[key] !== undefined)
+                tr
+                  td
+                    strong= key
+                  td= ticket[key]
+          

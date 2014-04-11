@@ -5,7 +5,7 @@ block content
   .row(style="margin-bottom: 15px;")
     ul.nav.nav-pills
       li(class=ticket_type ? '' : 'active')
-        a(href="/") Matching results
+        a(href="/") Overview
       li(class=ticket_type === 'need' ? 'active' : '')
         a(href="/need") Needs
       li(class=ticket_type === 'offer' ? 'active' : '')
@@ -23,47 +23,27 @@ block content
 
   .row
     - if (!ticket_type)
-      .col-md-5#needList
-        h3 Needs available
-        ul
-      .col-md-5#offerList
-        h3 Offers available
-        ul
+      .col-md-6.overview-list(style="padding-left: 0;")
+        #needList.panel.panel-default
+          .panel-heading
+            strong Needs available
+          table.table.table-condensed
+      .col-md-6.overview-list(style="padding-right: 0;")
+        #offerList.panel.panel-default
+          .panel-heading
+            strong Offers available
+          table.table.table-condensed
     - else
       .row
         // filters block
         .col-md-2(style="")
           p Filters here:
-          ul
-            li
-              strong Classifications
-              ul
-                li Class1
-                li Class2
-                li Class3
-            li
-              strong Source actor type
-              ul
-                li Type1
-                li Type2
-                li Type3
-            li
-              strong Target actor type
-              ul
-                li Type1
-                li Type2
-                li Type3
-            li
-              strong Available date
               
         // ticket list block
         .col-md-10(style="border-left: 1px solid #ddd;")
           .panel.panel-default(id=ticket_type + 'List')
-            //.panel-heading
-            //  strong= ticket_type.toUpperCase() + ' available'
             table.table.table-condensed
               thead
                 tr
                   th Photo
                   th Ticket info
-                  th Brief

@@ -54,8 +54,30 @@ img.list-ticket-photo {
   height: 150px;
 }
 
-td.list-ticket-description {
-  width: 335px;
+p.list-ticket-description {
+  text-align: justify;
+}
+
+.overview-list img.list-ticket-photo {
+  display: none;
+}
+
+/***************************************/
+
+/*    Custom styles in ticket show    */
+
+.table.borderless td {
+  border: 0;
+}
+
+#carousel-ticket-photos {
+  padding: 0;
+  height: 300px;
+}
+
+#carousel-ticket-photos .carousel-inner .item img {
+  width: 100%;
+  height: 300px;
 }
 
 /***************************************/

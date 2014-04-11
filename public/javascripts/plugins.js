@@ -88,16 +88,16 @@ function generateListElementView(ticket) {
     content += '<p><strong>Source: </strong>' + ticket.source_actor_type_name + '&nbsp;<strong>Target: </strong>' + ticket.target_actor_type_name + '</p>';
     
     // append available date period
-    content += '<p><strong>Availability: </strong>' + $.format.date(ticket.start_date, "dd/MM/yyyy") + ' - ' + $.format.date(ticket.end_date, "dd/MM/yyyy") + '</p>';
+    //content += '<p><strong>Availability: </strong>' + $.format.date(ticket.start_date, "dd/MM/yyyy") + ' - ' + $.format.date(ticket.end_date, "dd/MM/yyyy") + '</p>';
     
     // append location
-    content += '<p><strong>Location: </strong>' + ticket.address + '</p>';
+    //content += '<p><strong>Location: </strong>' + ticket.address + '</p>';
     
-    content += '</td>'
+    //content += '</td>';
     
     // append cost/budget and brief description
-    content += '<td class="list-ticket-description">';
-    
+    //content += '<td class="list-ticket-description">';
+    // cost/budget
     if (ticket_type == 'need') {
         var priceKey = 'Budget';
         var priceValue = ticket.budget;
@@ -105,10 +105,12 @@ function generateListElementView(ticket) {
         var priceKey = 'Cost';
         var priceValue = ticket.cost;
     }
-    content += '<p><strong>' + priceKey + ': </strong>' + priceValue + ' &euro;</p>';
-    
-    content += '<p><strong>Description: </strong>' + cutDescription(ticket.description) + '</p>';
-    content += '<sub class="pull-right"><a href="' + ticket_url + '">More</a></sub>';
+    if (priceValue !== undefined) {
+        content += '<p><strong>' + priceKey + ': </strong>' + priceValue + ' &euro;</p>';
+    }
+    // description
+    content += '<p class="list-ticket-description"><strong>Description: </strong>' + cutDescription(ticket.description) + '</p>';
+    content += '<small class="pull-right"><a href="' + ticket_url + '">More</a></small>';
     content += '</td>';
     
     content += '</tr>';
