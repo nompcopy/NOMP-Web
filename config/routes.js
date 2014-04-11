@@ -110,6 +110,7 @@ module.exports = function (app, passport, config) {
  * Import and Export
  */
     app.post('/import', shiftings.import);
+    app.get('/export', shiftings.export);
 
 /*
  * Others

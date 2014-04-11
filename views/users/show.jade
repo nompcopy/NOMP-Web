@@ -10,3 +10,5 @@ block main
     input(type='hidden', name='_csrf', value="#{csrf_token}")
     input(type='file', name='file')
     button.btn.btn-default(type='submit') Import
+  h3 DownLoad my tickets
+  a(href='/export') Export
