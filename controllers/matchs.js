@@ -34,10 +34,10 @@ exports.searching = function(req, res) {
     };
     m.searchEngine(query_data, function(err, results) {
         var render_data = {
-            searching_results: results,
+            matching_results: results,
             title: 'Search results of ' + req.query.keywords,
             req: req
         }
-        return res.render('tickets/search', render_data);
+        return res.render('tickets/matching', render_data);
     });
 }
