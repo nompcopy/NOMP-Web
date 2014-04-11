@@ -7,6 +7,7 @@ var mongoose = require('mongoose');
 var routes = require('../controllers/index');
 var tickets = require('../controllers/tickets');
 var user = require('../controllers/user');
+var matchs = require('../controllers/matchs');
 var auth = require('./middlewares/authorization');
 
 /*
@@ -97,7 +98,9 @@ module.exports = function (app, passport, config) {
 /*
  * Matching and Searching
  */
-    app.get('/:type(need|offer)/matching/:ticketId', tickets.matching);
+    app.get('/:type(need|offer)/matching/:ticketId', matchs.matching);
+    app.get('/search', matchs.searching);
+
 /*
  * Others
  */
