@@ -14,6 +14,7 @@ var auth = require('./middlewares/authorization');
  * Route middlewares
  */
 var listAuth = [auth.requiresLogin];
+var globalAuth = [auth.requiresLogin];
 var ticketAuth = [auth.requiresLogin, auth.ticket.hasAuthorization];
 var cleanReturnUrl = [auth.clearReturnTo];
 /*
@@ -62,6 +63,10 @@ module.exports = function (app, passport, config) {
 
     app.get('/user/:userId', user.show);
     app.param('userId', user.user);
+    // edit profile block
+    app.get('/user/:userId/edit', globalAuth, user.edit);
+    // app.post('/user/:userId/edit', user.edit);
+    app.put('/user/:userId', user.update);
 
 
     /*

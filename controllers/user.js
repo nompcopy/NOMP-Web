@@ -47,6 +47,7 @@ exports.signup = function(req, res) {
     res.render('users/signup', {
         title: 'Sign up',
         user: new UserModel(),
+        post_action: '/user',
         req: req
     });
 }
@@ -97,7 +98,64 @@ exports.create = function(req, res) {
     });
 }
 
+/*
+ * Edit User profil
+ */
+exports.edit = function(req, res) {
+    res.render('users/signup', {
+        title: 'Modify your profile',
+        user: req.user,
+        post_action: '/user/' + req.user._id.toString(),
+        req: req
+    });
+}
 
+/*
+ *
+ */
+exports.update = function(req, res) {
+    // If password bloc is touched
+    if (req.body.old_password || req.body.new_password || req.body.confirm_password) {
+        // validate old password
+        if (req.user.authenticate(req.body.old_password)) {
+            console.log(req.body.new_password == req.body.confirm_password);
+            console.log(req.body.new_password.length > 0);
+            if ((req.body.new_password == req.body.confirm_password) && req.body.new_password.length > 0) {
+                req.body.password = req.body.new_password;
+            }
+            else {
+                req.flash('warning', 'Confirmation of new password not right');
+                return res.render('users/signup', {
+                    title: 'Modify your profile',
+                    user: req.user,
+                    post_action: '/user/' + req.user._id.toString(),
+                    req: req
+                });
+            }
+        }
+        else {
+            req.flash('warning', 'The password is not right')
+            return res.render('users/signup', {
+                title: 'Modify your profile',
+                user: req.user,
+                post_action: '/user/' + req.user._id.toString(),
+                req: req
+            });
+        }
+    }
+    req.user.update(req.body, function(err) {
+        if (!err) {
+            return res.redirect('/user/' + req.user._id.toString());
+        }
+        req.flash('warning', utils.errors(err.erros));
+        return res.render('users/signup', {
+            user: req.user,
+            title: 'Modify your profile',
+            post_action: '/user/' + req.user._id.toString(),
+            req: req
+        });
+    });
+}
 /*
  * Show profile
  */
