@@ -129,6 +129,14 @@ UserModelSchema.methods = {
             return '';
         }
     },
+    // data = {name: String, description: String, actor_type: ObjectId}
+    update: function(data, cb) {
+        for (property in data) {
+            this[property] = data[property];
+        }
+        // this.keywords = generateKeyWords(this.name);
+        this.save(cb);
+    },
     // Validation is not required if using oAuth
     doesNotRequireValidation: function() {
         return ~oAuthTypes.indexOf(this.provider);
