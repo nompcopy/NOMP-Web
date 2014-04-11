@@ -257,25 +257,6 @@ exports.update = function(req, res) {
     });
 }
 
-exports.matching = function(req, res) {
-    var ticket_type = req.params.type;
-    var ticket = req.ticket;
-    var m = new MatchingModel({
-        source_id: req.params.ticketId,
-        source_type: ticket_type,
-    });
-    m.matchEngine(function(err, results) {
-        var render_data = {
-            source_ticket: ticket,
-            ticket_type: ticket_type,
-            matching_results: results,
-            title: ticket.name,
-            req: req
-        };
-        return res.render('tickets/matching', render_data);
-    });
-}
-
 
 exports.list = function(req, res) {
     // TODO: pagination or limit of data size

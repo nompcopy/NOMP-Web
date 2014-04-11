@@ -15,7 +15,12 @@ nav.navbar.navbar-default.navbar-top(role='navigation')
           a(href="/need", title="Need") Need
         li
           a(href="/offer", title="Offer") Offer
-
+      form(action='/search', method='get', role='form')
+        input(type='hidden', name='_csrf', value="#{csrf_token}")
+        .navbar-form.navbar-left(role='search')
+          .form-group
+            input(type='text', class='form-control', name='keywords', placeholder='search')
+          button.btn.btn-default(type='submit') Search
       ul.nav.navbar-nav.navbar-right
         - if (req.isAuthenticated())
           li.dropdown 
