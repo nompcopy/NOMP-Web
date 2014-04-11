@@ -1,8 +1,9 @@
 extends ../layout
 
 block content
-  .row
-    ul.nav.nav-tabs
+  // nav tabs
+  .row(style="margin-bottom: 15px;")
+    ul.nav.nav-pills
       li(class=ticket_type ? '' : 'active')
         a(href="/") Matching results
       li(class=ticket_type === 'need' ? 'active' : '')
@@ -29,7 +30,40 @@ block content
         h3 Offers available
         ul
     - else
-      .col-md-6(id=ticket_type + 'List')
-        h3= ticket_type.toUpperCase() + ' available'
-        ul
-
+      .row
+        // filters block
+        .col-md-2(style="")
+          p Filters here:
+          ul
+            li
+              strong Classifications
+              ul
+                li Class1
+                li Class2
+                li Class3
+            li
+              strong Source actor type
+              ul
+                li Type1
+                li Type2
+                li Type3
+            li
+              strong Target actor type
+              ul
+                li Type1
+                li Type2
+                li Type3
+            li
+              strong Available date
+              
+        // ticket list block
+        .col-md-10(style="border-left: 1px solid #ddd;")
+          .panel.panel-default(id=ticket_type + 'List')
+            //.panel-heading
+            //  strong= ticket_type.toUpperCase() + ' available'
+            table.table.table-condensed
+              thead
+                tr
+                  th Photo
+                  th Ticket info
+                  th Brief

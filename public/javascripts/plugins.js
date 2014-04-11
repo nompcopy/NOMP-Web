@@ -42,6 +42,79 @@ var displayDates = [
     { end_date: 'End Date: '},
 ];
 
+function generateListElementView(ticket) {
+    if (ticket.__t === 'NeedModel') {
+        ticket_type = 'need';
+    } else {
+        ticket_type = 'offer';
+    }
+    var ticket_url = '/' + ticket_type + '/' + ticket._id;
+    
+    var content = '<tr>';
+    
+    // append main photo of the ticket
+    var image_src = '';
+    if (ticket.media === undefined || ticket.media.image === undefined || ticket.media.image.length == 0) {
+        image_src = 'data-src="holder.js/150x100"';
+    } else {
+        image_src = 'src="' + ticket.media.image[0].replace(/^\.\/public/, '') + '"';
+    }
+     content += '<td>';
+    content += '<a href="' + ticket_url + '" title="' + ticket.name + '">'
+    content += '<img class="img-thumbnail list-ticket-photo" alt="' + ticket.name + '" title="' + ticket.name + '"' + image_src + ' />';
+    content += '</a>';
+    content += '</td>';
+    
+    content += '<td>';
+    
+    content += '<p>';
+    // append ticket title
+    content += '<a class="list-ticket-title" href="' + ticket_url + '" title="' + ticket.name + '"><strong>' + cutName(ticket.name) + '</strong></a>';
+    // append ticket class
+    content += '&nbsp;<small>' + ticket.classification_name + '</small>';
+    content += '</p>';
+    
+    // append keywords
+    content += '<p>';
+    $.each(ticket.keywords, function(i, keyword) {
+        if (i > 5) {
+            return false;
+        }
+        content += '<span class="label label-info">' + keyword + '</span>&nbsp;';
+    });
+    content += '</p>';
+    
+    // append ticket source&target actor class
+    content += '<p><strong>Source: </strong>' + ticket.source_actor_type_name + '&nbsp;<strong>Target: </strong>' + ticket.target_actor_type_name + '</p>';
+    
+    // append available date period
+    content += '<p><strong>Availability: </strong>' + $.format.date(ticket.start_date, "dd/MM/yyyy") + ' - ' + $.format.date(ticket.end_date, "dd/MM/yyyy") + '</p>';
+    
+    // append location
+    content += '<p><strong>Location: </strong>' + ticket.address + '</p>';
+    
+    content += '</td>'
+    
+    // append cost/budget and brief description
+    content += '<td class="list-ticket-description">';
+    
+    if (ticket_type == 'need') {
+        var priceKey = 'Budget';
+        var priceValue = ticket.budget;
+    } else {
+        var priceKey = 'Cost';
+        var priceValue = ticket.cost;
+    }
+    content += '<p><strong>' + priceKey + ': </strong>' + priceValue + ' &euro;</p>';
+    
+    content += '<p><strong>Description: </strong>' + cutDescription(ticket.description) + '</p>';
+    content += '<sub class="pull-right"><a href="' + ticket_url + '">More</a></sub>';
+    content += '</td>';
+    
+    content += '</tr>';
+    
+    return content;
+}
 
 function populateTicketList() {
     var ticket_types = ['need', 'offer'];
@@ -50,6 +123,8 @@ function populateTicketList() {
         $.getJSON('/' + ticket_type + '/list', function(tickets) {
             var tableContent = '';
             $.each(tickets, function() {
+                tableContent += generateListElementView(this);
+                /*
                 tableContent += '<li>';
                 var tmp_type;
                 if (this.__t === 'NeedModel') {
@@ -83,8 +158,9 @@ function populateTicketList() {
                 }
                 tableContent += '</ul>';
                 tableContent += '</li>';
+                */
             });
-            $('#' + parseUrl(this.url) + 'List ul').html(tableContent);
+            $('#' + parseUrl(this.url) + 'List table').append(tableContent);
         });
     }
 }
@@ -118,6 +194,13 @@ function showOwnerNeed(event) {
     });
 }
 
+function cutName(name) {
+    if (name.length > 40) {
+        name = name.substr(0, 40);
+        name += '...';
+    }
+    return name;
+}
 
 function cutDescription(description) {
     if (description.length > 140) {
