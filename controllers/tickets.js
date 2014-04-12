@@ -79,6 +79,19 @@ exports.new = function(req, res) {
 };
 
 exports.create = function(req, res) {
+    // Sanitization of req.body, fetch class and actor_type
+    var tmp_classification = JSON.parse(req.body.classification);
+    req.body.classification = tmp_classification.id;
+    req.body.classification_name = tmp_classification.name;
+    // Same thing for source/target actor type
+    var tmp_source_actor_type = JSON.parse(req.body.source_actor_type);
+    req.body.source_actor_type = tmp_source_actor_type.id;
+    req.body.source_actor_type_name = tmp_source_actor_type.name;
+
+    var tmp_target_actor_type = JSON.parse(req.body.target_actor_type);
+    req.body.target_actor_type = tmp_target_actor_type.id;
+    req.body.target_actor_type_name = tmp_target_actor_type.name;
+
     if (req.body.ticket_type === 'need') {
         var ticket = new NeedModel(req.body);
     }
@@ -88,26 +101,8 @@ exports.create = function(req, res) {
 
     // fetch class, actorType names
     async.waterfall([
-        function(callback) {
-            ClassificationModel.load(ticket.classification, function(err, classification) {
-                ticket.classification_name = classification.name;
-                callback(null, ticket);
-            });
-        },
-        function(ticket, callback) {
-            ActorTypeModel.load(ticket.source_actor_type, function(err, source_actor_type) {
-                ticket.source_actor_type_name = source_actor_type.name;
-                callback(null, ticket);
-            });
-        },
-        function(ticket, callback) {
-            ActorTypeModel.load(ticket.target_actor_type, function(err, target_actor_type) {
-                ticket.target_actor_type_name = target_actor_type.name;
-                callback(null, ticket);
-            });
-        },
         // associate image temp path
-        function(ticket, callback) {
+        function(callback) {
             for (var index=0; index<req.files.image[0].length; index++) {
                 if (req.files.image[0][index].size > 0) {
                     ticket.media.image.push(req.files.image[0][index].path);
