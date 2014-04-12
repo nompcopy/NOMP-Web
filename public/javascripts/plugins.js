@@ -162,7 +162,9 @@ function populateTicketList() {
                 tableContent += '</li>';
                 */
             });
-            $('#' + parseUrl(this.url) + 'List table').append(tableContent);
+            if ($('#' + parseUrl(this.url) + 'List table').html() === '') {
+                $('#' + parseUrl(this.url) + 'List table').append(tableContent);
+            }
         });
     }
 }

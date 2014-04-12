@@ -1,9 +1,53 @@
-extends ../layout
+extends ./templates/_list
 
-block content
-  h1= title
-  table#ticketContent
-    each result in matching_results
+block needListHeading
+  strong Results in needs
+block overviewNeedList
+  each result in matching_results
+    - if (result.ticket.__t === 'NeedModel')
       tr
-        td 
-          p= result
+        td
+          p
+            a.ist-ticket-title(href='/need/' + result.ticket._id, title=result.ticket.name)
+              strong= result.ticket.name
+              span &nbsp;
+            small= result.ticket.classification_name
+              
+          p
+            each keyword, index in result.ticket.keywords
+              - if (index < 5)
+                span.label.label-info= keyword
+                span &nbsp;
+          
+          p
+            strong Source:&nbsp
+            span= result.ticket.source_actor_type_name
+            span &nbsp;
+            strong Target:&nbsp
+            span= result.ticket.target_actor_type_name
+            
+block offerListHeading
+  strong Results in offers
+block overviewOfferList
+  each result in matching_results
+    - if (result.ticket.__t === 'OfferModel')
+      tr
+        td
+          p
+            a.ist-ticket-title(href='/offer/' + result.ticket._id, title=result.ticket.name)
+              strong= result.ticket.name
+              span &nbsp;
+            small= result.ticket.classification_name
+              
+          p
+            each keyword, index in result.ticket.keywords
+              - if (index < 5)
+                span.label.label-info= keyword
+                span &nbsp;
+          
+          p
+            strong Source:&nbsp
+            span= result.ticket.source_actor_type_name
+            span &nbsp;
+            strong Target:&nbsp
+            span= result.ticket.target_actor_type_name

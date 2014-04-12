@@ -1,49 +1,12 @@
-extends ../layout
+extends ./templates/_list
 
-block content
-  // nav tabs
-  .row(style="margin-bottom: 15px;")
-    ul.nav.nav-pills
-      li(class=ticket_type ? '' : 'active')
-        a(href="/") Overview
-      li(class=ticket_type === 'need' ? 'active' : '')
-        a(href="/need") Needs
-      li(class=ticket_type === 'offer' ? 'active' : '')
-        a(href="/offer") Offers
-      li.pull-right
-        button.btn.btn-default.link-btn(type="button")
-          a.no-underline(href="/need/new")
-            span.glyphicon.glyphicon-plus
-            | Create Need
-      li.pull-right
-        button.btn.btn-default.link-btn(type="button")
-          a.no-underline(href="/offer/new")
-            span.glyphicon.glyphicon-plus
-            | Create Offer
+block needListHeading
+  strong Needs available
 
-  .row
-    - if (!ticket_type)
-      .col-md-6.overview-list(style="padding-left: 0;")
-        #needList.panel.panel-default
-          .panel-heading
-            strong Needs available
-          table.table.table-condensed
-      .col-md-6.overview-list(style="padding-right: 0;")
-        #offerList.panel.panel-default
-          .panel-heading
-            strong Offers available
-          table.table.table-condensed
-    - else
-      .row
-        // filters block
-        .col-md-2(style="")
-          p Filters here:
-              
-        // ticket list block
-        .col-md-10(style="border-left: 1px solid #ddd;")
-          .panel.panel-default(id=ticket_type + 'List')
-            table.table.table-condensed
-              thead
-                tr
-                  th Photo
-                  th Ticket info
+block offerListHeading
+  strong Offers available
+  
+block listHeader
+  tr
+    th Photo
+    th Ticket info
