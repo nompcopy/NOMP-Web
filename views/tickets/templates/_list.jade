@@ -28,13 +28,15 @@ block content
           .panel-heading
             block needListHeading
           table.table.table-condensed
-            block overviewNeedList
+            tbody
+              block overviewNeedList
       .col-md-6.overview-list(style="padding-right: 0;")
         #offerList.panel.panel-default
           .panel-heading
             block offerListHeading
           table.table.table-condensed
-            block overviewOfferList
+            tbody
+              block overviewOfferList
     - else
       .row
         // filters block
