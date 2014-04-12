@@ -86,7 +86,16 @@ TicketModelSchema.path('address').validate(function(address, fn) {
         }
     }, false);
 }, 'Invalid address - address not found or ambiguous');
-
+// Limitation of name length
+TicketModelSchema.path('name').validate(function(name) {
+    // 50 limitation
+    if (name.length > 50) {
+        return false;
+    }
+    else {
+        true;
+    }
+}, 'Invalid title - title is too long');
 /**
  * Pre save
  */
