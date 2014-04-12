@@ -17,10 +17,7 @@ var MatchingModelSchema = new Schema({
     source_id: {type: Schema.ObjectId},
     source_type: {type: String},
     is_match: {type: Boolean, default: true},
-    results: [{
-        result_id: Schema.ObjectId,
-        result_score: Number
-    }]
+    results: [{}]
 });
 
 
@@ -29,6 +26,13 @@ var MatchingModelSchema = new Schema({
  *
  */
 MatchingModelSchema.methods = {
+    // Basic methods
+    update: function(data, cb) {
+        for (property in data) {
+            this[property] = data[property];
+        }
+        this.save(cb);
+    },
     // TODO: With Matching Engine, we have the possibility of a search advanced
     searchEngine: function(data, cb) {
         match(data, cb);
@@ -82,6 +86,17 @@ MatchingModelSchema.methods = {
     }
 };
 
+MatchingModelSchema.statics = {
+    load: function(id, cb) {
+        this.findOne({ _id: id }).exec(cb);
+    },
+    retrieveByTicket: function(ticket_id, ticket_type, cb) {
+        this.findOne({
+            source_id: ticket_id,
+            source_type: ticket_type
+        }).exec(cb);
+    }
+};
 
 function match(data, cb) {
     async.waterfall([
@@ -182,6 +197,9 @@ function computeDistance(data, target_list, cb) {
     var distance_score_results = [];
     async.waterfall([
         function(callback) {
+            if (target_list.length === 0) {
+                callback(null, []);
+            }
             var index = 0;
             async.each(target_list, function(target_ticket, iterator_callback) {
                 index++;
