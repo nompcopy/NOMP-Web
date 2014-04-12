@@ -1,0 +1,52 @@
+extends ../../layout
+
+block content
+  // nav tabs
+  .row(style="margin-bottom: 15px;")
+    ul.nav.nav-pills
+      li(class=ticket_type ? '' : 'active')
+        a(href="/") Overview
+      li(class=ticket_type === 'need' ? 'active' : '')
+        a(href="/need") Needs
+      li(class=ticket_type === 'offer' ? 'active' : '')
+        a(href="/offer") Offers
+      li.pull-right
+        button.btn.btn-default.link-btn(type="button")
+          a.no-underline(href="/need/new")
+            span.glyphicon.glyphicon-plus
+            | Create Need
+      li.pull-right
+        button.btn.btn-default.link-btn(type="button")
+          a.no-underline(href="/offer/new")
+            span.glyphicon.glyphicon-plus
+            | Create Offer
+
+  .row
+    - if (!ticket_type)
+      .col-md-6.overview-list(style="padding-left: 0;")
+        #needList.panel.panel-default
+          .panel-heading
+            block needListHeading
+          table.table.table-condensed
+            tbody
+              block overviewNeedList
+      .col-md-6.overview-list(style="padding-right: 0;")
+        #offerList.panel.panel-default
+          .panel-heading
+            block offerListHeading
+          table.table.table-condensed
+            tbody
+              block overviewOfferList
+    - else
+      .row
+        // filters block
+        .col-md-2
+          p Filters here:
+          block filters
+        // ticket list block
+        .col-md-10(style="border-left: 1px solid #ddd;")
+          .panel.panel-default(id=ticket_type + 'List')
+            table.table.table-condensed
+              thead
+                block listHeader
+              tbody

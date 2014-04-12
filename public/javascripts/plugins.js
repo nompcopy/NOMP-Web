@@ -75,14 +75,16 @@ function generateListElementView(ticket) {
     content += '</p>';
     
     // append keywords
-    content += '<p>';
-    $.each(ticket.keywords, function(i, keyword) {
-        if (i > 5) {
-            return false;
-        }
-        content += '<span class="label label-info">' + keyword + '</span>&nbsp;';
-    });
-    content += '</p>';
+    if (ticket.keywords !== undefined && ticket.keywords.length > 0) {
+        content += '<p>';
+        $.each(ticket.keywords, function(i, keyword) {
+            if (i > 5) {
+                return false;
+            }
+            content += '<span class="label label-info">' + keyword + '</span>&nbsp;';
+        });
+        content += '</p>';
+    }
     
     // append ticket source&target actor class
     content += '<p><strong>Source: </strong>' + ticket.source_actor_type_name + '&nbsp;<strong>Target: </strong>' + ticket.target_actor_type_name + '</p>';
@@ -162,7 +164,9 @@ function populateTicketList() {
                 tableContent += '</li>';
                 */
             });
-            $('#' + parseUrl(this.url) + 'List table').append(tableContent);
+            if ($('#' + parseUrl(this.url) + 'List table tbody').html() === '') {
+                $('#' + parseUrl(this.url) + 'List table').append(tableContent);
+            }
         });
     }
 }
