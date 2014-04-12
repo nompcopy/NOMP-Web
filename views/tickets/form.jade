@@ -8,10 +8,13 @@ block content
 
       .panel-heading
         strong= title
-        - if (error)
-          p.alert.alert-danger= error
 
       .panel-body
+        - if (error)
+          .alert.alert-danger.alert-dismissable
+            button.close(type="button" data-dismiss="alert" aria-hidden="true") &times;
+            strong Error:&nbsp;
+            span= error
         form(action=action, enctype="multipart/form-data", method="post", role="form")
           input(type='hidden', name='_csrf', value="#{csrf_token}")
           input(type='hidden', name='ticket_type', value=ticket_type)
