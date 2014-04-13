@@ -176,10 +176,11 @@ exports.edit = function(req, res) {
                                 callback(null, ticket);
                             }
                             else {
-                                req.flash('warning', 'The reference is not right');
+                                //req.flash('warning', 'The reference is not right');
                                 return res.render('users/login', {
                                     title: 'Login',
-                                    message: req.flash('error'),
+                                    //message: req.flash('error'),
+                                    message: 'The reference is not right',
                                     req: req
                                 });
                             }

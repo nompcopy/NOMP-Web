@@ -1,27 +1,55 @@
 extends auth
 
 block auth
-  form(action='/ticket/edit', method='post', role="form")
-    input(type='hidden', name='_csrf', value='#{csrf_token}')
-    .form-group
-      label.sr-only(for="reference")
-      input#reference.form-control(type='text', placeholder='Reference', name='reference')
-    button#btnLogin.btn-primary(type='submit') Edit
+  - if (message != '')
+    .alert.alert-danger.alert-dismissable
+      button.close(type="button" data-dismiss="alert" aria-hidden="true") &times;
+      strong Error:&nbsp;
+      span= message
 
-  form(action="/user/session", method="post", role="form")
-    input(type='hidden', name='_csrf', value='#{csrf_token}')
-    p= message
-    .form-group
-      label(for="email") Email
-      input#email.form-control(type='email', placeholder='Enter email address', name='email')
-    .form-group
-      label(for="password") Password
-      input#password.form-control(type='password', placeholder='Password', name='password')
-    .form-group
-      .checkbox
-        label
-          input#remember(type='checkbox', name='remember')
-          |Remember me
-    button#btnLogin.btn.btn-primary(type='submit') Log in
-    | &nbsp; or &nbsp;
-    a.show-signup(href="/signup") Sign up
+  .row
+    .col-md-6
+      form(action='/ticket/edit', method='post', role="form")
+        input(type='hidden', name='_csrf', value='#{csrf_token}')
+        fieldset
+          legend Login by Reference
+          .form-group
+            label(for=reference) &nbsp;
+            .input-group
+              input#reference.form-control(type='text', placeholder='Enter reference', name='reference')
+              span.input-group-btn
+                button#btnLogin.btn.btn-primary(type='submit') Edit
+            span.help-block(style="text-align: justify;") If you have posted tickets, the referece of your tickets should have been noticed. You can enter these references below to edit the tickets. 
+          .help-about(style="margin-top: 15px;")
+            p
+              // TODO: *after the section Q&A is built
+              a(href="#", title="Learn ticket reference") About the reference
+            p
+              // TODO: *after the section Q&A is built
+              a(href="#", title="Learn ticket management") About  how to manage tickets
+
+    .col-md-6(style="border-left: 1px solid #ddd")
+      form(action="/user/session", method="post", role="form")
+        input(type='hidden', name='_csrf', value='#{csrf_token}')
+        fieldset
+          legend Login by User Account
+          .form-group
+            label(for="email") Email
+            input#email.form-control(type='email', placeholder='Enter email address', name='email')
+          .form-group
+            label(for="password") Password
+              |&nbsp;
+              a(href="#") (Forgot password?)
+            input#password.form-control(type='password', placeholder='Password', name='password')
+          .form-group
+            .checkbox
+              label
+                input#remember(type='checkbox', name='remember')
+                |Remember me
+          .form-actions(style="vertical-align: bottom;")
+            button#btnLogin.btn.btn-primary.form-control(type='submit') Log in
+            #auth-actions.pull-right(style="margin-top: 15px;")
+              a.show-signup(href="/signup") Sign up
+              span &nbsp;|&nbsp;
+              // TODO: *after the section Q&A is built
+              a(href="#", title="Learn account") More about account
