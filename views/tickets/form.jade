@@ -3,7 +3,7 @@ extends ../layout
 block content
   - var action = '/' + post_action
   //- var delete_url = '/' + post_action + '/delete'
-  - var delete_url = '/' + ticket_type + '/delete'
+  - var delete_url = '/' + ticket_type + '/' + ticket._id + '/delete'
 
     .panel.panel-primary
 
