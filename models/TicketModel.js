@@ -164,13 +164,13 @@ TicketModelSchema.inherits = {
     },
     // Delete function. We don't really delete tickets in the DB
     desactive: function(cb) {
-        var data = { statut: 0 };
+        var data = { is_active: 0 };
         this.update(data, cb);
     },
     // Re-active function, in case of change mind
     // TODO, update the dates
     reactive: function(cb) {
-        var data = { statut: 1 };
+        var data = { is_active: 1 };
         this.update(data, cb);
     }
 };
