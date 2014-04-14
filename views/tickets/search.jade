@@ -1,9 +1,63 @@
-extends ../layout
+extends ./templates/_list
 
-block content
-  h1= title
-  table#ticketContent
-    each result in searching_results
+block needListHeading
+  strong Results in needs&nbsp;
+    span.badge= searching_results.needs.length
+block overviewNeedList
+  - if (searching_results.needs.length > 0)
+    each need in searching_results.needs
       tr
-        td 
-          p= result
+        td
+          p
+            a.ist-ticket-title(href='/need/' + need._id, title=need.name)
+              strong= need.name
+              span &nbsp;
+            small= need.classification_name
+              
+          p
+            each keyword, index in need.keywords
+              - if (index < 5)
+                span.label.label-info= keyword
+                span &nbsp;
+          
+          p
+            strong Source:&nbsp
+            span= need.source_actor_type_name
+            span &nbsp;
+            strong Target:&nbsp
+            span= need.target_actor_type_name
+  - else
+    tr
+      td
+        p No results corresponding the search query.
+            
+block offerListHeading
+  strong Results in offers&nbsp;
+    span.badge= searching_results.offers.length
+block overviewOfferList
+  - if (searching_results.offers.length > 0)
+    each offer in searching_results.offers
+      tr
+        td
+          p
+            a.ist-ticket-title(href='/offer/' + offer._id, title=offer.name)
+              strong= offer.name
+              span &nbsp;
+            small= offer.classification_name
+              
+          p
+            each keyword, index in offer.keywords
+              - if (index < 5)
+                span.label.label-info= keyword
+                span &nbsp;
+          
+          p
+            strong Source:&nbsp
+            span= offer.source_actor_type_name
+            span &nbsp;
+            strong Target:&nbsp
+            span= offer.target_actor_type_name
+  - else
+    tr
+      td
+        p No results corresponding the search query.
