@@ -65,6 +65,13 @@ p.list-ticket-description {
 /***************************************/
 
 /*    Custom styles in ticket show    */
+.ui-autocomplete {
+    background-color: white;
+    width: 300px;
+    border: 1px solid #cfcfcf;
+    list-style-type: none;
+    padding-left: 0px;
+}
 
 .table.borderless td {
   border: 0;

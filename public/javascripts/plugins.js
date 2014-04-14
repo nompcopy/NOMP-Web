@@ -1,6 +1,5 @@
 var classificationData = [];
 
-
 $(document).ready(function() {
     populateClassificationList();
     populateActorTypeList();
@@ -8,6 +7,7 @@ $(document).ready(function() {
     $('#showoffer').on('click', showOwnerOffer);
     $('#showneed').on('click', showOwnerNeed);
 });
+
 
 
 function populateClassificationList() {
