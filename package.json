@@ -25,6 +25,7 @@
     "passport-linkedin": "*",
     "googlemaps": "*",
     "google-distance": "*",
-    "imager": "*"
+    "imager": "*",
+    "nodemailer": "*"
   }
 }
