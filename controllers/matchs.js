@@ -57,6 +57,7 @@ exports.searching = function(req, res) {
         }
         
         var render_data = {
+            matching_results: results,
             searching_results: {'needs': needs, 'offers': offers},
             title: 'Search results of ' + req.query.keywords,
             req: req
