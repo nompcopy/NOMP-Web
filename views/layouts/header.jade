@@ -19,8 +19,8 @@ nav.navbar.navbar-default.navbar-top(role='navigation')
         input(type='hidden', name='_csrf', value="#{csrf_token}")
         .navbar-form.navbar-left(role='search')
           .form-group
-            input(type='text', class='form-control', name='keywords', placeholder='search')
-          button.btn.btn-default(type='submit') Search
+            input(type='text', class='form-control', name='keywords', placeholder='search', value=req.query.keywords)
+          button.btn.btn-default(type='submit', style='margin-left: 8px;') Search
       ul.nav.navbar-nav.navbar-right
         - if (req.isAuthenticated())
           li.dropdown 
