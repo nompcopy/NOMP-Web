@@ -45,11 +45,23 @@ exports.searching = function(req, res) {
         keywords: utils.generateKeywords(req.query.keywords),
     };
     m.searchEngine(query_data, function(err, results) {
+        // seperate the results into 2 collections: need and offer
+        var needs = [];
+        var offers = [];
+        for (var i = 0; i < results.length; i++) {
+            if (results[i].ticket.__t === 'NeedModel') {
+                needs.push(results[i].ticket);
+            } else {
+                offers.push(results[i].ticket);
+            }
+        }
+        
         var render_data = {
             matching_results: results,
+            searching_results: {'needs': needs, 'offers': offers},
             title: 'Search results of ' + req.query.keywords,
             req: req
         }
-        return res.render('tickets/matching', render_data);
+        return res.render('tickets/search', render_data);
     });
 }
