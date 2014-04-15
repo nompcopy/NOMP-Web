@@ -15,6 +15,9 @@ block auth
     .form-group
       label(for="username") Username
       input#username.form-control(type='text', name='username', placeholder='Username', value=user.username)
+    .form-group
+      label(for="actor_type") Your identity
+      select.form-control(name='actor_type')#actorTypeSourceList
     - if (user.isNew)
       .form-group
         label(for="password") Password

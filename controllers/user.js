@@ -71,8 +71,13 @@ exports.session = login
  * Create new user
  */
 exports.create = function(req, res) {
+    // fetch actor_type
+    var tmp_actor_type = JSON.parse(req.body.actor_type);
+    req.body.actor_type = tmp_actor_type.id;
+
     var user = new UserModel(req.body);
-    user.provider = 'local'
+    user.provider = 'local';
+
     user.save(function(err) {
         if (err) {
             console.log(err);
@@ -114,6 +119,10 @@ exports.edit = function(req, res) {
  *
  */
 exports.update = function(req, res) {
+    // fetch actor type
+    var tmp_actor_type = JSON.parse(req.body.actor_type);
+    req.body.actor_type = tmp_actor_type.id;
+
     // If password bloc is touched
     if (req.body.old_password || req.body.new_password || req.body.confirm_password) {
         // validate old password
