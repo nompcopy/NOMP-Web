@@ -260,11 +260,16 @@ exports.update = function(req, res) {
 
 exports.list = function(req, res) {
     // TODO: pagination or limit of data size
+
     // TODO and ATTENTION: add 'public' target_actor_type._id, now I just use this
+    // Attention: This is a mongoDB query, not Mongoose
+    if (req.isAuthenticated) {
+        target_actor_type = {$in: ['5336b94ac1bde7b41d90377a', req.user.actor_type]};
+    }
     var options = {
         criteria: {
             is_active: 1,
-            target_actor_type_name: 'actor type test',
+            target_actor_type: target_actor_type,
     }};
     var dataToDisplay = {};
     if (req.params.type == 'need') {
