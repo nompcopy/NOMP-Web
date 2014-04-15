@@ -38,8 +38,9 @@ MatchingModelSchema.methods = {
     },
     // TODO: I know those if statements are shit
     matchEngine: function(cb) {
-        var source_id = this.source_id;
+        var source_id = this.source_id
         var source_type = this.source_type;
+
         async.waterfall([
             function(callback) {
                 if (source_type == 'need') {
@@ -88,6 +89,9 @@ MatchingModelSchema.methods = {
 MatchingModelSchema.statics = {
     load: function(id, cb) {
         this.findOne({ _id: id }).exec(cb);
+    },
+    list: function(cb) {
+        this.find().exec(cb);
     },
     retrieveByTicket: function(ticket_id, ticket_type, cb) {
         this.findOne({
@@ -147,9 +151,14 @@ function match(data, cb) {
         },
         // Find keywords in the list
         function(data, list, callback) {
-            searchKeyWords(data, list, function(err, search_score_results) {
-                callback(null, data, search_score_results);
-            });
+            if (list.length === 0) {
+                callback(null, data, list);
+            }
+            else {
+                searchKeyWords(data, list, function(err, search_score_results) {
+                    callback(null, data, search_score_results);
+                });
+            }
         },
         // Compute Distance score
         // We can put it before the search, with elimination of K value
