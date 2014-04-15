@@ -1,9 +1,8 @@
 // matches.js
 var path = require('path');
-
+var async = require('async');
 var mongoose = require('mongoose');
 var utils = require('../lib/utils');
-
 var MatchingModel = mongoose.model('MatchingModel');
 
 
@@ -37,6 +36,36 @@ exports.matching = function(req, res) {
     });
 }
 
+
+exports.matching_update = function(req, res) {
+    MatchingModel.list(function(err, list) {
+        if (err) {
+            console.log(err);
+        }
+        else {
+            async.each(list, function(m, iterator_callback) {
+                m.matchEngine(function(err, items) {
+                    if (err) {
+                        console.log(err);
+                    }
+                    else {
+                        m.results = items;
+                        m.save(function(err) {
+                            if (err) {
+                                console.log(err);
+                            }
+                            else {
+                                console.log('Matching: ' + m._id + ' updated');
+                            }
+                        });
+                    }
+                });
+                iterator_callback();
+            });
+        }
+    });
+    res.redirect('/');
+}
 
 exports.searching = function(req, res) {
     var m = new MatchingModel();
