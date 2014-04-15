@@ -27,14 +27,14 @@ block content
   .row
     - if (!ticket_type)
       .col-md-6.overview-list(style="padding-left: 0;")
-        #needList.panel.panel-default
+        .panel.panel-default(id=req.route.path === '/search' ? 'searchNeedList' : 'needList')
           .panel-heading
             block needListHeading
           table.table.table-condensed
             tbody
               block overviewNeedList
       .col-md-6.overview-list(style="padding-right: 0;")
-        #offerList.panel.panel-default
+        .panel.panel-default(id=req.route.path === '/search' ? 'searchOfferList' : 'offerList')
           .panel-heading
             block offerListHeading
           table.table.table-condensed
