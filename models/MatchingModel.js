@@ -33,7 +33,6 @@ MatchingModelSchema.methods = {
         }
         this.save(cb);
     },
-    // TODO: With Matching Engine, we have the possibility of a search advanced
     searchEngine: function(data, cb) {
         match(data, cb);
     },
@@ -48,8 +47,8 @@ MatchingModelSchema.methods = {
                         // Prepare data
                         var data = {
                             keywords: ticket.keywords,
-                            classification: ticket.classification,
-                            target_actor_type: ticket.target_actor_type,
+                            classification: [ticket.classification],
+                            target_actor_type: [ticket.target_actor_type],
                             source_type: source_type,
                             // TODO, may use google location or latitude longitude data
                             location: ticket.address,
@@ -67,8 +66,8 @@ MatchingModelSchema.methods = {
                         // Prepare data
                         var data = {
                             keywords: ticket.keywords,
-                            classification: ticket.classification,
-                            target_actor_type: ticket.target_actor_type,
+                            classification: [ticket.classification],
+                            target_actor_type: [ticket.target_actor_type],
                             source_type: source_type,
                             location: ticket.address,
                             is_match: true,
@@ -104,14 +103,14 @@ function match(data, cb) {
         function(callback) {
             if (data.is_match) {
                 if (data.source_type == 'offer') {
-                    NeedModel.findIdByActorTypeAndClassification(
+                    NeedModel.findByActorTypeAndClassification(
                         data.target_actor_type,
                         data.classification, function(err, list) {
                             callback(null, data, list);
                         });
                 }
                 else if (data.source_type == 'need') {
-                    OfferModel.findIdByActorTypeAndClassification(
+                    OfferModel.findByActorTypeAndClassification(
                         data.target_actor_type,
                         data.classification, function(err, list) {
                             callback(null, data, list);
@@ -119,7 +118,31 @@ function match(data, cb) {
                 }
             }
             else {
-                callback(null, data, null);
+                async.waterfall([
+                    function(list_callback) {
+                        NeedModel.findByTargetActorType(
+                            data.target_actor_type, function(err, need_list) {
+                            if (need_list) {
+                                list_callback(null, data, need_list);
+                            }
+                            else {
+                                list_callback(null, data, []);
+                            }
+                        });
+                    },
+                    function(data, need_list, list_callback) {
+                        OfferModel.findByTargetActorType(
+                            data.target_actor_type, function(err, offer_list) {
+                                if (offer_list) {
+                                    list_callback(null, data, need_list.concat(offer_list));
+                                } else {
+                                    list_callback(null, data, need_list);
+                                }
+                            });
+                    }
+                ], function(err, data, list) {
+                    callback(null, data, list);
+                });
             }
         },
         // Find keywords in the list

@@ -40,9 +40,17 @@ exports.matching = function(req, res) {
 
 exports.searching = function(req, res) {
     var m = new MatchingModel();
+
+    // prepare target_actor_type
+    // TODO: this is considered as public
+    var target_actor_type = ['5336b94ac1bde7b41d90377a'];
+    if (req.isAuthenticated || typeof(req.user.actor_type) !== 'undefined') {
+        target_actor_type.push(req.user.actor_type);
+    }
     var query_data = {
         is_match: false,
         keywords: utils.generateKeywords(req.query.keywords),
+        target_actor_type: target_actor_type
     };
     m.searchEngine(query_data, function(err, results) {
         // seperate the results into 2 collections: need and offer

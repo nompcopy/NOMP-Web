@@ -53,6 +53,7 @@ var TicketModelSchema = new Schema({
     statut: {type: Number, default: 0},
     reference: {type: String},
     user: {type: Schema.ObjectId, ref: 'user'}
+
 });
 
 
@@ -224,26 +225,31 @@ TicketModelSchema.statics = {
     // Find tickets by classification_id
     findByClassification: function(classification_id, cb) {
         this.find()
-            .where('classification').equals(classification_id)
+            .where('classification').in(classification_id)
             .exec(cb);
     },
     // Find tickets by author type id
-    findByActorType: function(actor_id, cb) {
+    findBySourceActorType: function(actor_id, cb) {
         this.find()
-            .where('source_actor_type').equals(actor_id)
+            .where('source_actor_type').in(actor_id)
+            .exec(cb);
+    },
+    findByTargetActorType: function(actor_id, cb) {
+        this.find()
+            .where('target_actor_type').in(actor_id)
             .exec(cb);
     },
     // Find tickets by author type and classification (matching)
     findByActorTypeAndClassification: function(actor_id, classification_id, cb) {
         this.find()
-            .where('classification').equals(classification_id)
-            .where('source_actor_type').equals(actor_id)
+            .where('classification').in(classification_id)
+            .where('source_actor_type').in(actor_id)
             .exec(cb);
     },
     findIdByActorTypeAndClassification: function(actor_id, classification_id, cb) {
         this.find()
-            .where('classification').equals(classification_id)
-            .where('source_actor_type').equals(actor_id)
+            .where('classification').in(classification_id)
+            .where('source_actor_type').in(actor_id)
             .exec(cb);
     },
     findTicketByReference: function(ref, cb) {
