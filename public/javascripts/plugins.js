@@ -3,7 +3,25 @@ var classificationData = [];
 $(document).ready(function() {
     populateClassificationList();
     populateActorTypeList();
-    populateTicketList();
+    
+    // default limit and offset
+    var limit = 5;
+    var offset = 0;
+    
+    // first display on page loaded
+    populateTicketList(limit, offset);
+    
+    // play with limit and offset variables, execute pagers without refresh
+    // TODO: see if we could optimize this piss
+    $('#page-next').on('click', function() {
+        offset += limit;
+        populateTicketList(limit, offset);
+    });
+    $('#page-previous').on('click', function() {
+        offset -= limit;
+        populateTicketList(limit, offset);
+    });
+    
     $('#showoffer').on('click', showOwnerOffer);
     $('#showneed').on('click', showOwnerNeed);
 });
@@ -128,52 +146,47 @@ function generateListElementView(ticket) {
     return content;
 }
 
-function populateTicketList() {
+function populateTicketList(limit, offset) {
     var ticket_types = ['need', 'offer'];
     for (var type_index=0; type_index<ticket_types.length; type_index++) {
         var ticket_type = ticket_types[type_index];
-        $.getJSON('/' + ticket_type + '/list', function(tickets) {
+        var data = {};
+        if (limit) {
+            data.limit = limit;
+        }
+        if (offset) {
+            data.offset = offset;
+        }
+        $.getJSON('/' + ticket_type + '/list', data, function(tickets) {
             var tableContent = '';
-            $.each(tickets, function() {
-                tableContent += generateListElementView(this);
-                /*
-                tableContent += '<li>';
-                var tmp_type;
-                if (this.__t === 'NeedModel') {
-                    tmp_type = this.__t.substr(0,4).toLowerCase()
-                } else {
-                    tmp_type = this.__t.substr(0,5).toLowerCase()
-                }
-                tableContent += '<a href="/' + tmp_type + '/' + this._id + '", title=' + this.name + '>' + this.name + '</a>';
-                // class, actor types
-                tableContent += '<ul>';
-                for (var i=0; i<displayFields.length; i++) {
-                    tableContent += '<li>';
-                    for (key in displayFields[i]) {
-                        tableContent += displayFields[i][key] + this[key];
-                    }
-                    tableContent += '</li>'
-                }
-                tableContent += '</ul>';
-                tableContent += '<p>';
-                tableContent += cutDescription(this.description);
-                tableContent += '</p>';
-                // dates
-                tableContent += '<ul>';
-                for (var i=0; i<displayDates.length; i++) {
-                    tableContent += '<li>';
-                    for (key in displayDates[i]) {
-                        tableContent += displayDates[i][key];
-                        tableContent += $.format.date(this[key], "dd/MM/yyyy");
-                    }
-                    tableContent += '</li>';
-                }
-                tableContent += '</ul>';
-                tableContent += '</li>';
-                */
-            });
-            if ($('#' + parseUrl(this.url) + 'List table tbody').html() === '') {
-                $('#' + parseUrl(this.url) + 'List table').append(tableContent);
+            
+            // check if there are tickets
+            if (tickets.length > 0) {
+                $.each(tickets, function() {
+                    tableContent += generateListElementView(this);
+                });
+            } else {
+                tableContent += '<tr><td colspan="2"><em>No data.</em></td></tr>';
+            }
+            
+            // ticket list dom
+            var container = $('#' + parseUrl(this.url) + 'List');
+            
+            // display the list content
+            $('table tbody', container).html(tableContent);
+            
+            // toggle pager next
+            if (tickets.length < limit) {
+                $('#page-next', container).hide();
+            } else {
+                $('#page-next', container).show();
+            }
+            
+            // toggle pager previous
+            if (offset < limit) {
+                $('#page-previous', container).hide();
+            } else {
+                $('#page-previous', container).show();
             }
         });
     }

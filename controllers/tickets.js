@@ -259,9 +259,16 @@ exports.update = function(req, res) {
 
 
 exports.list = function(req, res) {
-    // TODO: pagination or limit of data size
     // This is a REST conception
     var options = { criteria: { is_active: 1 }};
+    
+    if (req.query.limit) {
+        options.limit = req.query.limit;
+    }
+    if (req.query.offset) {
+        options.offset = req.query.offset;
+    }
+    
     var dataToDisplay = {};
     if (req.params.type == 'need') {
         NeedModel.listToJson(options, function(err, items) {
