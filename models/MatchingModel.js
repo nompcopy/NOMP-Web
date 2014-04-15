@@ -38,7 +38,7 @@ MatchingModelSchema.methods = {
     },
     // TODO: I know those if statements are shit
     matchEngine: function(cb) {
-        var source_id = this.source_id
+        var source_id = this.source_id;
         var source_type = this.source_type;
 
         async.waterfall([
