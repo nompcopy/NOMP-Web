@@ -186,8 +186,6 @@ TicketModelSchema.inherits = {
 TicketModelSchema.statics = {
     // Find ticket by id
     // TODO: .populate('_user');
-    // TODO: set a variable option to decide a load of json or not
-    // TODO: id not found
     load: function(id, cb) {
         this.findOne({ _id: id }).exec(cb);
     },
@@ -243,8 +241,9 @@ TicketModelSchema.statics = {
             .exec(cb);
     },
     // Find tickets by author type and classification (matching)
-    findByActorTypeAndClassification: function(actor_id, classification_id, cb) {
-        this.find()
+    findByActorTypeAndClassification: function(actor_id, classification_id, options, cb) {
+        var criteria = options.criteria || {};
+        this.find(criteria)
             .where('classification').in(classification_id)
             .where('source_actor_type').in(actor_id)
             .exec(cb);
