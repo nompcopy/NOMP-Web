@@ -31,6 +31,7 @@ var TicketModelSchema = new Schema({
     contact_email: {type: String},
 
     quantity: {type: Number},
+
     description: {type: String},
     keywords: [{type: String}],
 
@@ -52,8 +53,9 @@ var TicketModelSchema = new Schema({
     // 0 is open, 1 in progress, 2 closed -> inactive
     statut: {type: Number, default: 0},
     reference: {type: String},
-    user: {type: Schema.ObjectId, ref: 'user'}
+    user: {type: Schema.ObjectId, ref: 'user'},
 
+    matched: {type: Array, default: []}
 });
 
 
@@ -97,6 +99,7 @@ TicketModelSchema.path('name').validate(function(name) {
         true;
     }
 }, 'Invalid title - title is too long');
+
 /**
  * Pre save
  */
@@ -190,7 +193,7 @@ TicketModelSchema.statics = {
     },
 
     loadJson: function(id, cb) {
-        this.find({ _id: id }).lean().exec(cb);
+        this.findOne({ _id: id }).lean().exec(cb);
     },
 
     // List articles
