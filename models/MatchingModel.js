@@ -106,17 +106,23 @@ function match(data, cb) {
         // Matcher a list of tickets with same classification and target actor type
         function(callback) {
             if (data.is_match) {
+                var options = {
+                    // 2: Done, 3: Closed
+                    criteria: { statut: { $nin: [2, 3] } }
+                };
                 if (data.source_type == 'offer') {
                     NeedModel.findByActorTypeAndClassification(
                         data.target_actor_type,
-                        data.classification, function(err, list) {
+                        data.classification,
+                        options, function(err, list) {
                             callback(null, data, list);
                         });
                 }
                 else if (data.source_type == 'need') {
                     OfferModel.findByActorTypeAndClassification(
                         data.target_actor_type,
-                        data.classification, function(err, list) {
+                        data.classification,
+                        options, function(err, list) {
                             callback(null, data, list);
                         });
                 }
