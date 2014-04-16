@@ -1,0 +1,2 @@
+{ "_id" : { "$oid" : "5336b94ac1bde7b41d90377a" }, "name" : "Public actor type" }
+{ "_id" : { "$oid" : "53408e2dfe74c605d53ad82c" }, "name" : "test actor type1" }

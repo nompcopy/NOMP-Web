@@ -195,7 +195,7 @@ TicketModelSchema.statics = {
     },
 
     // List articles
-    // TODO: pagination, populate(_user)
+    // TODO: populate(_user)
     list: function (options, cb) {
         var criteria = options.criteria || {};
         this.find(criteria).exec(cb);
@@ -204,7 +204,9 @@ TicketModelSchema.statics = {
     // List to Json
     listToJson: function(options, cb) {
         var criteria = options.criteria || {};
-        this.find(criteria).lean().exec(cb);
+        var limit = options.limit || 0;
+        var skip = options.offset || 0;
+        this.find(criteria).skip(skip).limit(limit).lean().exec(cb);
     },
 
     // find key in fields

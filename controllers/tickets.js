@@ -280,7 +280,14 @@ exports.list = function(req, res) {
             is_active: 1,
             target_actor_type: target_actor_type,
     }};
-
+    
+    if (req.query.limit) {
+        options.limit = req.query.limit;
+    }
+    if (req.query.offset) {
+        options.offset = req.query.offset;
+    }
+    
     if (req.params.type == 'need') {
         NeedModel.listToJson(options, function(err, items) {
             res.json(items);
@@ -329,5 +336,12 @@ exports.class_list = function(req, res) {
 exports.actor_type_list = function(req, res) {
     ActorTypeModel.listToJson(function(err, items) {
         res.json(items);
+    });
+}
+
+exports.maps = function(req, res) {
+    console.log(Object.keys(req));
+    res.render('tickets/maps', {
+        req: req
     });
 }

@@ -1,40 +1,18 @@
-extends ../../layout
+extends ./_layout
 
-block content
-  // nav tabs
-  .row(style="margin-bottom: 15px;")
-    ul.nav.nav-pills
-      li(class=ticket_type || req.route.path === '/search' ? '' : 'active')
-        a(href="/") Overview
-      li(class=ticket_type === 'need' ? 'active' : '')
-        a(href="/need") Needs
-      li(class=ticket_type === 'offer' ? 'active' : '')
-        a(href="/offer") Offers
-      - if (req.route.path === '/search')
-        li.active
-          a(href="#") Search
-      li.pull-right
-        button.btn.btn-default.link-btn(type="button")
-          a.no-underline(href="/need/new")
-            span.glyphicon.glyphicon-plus
-            | Create Need
-      li.pull-right
-        button.btn.btn-default.link-btn(type="button")
-          a.no-underline(href="/offer/new")
-            span.glyphicon.glyphicon-plus
-            | Create Offer
+block subContent
 
   .row
     - if (!ticket_type)
       .col-md-6.overview-list(style="padding-left: 0;")
-        #needList.panel.panel-default
+        .panel.panel-default(id=req.route.path === '/search' ? 'searchNeedList' : 'needList')
           .panel-heading
             block needListHeading
           table.table.table-condensed
             tbody
               block overviewNeedList
       .col-md-6.overview-list(style="padding-right: 0;")
-        #offerList.panel.panel-default
+        .panel.panel-default(id=req.route.path === '/search' ? 'searchOfferList' : 'offerList')
           .panel-heading
             block offerListHeading
           table.table.table-condensed
@@ -53,3 +31,9 @@ block content
               thead
                 block listHeader
               tbody
+            .panel-footer
+              ul.pager(style='margin: 0;')
+                li.previous
+                  a#page-previous(href='javascript:void(0)') &larr; Previous
+                li.next
+                  a#page-next(href='javascript:void(0)') Next &rarr;
