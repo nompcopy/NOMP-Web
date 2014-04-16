@@ -150,8 +150,10 @@ exports.searching = function(req, res) {
     // prepare target_actor_type
     // TODO: this is considered as public
     var target_actor_type = ['5336b94ac1bde7b41d90377a'];
-    if (req.isAuthenticated || typeof(req.user.actor_type) !== 'undefined') {
-        target_actor_type.push(req.user.actor_type);
+    if (req.isAuthenticated()) {
+        if (typeof(req.user.actor_type) !== 'undefined') {
+            target_actor_type.push(req.user.actor_type);
+        }
     }
     var query_data = {
         is_match: false,
