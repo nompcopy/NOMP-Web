@@ -3,6 +3,9 @@ var path = require('path');
 var async = require('async');
 var mongoose = require('mongoose');
 var utils = require('../lib/utils');
+
+var NeedModel = mongoose.model('NeedModel');
+var OfferModel = mongoose.model('OfferModel');
 var MatchingModel = mongoose.model('MatchingModel');
 
 
@@ -34,6 +37,81 @@ exports.matching = function(req, res) {
             res.json(results.results);
         }
     });
+}
+
+
+exports.confirm = function(req, res) {
+    // TODO: calculate quantities and remove from matching and results
+
+    // Target ticket status
+    // Delete target item from source matching results
+    // MatchingModel.retrieveByTicket(req.body.source_id, req.body.source_type, function(err, matching_results) {
+        // var item_index = utils.findItemIndexInArray(req.body.id, matching_results.results);
+        // matching_results.results.splice(item_index, 1);
+        // matching_results.save(function(err) {
+            // if (err) console.log(err);
+        // });
+    // });
+    if (req.body.ticket_type == 'need') {
+        NeedModel.load(req.body.id, function(err, ticket) {
+            if (err) console.log(err);
+            ticket.statut = 1;
+            if (ticket.matched.contains(req.body.source_id)) {
+            }
+            else {
+                ticket.matched.push(req.body.source_id);
+            }
+            ticket.save(function (err) {
+                if (err) console.log(err);
+            });
+        });
+    }
+    else {
+        OfferModel.load(req.body.id, function(err, ticket) {
+            if (err) console.log(err);
+            ticket.statut = 1;
+            if (ticket.matched.contains(req.body.source_id)) {
+            }
+            else {
+                ticket.matched.push(req.body.source_id);
+            }
+            ticket.save(function (err) {
+                if (err) console.log(err);
+            });
+        });
+    }
+
+    // Source ticket status
+    if (req.body.source_type == 'need') {
+        NeedModel.load(req.body.source_id, function(err, ticket) {
+            console.log(ticket);
+            if (err) console.log(err);
+            ticket.statut = 1;
+            if (ticket.matched.contains(req.body.source_id)) {
+            }
+            else {
+                ticket.matched.push(req.body.source_id);
+            }
+            ticket.save(function (err) {
+                if (err) console.log(err);
+            });
+        });
+    }
+    else {
+        OfferModel.load(req.body.source_id, function(err, ticket) {
+            if (err) console.log(err);
+            ticket.statut = 1;
+            if (ticket.matched.contains(req.body.source_id)) {
+            }
+            else {
+                ticket.matched.push(req.body.source_id);
+            }
+            ticket.save(function (err) {
+                if (err) console.log(err);
+            });
+        });
+    }
+    return res.redirect('/' + req.body.source_type + '/' + req.body.source_id.toString());
 }
 
 
