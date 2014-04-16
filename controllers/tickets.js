@@ -263,8 +263,10 @@ exports.list = function(req, res) {
 
     // TODO and ATTENTION: add 'public' target_actor_type._id, now I just use this
     // Attention: This is a mongoDB query, not Mongoose
-    if (req.isAuthenticated) {
-        target_actor_type = {$in: ['5336b94ac1bde7b41d90377a', req.user.actor_type]};
+    if (req.isAuthenticated()) {
+        var target_actor_type = {$in: ['5336b94ac1bde7b41d90377a', req.user.actor_type]};
+    } else {
+        var target_actor_type = {$in: ['5336b94ac1bde7b41d90377a']};
     }
     var options = {
         criteria: {
