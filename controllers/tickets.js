@@ -5,6 +5,7 @@
 var path = require('path');
 var async = require('async');
 
+var url = require('url');
 var mongoose = require('mongoose');
 var utils = require('../lib/utils');
 var TicketModel = mongoose.model('TicketModel');
@@ -149,12 +150,18 @@ exports.create = function(req, res) {
 
 exports.show = function(req, res) {
     var ticket = req.ticket;
-    return res.render('tickets/show', {
+    var render_data = {
         ticket: ticket,
         title: ticket.name,
         ticket_type: req.params.type,
         req: req
-    });
+    };
+    // Use ajax to get the content of source ticket
+    if (typeof(req.query.source_id) !== 'undefined') {
+        render_data.source_id = req.query.source_id,
+        render_data.source_type = req.query.source_type
+    }
+    return res.render('tickets/show', render_data);
 };
 
 exports.edit = function(req, res) {
@@ -259,8 +266,20 @@ exports.update = function(req, res) {
 
 
 exports.list = function(req, res) {
-    // This is a REST conception
-    var options = { criteria: { is_active: 1 }};
+    // TODO: pagination or limit of data size
+
+    // TODO and ATTENTION: add 'public' target_actor_type._id, now I just use this
+    // Attention: This is a mongoDB query, not Mongoose
+    if (req.isAuthenticated()) {
+        var target_actor_type = {$in: ['5336b94ac1bde7b41d90377a', req.user.actor_type]};
+    } else {
+        var target_actor_type = {$in: ['5336b94ac1bde7b41d90377a']};
+    }
+    var options = {
+        criteria: {
+            is_active: 1,
+            target_actor_type: target_actor_type,
+    }};
     
     if (req.query.limit) {
         options.limit = req.query.limit;
@@ -269,7 +288,6 @@ exports.list = function(req, res) {
         options.offset = req.query.offset;
     }
     
-    var dataToDisplay = {};
     if (req.params.type == 'need') {
         NeedModel.listToJson(options, function(err, items) {
             res.json(items);
@@ -280,8 +298,18 @@ exports.list = function(req, res) {
             res.json(items);
         });
     }
-    else {
-        //TODO, 404 or redirection
+}
+
+exports.showJson = function(req, res) {
+    if (req.params.type == 'need') {
+        NeedModel.loadJson(req.params.ticketId, function(err, item) {
+            res.json(item);
+        });
+    }
+    else if (req.params.type == 'offer') {
+        OfferModel.loadJson(req.params.ticketId, function(err, item) {
+            res.json(item);
+        });
     }
 }
 

@@ -92,6 +92,7 @@ module.exports = function (app, passport, config) {
     app.post('/:type(need|offer|ticket)/create', tickets.create);
 
     app.get('/:type(need|offer)/:ticketId', tickets.show);
+    app.get('/:type(need|offer)/:ticketId/json', tickets.showJson);
     app.param('ticketId', tickets.load);
 
     app.post('/ticket/edit', tickets.edit)
@@ -106,6 +107,9 @@ module.exports = function (app, passport, config) {
  */
     app.get('/:type(need|offer)/matching/:ticketId', matchs.matching);
     app.get('/search', matchs.searching);
+    app.post('/matching/confirm', matchs.confirm);
+    // I just left this routes for execute script, we run it after the environment is done
+    app.get('/matching/update', matchs.matching_update);
 /*
  * Import and Export
  */

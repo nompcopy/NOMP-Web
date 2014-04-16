@@ -31,6 +31,7 @@ var TicketModelSchema = new Schema({
     contact_email: {type: String},
 
     quantity: {type: Number},
+
     description: {type: String},
     keywords: [{type: String}],
 
@@ -52,7 +53,9 @@ var TicketModelSchema = new Schema({
     // 0 is open, 1 in progress, 2 closed -> inactive
     statut: {type: Number, default: 0},
     reference: {type: String},
-    user: {type: Schema.ObjectId, ref: 'user'}
+    user: {type: Schema.ObjectId, ref: 'user'},
+
+    matched: {type: Array, default: []}
 });
 
 
@@ -96,6 +99,7 @@ TicketModelSchema.path('name').validate(function(name) {
         true;
     }
 }, 'Invalid title - title is too long');
+
 /**
  * Pre save
  */
@@ -182,14 +186,12 @@ TicketModelSchema.inherits = {
 TicketModelSchema.statics = {
     // Find ticket by id
     // TODO: .populate('_user');
-    // TODO: set a variable option to decide a load of json or not
-    // TODO: id not found
     load: function(id, cb) {
         this.findOne({ _id: id }).exec(cb);
     },
 
     loadJson: function(id, cb) {
-        this.find({ _id: id }).lean().exec(cb);
+        this.findOne({ _id: id }).lean().exec(cb);
     },
 
     // List articles
@@ -226,26 +228,32 @@ TicketModelSchema.statics = {
     // Find tickets by classification_id
     findByClassification: function(classification_id, cb) {
         this.find()
-            .where('classification').equals(classification_id)
+            .where('classification').in(classification_id)
             .exec(cb);
     },
     // Find tickets by author type id
-    findByActorType: function(actor_id, cb) {
+    findBySourceActorType: function(actor_id, cb) {
         this.find()
-            .where('source_actor_type').equals(actor_id)
+            .where('source_actor_type').in(actor_id)
+            .exec(cb);
+    },
+    findByTargetActorType: function(actor_id, cb) {
+        this.find()
+            .where('target_actor_type').in(actor_id)
             .exec(cb);
     },
     // Find tickets by author type and classification (matching)
-    findByActorTypeAndClassification: function(actor_id, classification_id, cb) {
-        this.find()
-            .where('classification').equals(classification_id)
-            .where('source_actor_type').equals(actor_id)
+    findByActorTypeAndClassification: function(actor_id, classification_id, options, cb) {
+        var criteria = options.criteria || {};
+        this.find(criteria)
+            .where('classification').in(classification_id)
+            .where('source_actor_type').in(actor_id)
             .exec(cb);
     },
     findIdByActorTypeAndClassification: function(actor_id, classification_id, cb) {
         this.find()
-            .where('classification').equals(classification_id)
-            .where('source_actor_type').equals(actor_id)
+            .where('classification').in(classification_id)
+            .where('source_actor_type').in(actor_id)
             .exec(cb);
     },
     findTicketByReference: function(ref, cb) {

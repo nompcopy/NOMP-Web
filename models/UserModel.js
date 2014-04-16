@@ -2,13 +2,14 @@
 var crypto = require('crypto');
 var mongoose = require('mongoose');
 var Schema = mongoose.Schema;
-
+var ObjectId = Schema.ObjectId;
 var oAuthTypes = ['github', 'twitter', 'facebook', 'google', 'linkedin'];
 
 // UserModelSchema
 var UserModelSchema = new Schema({
     name: {type: String, default: '', trim: true},
     email: {type: String, default: '', trim: true},
+    actor_type: {type: Schema.ObjectId, ref: 'actor_source_type'},
     provider: {type: String, default: ''},
     username: {type: String, default: '', trim: true},
     hashed_password: {type: String, default: ''},
@@ -84,7 +85,12 @@ UserModelSchema.path('hashed_password').validate(function (hashed_password) {
     return hashed_password.length;
 }, 'Password cannot be blank');
 
-
+UserModelSchema.path('actor_type').validate(function (actor_type) {
+    if (this.doesNotRequireValidation()) {
+        return true;
+    }
+    return actor_type.length;
+}, 'Identity cannot be blank');
 /*
  * Pre-save
  */

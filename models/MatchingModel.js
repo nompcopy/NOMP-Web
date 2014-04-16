@@ -33,7 +33,6 @@ MatchingModelSchema.methods = {
         }
         this.save(cb);
     },
-    // TODO: With Matching Engine, we have the possibility of a search advanced
     searchEngine: function(data, cb) {
         match(data, cb);
     },
@@ -41,6 +40,7 @@ MatchingModelSchema.methods = {
     matchEngine: function(cb) {
         var source_id = this.source_id;
         var source_type = this.source_type;
+
         async.waterfall([
             function(callback) {
                 if (source_type == 'need') {
@@ -48,8 +48,8 @@ MatchingModelSchema.methods = {
                         // Prepare data
                         var data = {
                             keywords: ticket.keywords,
-                            classification: ticket.classification,
-                            target_actor_type: ticket.target_actor_type,
+                            classification: [ticket.classification],
+                            target_actor_type: [ticket.target_actor_type],
                             source_type: source_type,
                             // TODO, may use google location or latitude longitude data
                             location: ticket.address,
@@ -67,8 +67,8 @@ MatchingModelSchema.methods = {
                         // Prepare data
                         var data = {
                             keywords: ticket.keywords,
-                            classification: ticket.classification,
-                            target_actor_type: ticket.target_actor_type,
+                            classification: [ticket.classification],
+                            target_actor_type: [ticket.target_actor_type],
                             source_type: source_type,
                             location: ticket.address,
                             is_match: true,
@@ -90,6 +90,9 @@ MatchingModelSchema.statics = {
     load: function(id, cb) {
         this.findOne({ _id: id }).exec(cb);
     },
+    list: function(cb) {
+        this.find().exec(cb);
+    },
     retrieveByTicket: function(ticket_id, ticket_type, cb) {
         this.findOne({
             source_id: ticket_id,
@@ -103,30 +106,65 @@ function match(data, cb) {
         // Matcher a list of tickets with same classification and target actor type
         function(callback) {
             if (data.is_match) {
+                var options = {
+                    // 2: Done, 3: Closed
+                    criteria: { statut: { $nin: [2, 3] } }
+                };
                 if (data.source_type == 'offer') {
-                    NeedModel.findIdByActorTypeAndClassification(
+                    NeedModel.findByActorTypeAndClassification(
                         data.target_actor_type,
-                        data.classification, function(err, list) {
+                        data.classification,
+                        options, function(err, list) {
                             callback(null, data, list);
                         });
                 }
                 else if (data.source_type == 'need') {
-                    OfferModel.findIdByActorTypeAndClassification(
+                    OfferModel.findByActorTypeAndClassification(
                         data.target_actor_type,
-                        data.classification, function(err, list) {
+                        data.classification,
+                        options, function(err, list) {
                             callback(null, data, list);
                         });
                 }
             }
             else {
-                callback(null, data, null);
+                async.waterfall([
+                    function(list_callback) {
+                        NeedModel.findByTargetActorType(
+                            data.target_actor_type, function(err, need_list) {
+                            if (need_list) {
+                                list_callback(null, data, need_list);
+                            }
+                            else {
+                                list_callback(null, data, []);
+                            }
+                        });
+                    },
+                    function(data, need_list, list_callback) {
+                        OfferModel.findByTargetActorType(
+                            data.target_actor_type, function(err, offer_list) {
+                                if (offer_list) {
+                                    list_callback(null, data, need_list.concat(offer_list));
+                                } else {
+                                    list_callback(null, data, need_list);
+                                }
+                            });
+                    }
+                ], function(err, data, list) {
+                    callback(null, data, list);
+                });
             }
         },
         // Find keywords in the list
         function(data, list, callback) {
-            searchKeyWords(data, list, function(err, search_score_results) {
-                callback(null, data, search_score_results);
-            });
+            if (list.length === 0) {
+                callback(null, data, list);
+            }
+            else {
+                searchKeyWords(data, list, function(err, search_score_results) {
+                    callback(null, data, search_score_results);
+                });
+            }
         },
         // Compute Distance score
         // We can put it before the search, with elimination of K value
