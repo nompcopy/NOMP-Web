@@ -119,4 +119,9 @@ module.exports = function (app, passport, config) {
     app.get('/classification/list', tickets.class_list);
     // actor type list
     app.get('/actortype/list', tickets.actor_type_list);
+    
+    // section of geomaps, development only for now
+    if ('development' == app.get('env')) {
+        app.get('/maps', tickets.maps)
+    }
 };
