@@ -84,7 +84,6 @@ exports.confirm = function(req, res) {
     // Source ticket status
     if (req.body.source_type == 'need') {
         NeedModel.load(req.body.source_id, function(err, ticket) {
-            console.log(ticket);
             if (err) console.log(err);
             ticket.statut = 1;
             if (ticket.matched.contains(req.body.source_id)) {
