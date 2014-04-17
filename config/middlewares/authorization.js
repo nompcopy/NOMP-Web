@@ -33,8 +33,9 @@ exports.user = {
         if (req.user.email !== 'admin@nomp.fr') {
             req.flash('warning', 'You are not authorized');
             req.logout();
-            return res.redirect('/admin/');
+            return res.redirect('/');
         }
+        req.session.admin = true;
         next();
     }
 }

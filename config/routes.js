@@ -90,8 +90,8 @@ module.exports = function (app, passport, config) {
      * Ticket routes
      * Use Regex in order to deal with need and offer at same time
      */
-    app.get('/:admin?/', cleanReturnUrl, tickets.index);
-    app.get('/:admin?/:type(need|offer)', cleanReturnUrl, tickets.index);
+    app.get('/', cleanReturnUrl, tickets.index);
+    app.get('/:type(need|offer)', cleanReturnUrl, tickets.index);
 
     app.get('/:type(need|offer)/new', cleanReturnUrl, tickets.new);
     app.post('/:type(need|offer|ticket)/create', tickets.create);
@@ -102,8 +102,8 @@ module.exports = function (app, passport, config) {
 
     app.post('/ticket/edit', tickets.edit)
     app.post('/:type(need|offer)/:ticketId/edit', tickets.edit);
-    app.delete('/:admin?/:type(need|offer)/:ticketId/delete', ticketAuth, tickets.delete);
-    app.get('/:admin?/:type(need|offer)/:ticketId/edit', ticketAuth, tickets.edit);
+    app.delete('/:type(need|offer)/:ticketId/delete', ticketAuth, tickets.delete);
+    app.get('/:type(need|offer)/:ticketId/edit', ticketAuth, tickets.edit);
     // update
     app.put('/:type(need|offer)/:ticketId', tickets.update);
 
@@ -111,7 +111,7 @@ module.exports = function (app, passport, config) {
  * Matching and Searching
  */
     app.get('/:type(need|offer)/matching/:ticketId', matchs.matching);
-    app.get('/:admin?/search', matchs.searching);
+    app.get('/search', matchs.searching);
     app.post('/matching/confirm', matchs.confirm);
     // I just left this routes for execute script, we run it after the environment is done
     app.get('/matching/update', matchs.matching_update);
