@@ -57,6 +57,7 @@ exports.signup = function(req, res) {
  */
 exports.logout = function(req, res) {
     req.session.returnTo = null;
+    req.session.admin = false;
     req.logout();
     res.redirect('/');
 }
