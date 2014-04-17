@@ -28,6 +28,14 @@ exports.user = {
           return res.redirect('/user/' + req.profile.id);
       }
       next();
+    },
+    isAdmin: function(req, res, next) {
+        if (req.user.email !== 'admin@nomp.fr') {
+            req.flash('warning', 'You are not authorized');
+            req.logout();
+            return res.redirect('/admin/');
+        }
+        next();
     }
 }
 
