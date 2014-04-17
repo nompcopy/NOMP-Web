@@ -23,7 +23,10 @@ exports.export = function(req, res) {
     var ref = utils.makeRef();
     var file_url = '/tmp_files/' + ticket_type + '_' + ref + '_list.xlsx';
     var file_dir = './public/tmp_files/' + ticket_type + '_' + ref + '_list.xlsx';
-    var options = { criteria: { user: req.user._id } };
+    var options = {};
+    if (!req.session.admin) {
+        options.criteria = { user: req.user._id };
+    }
     //Make excel file
     var exportation = new ParseExcel({
         file: file_dir,

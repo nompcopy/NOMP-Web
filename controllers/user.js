@@ -15,7 +15,7 @@ var login = function (req, res) {
         delete req.session.returnTo
         return
     }
-  res.redirect('/')
+    res.redirect('/')
 };
 
 /*
@@ -57,6 +57,7 @@ exports.signup = function(req, res) {
  */
 exports.logout = function(req, res) {
     req.session.returnTo = null;
+    req.session.admin = false;
     req.logout();
     res.redirect('/');
 }

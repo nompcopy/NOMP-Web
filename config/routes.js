@@ -4,7 +4,7 @@
 var path = require('path');
 var mongoose = require('mongoose');
 
-var routes = require('../controllers/index');
+// var routes = require('../controllers/index');
 var tickets = require('../controllers/tickets');
 var user = require('../controllers/user');
 var matchs = require('../controllers/matchs');
@@ -14,6 +14,7 @@ var auth = require('./middlewares/authorization');
 /*
  * Route middlewares
  */
+var adminAuth = [auth.requiresLogin, auth.user.isAdmin];
 var listAuth = [auth.requiresLogin];
 var globalAuth = [auth.requiresLogin];
 var ticketAuth = [auth.requiresLogin, auth.ticket.hasAuthorization];
@@ -22,6 +23,10 @@ var cleanReturnUrl = [auth.clearReturnTo];
  * Routes
  */
 module.exports = function (app, passport, config) {
+    /*
+     * Admin routes
+     */
+    app.get('/admin*', adminAuth);
     /*
      * User routes
      */
