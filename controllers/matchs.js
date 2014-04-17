@@ -147,19 +147,27 @@ exports.matching_update = function(req, res) {
 exports.searching = function(req, res) {
     var m = new MatchingModel();
 
+    var query_data = {
+        is_match: false,
+        keywords: utils.generateKeywords(req.query.keywords),
+    };
     // prepare target_actor_type
     // TODO: this is considered as public
-    var target_actor_type = ['5336b94ac1bde7b41d90377a'];
-    if (req.isAuthenticated()) {
+    var target_actor_type = [];
+    if (req.isAuthenticated() && req.session.admin) {
+        // Do nothing
+    }
+    else if (req.isAuthenticated()) {
+        target_actor_type.push('5336b94ac1bde7b41d90377a');
         if (typeof(req.user.actor_type) !== 'undefined') {
             target_actor_type.push(req.user.actor_type);
         }
     }
-    var query_data = {
-        is_match: false,
-        keywords: utils.generateKeywords(req.query.keywords),
-        target_actor_type: target_actor_type
-    };
+    else {
+        target_actor_type.push('5336b94ac1bde7b41d90377a');
+    }
+    query_data.target_actor_type = target_actor_type;
+
     m.searchEngine(query_data, function(err, results) {
         // seperate the results into 2 collections: need and offer
         var needs = [];
