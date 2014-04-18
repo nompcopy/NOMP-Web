@@ -150,12 +150,13 @@ exports.searching = function(req, res) {
     var query_data = {
         is_match: false,
         keywords: utils.generateKeywords(req.query.keywords),
+        is_admin: false
     };
     // prepare target_actor_type
     // TODO: this is considered as public
     var target_actor_type = [];
     if (req.isAuthenticated() && req.session.admin) {
-        // Do nothing
+        query_data.is_admin = true;
     }
     else if (req.isAuthenticated()) {
         target_actor_type.push('5336b94ac1bde7b41d90377a');
