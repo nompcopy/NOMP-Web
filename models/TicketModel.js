@@ -237,8 +237,9 @@ TicketModelSchema.statics = {
             .where('source_actor_type').in(actor_id)
             .exec(cb);
     },
-    findByTargetActorType: function(actor_id, cb) {
-        var query = this.find();
+    findByTargetActorType: function(actor_id, options, cb) {
+        var criteria = options.criteria || {};
+        var query = this.find(criteria);
         if (actor_id.length > 0) {
             query.where('target_actor_type').in(actor_id);
         }

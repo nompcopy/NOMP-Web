@@ -108,7 +108,10 @@ function match(data, cb) {
             if (data.is_match) {
                 var options = {
                     // 2: Done, 3: Closed
-                    criteria: { statut: { $nin: [2, 3] } }
+                    criteria: {
+                        statut: { $nin: [0, 1] },
+                        is_active: 1
+                    }
                 };
                 if (data.source_type == 'offer') {
                     NeedModel.findByActorTypeAndClassification(
@@ -130,8 +133,16 @@ function match(data, cb) {
             else {
                 async.waterfall([
                     function(list_callback) {
+                        var options = {};
+                        if (data.is_admin) {
+                            options.criteria = { is_active: { $in: [0, 1] } };
+                        }
+                        else {
+                            options.criteria = { is_active: 1 };
+                        }
                         NeedModel.findByTargetActorType(
-                            data.target_actor_type, function(err, need_list) {
+                            data.target_actor_type,
+                            options, function(err, need_list) {
                             if (need_list) {
                                 list_callback(null, data, need_list);
                             }
@@ -141,8 +152,16 @@ function match(data, cb) {
                         });
                     },
                     function(data, need_list, list_callback) {
+                        var options = {};
+                        if (data.is_admin) {
+                            options.criteria = { is_active: { $in: [0, 1] } };
+                        }
+                        else {
+                            options.criteria = { is_active: 1 };
+                        }
                         OfferModel.findByTargetActorType(
-                            data.target_actor_type, function(err, offer_list) {
+                            data.target_actor_type,
+                            options, function(err, offer_list) {
                                 if (offer_list) {
                                     list_callback(null, data, need_list.concat(offer_list));
                                 } else {
