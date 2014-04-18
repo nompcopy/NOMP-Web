@@ -213,21 +213,29 @@ function populateTicketList(limit, offset, classification) {
             data.offset = offset;
         }
         var ticket_list_url = '/' + ticket_type + '/list';
-        if (classification) {
-            ticket_list_url += '?classification=' + classification;
-        }
+
         $.getJSON(ticket_list_url, data, function(tickets) {
             var tableContent = '';
-            
+            var haveContent = false;
             // check if there are tickets
             if (tickets.length > 0) {
                 $.each(tickets, function() {
-                    tableContent += generateListElementView(this);
+                    if (classification) {
+                        if (this.classification.toString() == classification.toString()) {
+                            tableContent += generateListElementView(this);
+                            haveContent = true;
+                        }
+                    }
+                    else {
+                        tableContent += generateListElementView(this);
+                        haveContent = true;
+                    }
                 });
-            } else {
+            }
+            if (!haveContent) {
                 tableContent += '<tr><td colspan="2"><em>No data.</em></td></tr>';
             }
-            
+
             // ticket list dom
             var container = $('#' + parseUrl(this.url) + 'List');
             
