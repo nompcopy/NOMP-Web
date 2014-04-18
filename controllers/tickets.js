@@ -5,7 +5,6 @@
 var path = require('path');
 var async = require('async');
 
-var url = require('url');
 var mongoose = require('mongoose');
 var utils = require('../lib/utils');
 var TicketModel = mongoose.model('TicketModel');
@@ -267,7 +266,6 @@ exports.update = function(req, res) {
 
 exports.list = function(req, res) {
     // TODO: pagination or limit of data size
-
     var options = {
         criteria: {
             is_active: 1,
@@ -284,14 +282,17 @@ exports.list = function(req, res) {
         options.criteria.target_actor_type = {$in: ['5336b94ac1bde7b41d90377a']};
     }
 
-    
+    // Prepare query params
     if (req.query.limit) {
         options.limit = req.query.limit;
     }
     if (req.query.offset) {
         options.offset = req.query.offset;
     }
-    
+    if (req.query.classification) {
+        options.criteria.classification = req.query.classification;
+    }
+
     if (req.params.type == 'need') {
         NeedModel.listToJson(options, function(err, items) {
             res.json(items);

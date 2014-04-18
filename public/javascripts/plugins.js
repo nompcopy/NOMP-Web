@@ -3,33 +3,57 @@ var classificationData = [];
 $(document).ready(function() {
     populateClassificationList();
     populateActorTypeList();
-    
+    // TODO: re-design structure
+    populateClassificationFilter();
     // default limit and offset
     var limit = 5;
     var offset = 0;
-    
+
     // first display on page loaded
-    populateTicketList(limit, offset);
-    
+    populateTicketList(limit, offset, false);
+    $('#classificationFilter').on('click', 'a', setFilterClassification);
+
     // play with limit and offset variables, execute pagers without refresh
     // TODO: see if we could optimize this piss
     $('#page-next').on('click', function() {
         offset += limit;
-        populateTicketList(limit, offset);
+        populateTicketList(limit, offset, false);
     });
     $('#page-previous').on('click', function() {
         offset -= limit;
-        populateTicketList(limit, offset);
+        populateTicketList(limit, offset, false);
     });
 
     populateMatchingResults();
-    populateTicket();
+    populateSourceTicketData();
     $('#showoffer').on('click', showOwnerOffer);
     $('#showneed').on('click', showOwnerNeed);
 });
 
 
-function populateTicket() {
+function setFilterClassification(event) {
+    var limit = 5;
+    var offset = 0;
+    event.preventDefault();
+    populateTicketList(limit, offset, $(this).attr('rel'));
+}
+
+function populateClassificationFilter() {
+    var tableContent = '';
+    tableContent += '<a href="#" ref=""><b>All</b></a>';
+    $.getJSON('/classification/list', function(classification) {
+        $.each(classification, function() {
+            tableContent += '<li>';
+            tableContent += '<a href="#" rel="' + this._id + '">';
+            tableContent += this.name;
+            tableContent += '</a>'
+            tableContent += '</li>';
+        });
+        $('#classificationFilter').html(tableContent);
+    });
+}
+
+function populateSourceTicketData() {
     var content = '';
     var source_ticket_json_url = $('#source_ticket').attr('for');
     $.getJSON(source_ticket_json_url, function(ticket) {
@@ -177,7 +201,7 @@ function generateListElementView(ticket) {
     return content;
 }
 
-function populateTicketList(limit, offset) {
+function populateTicketList(limit, offset, classification) {
     var ticket_types = ['need', 'offer'];
     for (var type_index=0; type_index<ticket_types.length; type_index++) {
         var ticket_type = ticket_types[type_index];
@@ -188,7 +212,11 @@ function populateTicketList(limit, offset) {
         if (offset) {
             data.offset = offset;
         }
-        $.getJSON('/' + ticket_type + '/list', data, function(tickets) {
+        var ticket_list_url = '/' + ticket_type + '/list';
+        if (classification) {
+            ticket_list_url += '?classification=' + classification;
+        }
+        $.getJSON(ticket_list_url, data, function(tickets) {
             var tableContent = '';
             
             // check if there are tickets
