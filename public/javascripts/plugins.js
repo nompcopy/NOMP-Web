@@ -30,6 +30,10 @@ $(document).ready(function() {
     populateMatchingResults();
     populateSourceTicketData();
 
+    var browserInfo = navigator.userAgent.toLowerCase();
+    if (browserInfo.indexOf('firefox') > -1 || browserInfo.indexOf('MSIE') > -1) {
+      $('.input-date').datepicker();
+    }
 });
 
 
@@ -69,19 +73,21 @@ function populateSourceTicketData() {
 function populateMatchingResults() {
     var content = '';
     var matching_json_url = $('#matching_results_label').attr('for');
-    var tmp_url = matching_json_url.split('/');
-    var source_id = tmp_url[tmp_url.length - 1];
-    var source_type = tmp_url[1];
+    if (matching_json_url !== undefined) {
+      var tmp_url = matching_json_url.split('/');
+      var source_id = tmp_url[tmp_url.length - 1];
+      var source_type = tmp_url[1];
 
-    $.getJSON(matching_json_url, function(matching_results) {
-        $.each(matching_results, function() {
-            var ticket_type = getTicketType(this.ticket);
-            var ticket_url = '/' + ticket_type + '/' + this.ticket._id;
-            content += '<a class="list-ticket-title" href="' + ticket_url + '?source_id=' + source_id + '&source_type=' + source_type +  '" title="' + this.ticket.name + '"><strong>' + cutName(this.ticket.name) + '</strong></a>';
-            content += '<br>';
-        });
-        $('#matching_results_label').html(content);
-    });
+      $.getJSON(matching_json_url, function(matching_results) {
+          $.each(matching_results, function() {
+              var ticket_type = getTicketType(this.ticket);
+              var ticket_url = '/' + ticket_type + '/' + this.ticket._id;
+              content += '<a class="list-ticket-title" href="' + ticket_url + '?source_id=' + source_id + '&source_type=' + source_type +  '" title="' + this.ticket.name + '"><strong>' + cutName(this.ticket.name) + '</strong></a>';
+              content += '<br>';
+          });
+          $('#matching_results_label').html(content);
+      });
+    }
 }
 
 

@@ -6,6 +6,7 @@ block content
   - var delete_url = '/' + ticket_type + '/' + ticket._id + '/delete'
   - var price_key = ticket_type === 'need' ? 'budget' : 'cost'
   - var price_value = ticket_type === 'need' ? ticket.budget : ticket.cost
+  - var price_value = price_value === undefined ? 0 : price_value
 
     .panel.panel-primary
 
