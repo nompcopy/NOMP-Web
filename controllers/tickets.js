@@ -239,11 +239,12 @@ exports.update = function(req, res) {
     }
 
     req = feedClassAndActorType(req);
-
+    req.body.update_date = Date.now();
     ticket.update(req.body, function(err) {
         if (!err) {
             return res.redirect('/' + ticket_type + '/' + ticket._id);
         }
+        console.log(err);
         return res.render('tickets/form', {
             error: utils.errors(err.errors),
             ticket: ticket,
@@ -358,7 +359,7 @@ var feedClassAndActorType = function(req) {
     req.body.target_actor_type_name = tmp_target_actor_type.name;
 
     // fetch actor type
-    if (req.isAuthenticated()) {
+    if (req.isAuthenticated() && !req.session.admin) {
         req.body.source_actor_type = req.user.actor_type;
         req.body.source_actor_type_name = req.user.actor_type_name;
     }
@@ -366,7 +367,7 @@ var feedClassAndActorType = function(req) {
         // TODO: public actor type
         // TODO: optimize this shit
         req.body.source_actor_type = '5336b94ac1bde7b41d90377a';
-        req.body.source_actor_type = 'Public actor type';
+        req.body.source_actor_type_name = 'Public actor type';
     }
     return req;
 }

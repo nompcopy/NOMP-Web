@@ -47,6 +47,7 @@ var TicketModelSchema = new Schema({
     end_date: {type: Date, default: addDate()},
     start_date: {type: Date, default: Date.now},
     expiration_date: {type: Date, default: addDate()},
+    update_date: {type: Date, default: Date.now},
 
     // 1 is active and 0 is inactive
     is_active: {type: Number, default: 1},
