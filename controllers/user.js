@@ -75,6 +75,7 @@ exports.create = function(req, res) {
     // fetch actor_type
     var tmp_actor_type = JSON.parse(req.body.actor_type);
     req.body.actor_type = tmp_actor_type.id;
+    req.body.actor_type_name = tmp_actor_type.name;
 
     var user = new UserModel(req.body);
     user.provider = 'local';
