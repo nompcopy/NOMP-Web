@@ -107,9 +107,9 @@ function match(data, cb) {
         function(callback) {
             if (data.is_match) {
                 var options = {
-                    // 2: Done, 3: Closed
+                    // NOT IN - 2: Done, 3: Closed
                     criteria: {
-                        statut: { $nin: [0, 1] },
+                        statut: { $nin: [2, 3] },
                         is_active: 1
                     }
                 };
