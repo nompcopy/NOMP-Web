@@ -4,6 +4,9 @@ block content
   - var action = '/' + post_action
   //- var delete_url = '/' + post_action + '/delete'
   - var delete_url = '/' + ticket_type + '/' + ticket._id + '/delete'
+  - var price_key = ticket_type === 'need' ? 'budget' : 'cost'
+  - var price_value = ticket_type === 'need' ? ticket.budget : ticket.cost
+  - var price_value = price_value === undefined ? 0 : price_value
 
     .panel.panel-primary
 
@@ -21,42 +24,81 @@ block content
           input(type='hidden', name='ticket_type', value=ticket_type)
           - if (!ticket.isNew)
             input(type='hidden', name='_method', value='PUT')
-          .form-group
-            label(for="name")= ticket_type + ' title'
-            input#name.form-control(type='text', name='name', placeholder='Title', value=ticket.name)
-          .form-group
-            label(for="classification") Choose class
-            select.form-control(name='classification')#classificationList
-          //.form-group
-            //label(for="source_actor_type") Source actor
-            //select.form-control(name='source_actor_type')#actorTypeSourceList
-          .form-group
-            label(for="target_actor_type") Target actor
-            select.form-control(name='target_actor_type')#actorTypeTargetList
-          .form-group
-            label(for="address") Address
-            input#address.form-control(type='text', name='address', placeholder='Address', value=ticket.address)
-          .form-group
-            label(for="description") Description
-            textarea#description.form-control(name='description', placeholder='Describe your ' + ticket_type, rows=20) #{ticket.description}
-          .form-group
-            label(for="image") Images
-            .row
-              -for (var i = 0; i < 3; i++)
-                .col-sm-6.col-md-4.fileinput.fileinput-new(data-provides="fileinput")
-                  .thumbnail.fileinput-new(style="width: 100%;")
-                    img(data-src="holder.js/300x200/text:photo-preview")
-                  .thumbnail.fileinput-preview.fileinput-exists(style="max-width: 100%;")
-                  div
-                    label.col-sm-6.col-md-8= i == 0 ? 'Main photo' : 'Photo' + i
-                    button.close.fileinput-exists.pull-right(type="button", aria-hidden="true", data-dismiss="fileinput") &times;
-                    input.btn.btn-default.btn-file.form-control(type="file", name="image[]", accept="image/png, image/gif, image/jpg, image/jpeg")
-                    a.sr-only.btn.btn-danger.pull-right.fileinput-exists(href="#", data-dismiss="fileinput") Remove
-          .form-group
-            button#btnNewUser.btn.btn-primary(type='submit') Submit
-            -if (!ticket.isNew)
-              //need to change the method to "delete" to respect REST (also in router and controllers)
-              button.btn.btn-danger(type='button', data-toggle='modal', data-target='#ticket-delete-alert', style='margin-left: 15px;') Delete
+          .col-md-6
+            fieldset.ticket-info
+              legend Basic
+              .col-md-12
+                .form-group
+                  label(for="name")= ticket_type + ' title'
+                  input#name.form-control(type='text', name='name', placeholder='Title', value=ticket.name, required)
+                .form-group
+                  label(for="classification") Choose class
+                  select.form-control(name='classification')#classificationList
+                .form-group
+                  label(for="target_actor_type") Target actor
+                  select.form-control(name='target_actor_type')#actorTypeTargetList
+                .form-group
+                  label(for="address") Address
+                  input#address.form-control(type='text', name='address', placeholder='Address', value=ticket.address, required)
+          .col-md-6
+            fieldset.ticket-info
+              legend Availability
+              .col-md-12
+                .form-group
+                  label(for="start_date") From
+                  input#start_date.form-control.input-date(type='date', name='start_date', placeholder='From', value=ticket.start_date, required)
+                .form-group
+                  label(for="end_date") To
+                  input#end_date.form-control.input-date(type='date', name='end_date', placeholder='To', value=ticket.end_date, required)
+                .form-group
+                  label(for="quantity") Quantity
+                  input#quantity.form-control(type='number', name='quantity', placeholder='Quantity', value=ticket.quantity, min='1', required)
+                .form-group
+                  label(for="#{price_key}")= price_key
+                  input.form-control(type='number', id='#{price_key}', name='#{price_key}', placeholder='#{price_key}', value='#{price_value}', min='0')
+          .col-md-12
+            fieldset.ticket-info
+              legend Details
+              .col-md-12
+                .form-group
+                  label(for="description") Description
+                  textarea#description.form-control(name='description', placeholder='Describe your ' + ticket_type, rows=20) #{ticket.description}
+                .form-group
+                  label(for="image") Images
+                  .row
+                    -for (var i = 0; i < 3; i++)
+                      .col-sm-6.col-md-4.fileinput.fileinput-new(data-provides="fileinput")
+                        .thumbnail.fileinput-new(style="width: 100%;")
+                          img(data-src="holder.js/300x200/text:photo-preview")
+                        .thumbnail.fileinput-preview.fileinput-exists(style="max-width: 100%;")
+                        div
+                          label.col-sm-6.col-md-8= i == 0 ? 'Main photo' : 'Photo' + i
+                          button.close.fileinput-exists.pull-right(type="button", aria-hidden="true", data-dismiss="fileinput") &times;
+                          input.btn.btn-default.btn-file.form-control(type="file", name="image[]", accept="image/png, image/gif, image/jpg, image/jpeg")
+                          a.sr-only.btn.btn-danger.pull-right.fileinput-exists(href="#", data-dismiss="fileinput") Remove
+          - if (!req.user)
+            .col-md-12
+              fieldset.ticket-info
+                legend Contact
+                .col-md-12
+                  .form-group
+                    label(for="contact_name") Contact name
+                    input#contact_name.form-control(type='text', name='contact_name', placeholder='Contact name', value=ticket.contact_name)
+                  .form-group
+                    label(for="contact_email") Email
+                    input#contact_email.form-control(type='email', name='contact_email', placeholder='Email', value=ticket.contact_email, required)
+                  .form-group
+                    label(for="contact_phone") Phone no.
+                    input#contact_phone.form-control(type='text', name='contact_phone', placeholder='Telephone number', value=ticket.contact_phone)
+                  .form-group
+                    label(for="contact_mobile") Mobile no.
+                    input#contact_mobile.form-control(type='text', name='contact_mobile', placeholder='Mobile number', value=ticket.contact_mobile)
+          .col-md-12
+            .form-group
+              button#btnNewUser.btn.btn-primary(type='submit') Submit
+              -if (!ticket.isNew)
+                //need to change the method to "delete" to respect REST (also in router and controllers)
+                button.btn.btn-danger(type='button', data-toggle='modal', data-target='#ticket-delete-alert', style='margin-left: 15px;') Delete
         
         // delete ticket alert
         -if (!ticket.isNew)
