@@ -10,6 +10,7 @@ var UserModelSchema = new Schema({
     name: {type: String, default: '', trim: true},
     email: {type: String, default: '', trim: true},
     actor_type: {type: Schema.ObjectId, ref: 'actor_source_type'},
+    actor_type_name: {type: String},
     provider: {type: String, default: ''},
     username: {type: String, default: '', trim: true},
     hashed_password: {type: String, default: ''},
