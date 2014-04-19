@@ -5,6 +5,7 @@ $(document).ready(function() {
     populateActorTypeList();
     // TODO: re-design structure
     populateClassificationFilter();
+    populateSourceActorTypeFilter();
     // default limit and offset
     var limit = 5;
     var offset = 0;
@@ -12,7 +13,7 @@ $(document).ready(function() {
     // first display on page loaded
     populateTicketList(limit, offset, false);
     $('#classificationFilter').on('click', 'a', setFilterClassification);
-
+    $('#sourceActorTypeFilter').on('click', 'a', setFilterSourceActorType);
     // play with limit and offset variables, execute pagers without refresh
     // TODO: see if we could optimize this piss
     $('#page-next').on('click', function() {
@@ -37,11 +38,36 @@ $(document).ready(function() {
 });
 
 
-function setFilterClassification(event) {
+function setFilterSourceActorType(event) {
     var limit = 5;
     var offset = 0;
     event.preventDefault();
-    populateTicketList(limit, offset, $(this).attr('rel'));
+    var filters = {};
+    filters.source_actor_type = $(this).attr('rel');
+    populateTicketList(limit, offset, filters);
+}
+
+function setFilterClassification(event) {
+    var limit = 5;
+    var offset = 0;
+    var filters = {};
+    filters.classification = $(this).attr('rel');
+    populateTicketList(limit, offset, filters);
+}
+
+function populateSourceActorTypeFilter() {
+    var tableContent = '';
+    tableContent += '<a href="#" ref=""><b>All</b></a>';
+    $.getJSON('/actortype/list', function(actors) {
+        $.each(actors, function() {
+            tableContent += '<li>';
+            tableContent += '<a href="#" rel="' + this._id + '">';
+            tableContent += this.name;
+            tableContent += '</a>'
+            tableContent += '</li>';
+        });
+        $('#sourceActorTypeFilter').html(tableContent);
+    });
 }
 
 function populateClassificationFilter() {
@@ -209,7 +235,7 @@ function generateListElementView(ticket) {
     return content;
 }
 
-function populateTicketList(limit, offset, classification) {
+function populateTicketList(limit, offset, filters) {
     var ticket_types = ['need', 'offer'];
     for (var type_index=0; type_index<ticket_types.length; type_index++) {
         var ticket_type = ticket_types[type_index];
@@ -228,11 +254,19 @@ function populateTicketList(limit, offset, classification) {
             // check if there are tickets
             if (tickets.length > 0) {
                 $.each(tickets, function() {
-                    if (classification) {
-                        if (this.classification.toString() == classification.toString()) {
-                            tableContent += generateListElementView(this);
-                            haveContent = true;
+                    if (filters) {
+                        if (typeof(filters.classification) !== 'undefined') {
+                            if (this.classification.toString() !== filters.classification.toString()) {
+                                return;
+                            }
                         }
+                        if (typeof(filters.source_actor_type) !== 'undefined') {
+                            if (this.source_actor_type.toString() !== filters.source_actor_type.toString()) {
+                                return;
+                            }
+                        }
+                        tableContent += generateListElementView(this);
+                        haveContent = true;
                     }
                     else {
                         tableContent += generateListElementView(this);

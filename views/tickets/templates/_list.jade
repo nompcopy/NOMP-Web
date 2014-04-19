@@ -22,9 +22,11 @@ block subContent
       .row
         // filters block
         .col-md-2
-          p Classification:
           block filters
+            p Classification:
             ul#classificationFilter
+            p Source Actor:
+            ul#sourceActorTypeFilter
         // ticket list block
         .col-md-10(style="border-left: 1px solid #ddd;")
           .panel.panel-default(id=ticket_type + 'List')
