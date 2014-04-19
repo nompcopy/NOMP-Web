@@ -24,10 +24,12 @@ $(document).ready(function() {
         populateTicketList(limit, offset, false);
     });
 
-    populateMatchingResults();
-    populateSourceTicketData();
     $('#showoffer').on('click', showOwnerOffer);
     $('#showneed').on('click', showOwnerNeed);
+
+    populateMatchingResults();
+    populateSourceTicketData();
+
 });
 
 
