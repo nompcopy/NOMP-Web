@@ -75,6 +75,7 @@ exports.create = function(req, res) {
     // fetch actor_type
     var tmp_actor_type = JSON.parse(req.body.actor_type);
     req.body.actor_type = tmp_actor_type.id;
+    req.body.actor_type_name = tmp_actor_type.name;
 
     var user = new UserModel(req.body);
     user.provider = 'local';
@@ -128,8 +129,6 @@ exports.update = function(req, res) {
     if (req.body.old_password || req.body.new_password || req.body.confirm_password) {
         // validate old password
         if (req.user.authenticate(req.body.old_password)) {
-            console.log(req.body.new_password == req.body.confirm_password);
-            console.log(req.body.new_password.length > 0);
             if ((req.body.new_password == req.body.confirm_password) && req.body.new_password.length > 0) {
                 req.body.password = req.body.new_password;
             }
