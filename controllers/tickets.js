@@ -305,6 +305,7 @@ exports.list = function(req, res) {
             }
         }
     ], function(err, render_items) {
+        render_items = utils.sortArrayObjectByProperty('update_date', render_items);
         return res.json(render_items);
     });
 }

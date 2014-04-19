@@ -221,7 +221,7 @@ function match(data, cb) {
         },
         // Order the results
         function(quantity_score_results, callback) {
-            callback(null, utils.sortMatchingResults(quantity_score_results));
+            callback(null, utils.sortArrayObjectByProperty('score', quantity_score_results));
         }
     ], cb);
 }
