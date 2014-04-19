@@ -293,16 +293,27 @@ exports.list = function(req, res) {
         options.criteria.classification = req.query.classification;
     }
 
-    if (req.params.type == 'need') {
-        NeedModel.listToJson(options, function(err, items) {
-            res.json(items);
-        });
-    }
-    else if (req.params.type == 'offer') {
-        OfferModel.listToJson(options, function(err, items) {
-            res.json(items);
-        });
-    }
+    var render_items = [];
+    // Use async fonction to manage the general feed and user owner list feed
+    async.waterfall([
+        function(callback) {
+            feedTicketJsonList(req, options, function(err, items) {
+                callback(null, render_items.concat(items));
+            });
+        },
+        function(render_items, callback) {
+            if (req.isAuthenticated()) {
+                feedOwnerJsonList(req, function(err, items) {
+                    callback(null, render_items.concat(items));
+                });
+            }
+            else {
+                callback(null, render_items);
+            }
+        }
+    ], function(err, render_items) {
+        return res.json(render_items);
+    });
 }
 
 exports.showJson = function(req, res) {
@@ -318,17 +329,29 @@ exports.showJson = function(req, res) {
     }
 }
 
+var feedTicketJsonList = function(req, options, cb) {
+    if (req.params.type == 'need') {
+        NeedModel.listToJson(options, cb);
+    }
+    else if (req.params.type == 'offer') {
+        OfferModel.listToJson(options, cb);
+    }
+}
+
 exports.ownerJsonList = function(req, res) {
+    return feedOwnerJsonList(req, function(err, items) {
+        res.json(items);
+    });
+}
+
+// Feed owner list
+var feedOwnerJsonList = function(req, cb) {
     var options = { criteria: { user: req.user._id } };
     if (req.params.type === 'need') {
-        NeedModel.listToJson(options, function(err, items) {
-            res.json(items);
-        });
+        NeedModel.listToJson(options, cb);
     }
     else if (req.params.type === 'offer') {
-        OfferModel.listToJson(options, function(err, items) {
-            res.json(items);
-        })
+        OfferModel.listToJson(options, cb)
     }
 }
 
