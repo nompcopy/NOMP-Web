@@ -128,8 +128,6 @@ exports.update = function(req, res) {
     if (req.body.old_password || req.body.new_password || req.body.confirm_password) {
         // validate old password
         if (req.user.authenticate(req.body.old_password)) {
-            console.log(req.body.new_password == req.body.confirm_password);
-            console.log(req.body.new_password.length > 0);
             if ((req.body.new_password == req.body.confirm_password) && req.body.new_password.length > 0) {
                 req.body.password = req.body.new_password;
             }
