@@ -74,6 +74,13 @@ module.exports = function (app, passport, config) {
     // app.post('/user/:userId/edit', user.edit);
     app.put('/user/:userId', user.update);
 
+    /*
+     * Forgot password
+     */
+    app.get('/account/forgetpasswordform', user.forgetPasswordForm);
+    app.post('/account/forgetpassword', user.forgetPasswordSend);
+    app.get('/account/resetpasswordform', user.resetPasswordForm);
+    app.post('/account/resetpassword', user.resetPasswordSend);
 
     /*
      * RESTful list (ticket, users)
