@@ -26,6 +26,7 @@ button.link-btn {
 
 a.no-underline {
   text-decoration: none;
+  color: #2a6496;
 }
 
 button.link-btn a.no-underline {
