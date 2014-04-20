@@ -15,11 +15,25 @@ exports.index = function(req, res) {
 }
 
 exports.classification = function(req, res) {
-
+    ClassificationModel.list(function(err, list) {
+        if (!err) {
+            return res.render('admin/classification', {
+                title: 'Edit Classification',
+                classifications: list,
+                req: req
+            });
+        }
+    });
 }
 
 exports.actorType = function(req, res) {
-
+    ActorTypeModel.list(function(err, list) {
+        return res.render('admin/actortype', {
+            title: 'Edit Actor Type',
+            actortypes: list,
+            req: req
+        });
+    });
 }
 
 exports.editClassification = function(req, res) {

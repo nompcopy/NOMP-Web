@@ -1,0 +1,14 @@
+extends ../layout
+
+block content
+  // nav tabs
+  .row(style="margin-bottom: 15px;")
+    ul.nav.nav-pills
+      li(class=req.route.path === '/admin'  ? 'active' : '')
+        a(href="/admin") Overview
+      li(class=req.route.path === '/admin/classification' ? 'active' : '')
+        a(href="/admin/classification") Classification
+      li(class=req.route.path === '/admin/actortype' ? 'active' : '')
+        a(href="/admin/actortype") Actor type
+
+  block subContent

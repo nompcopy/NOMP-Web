@@ -1,0 +1,14 @@
+extends _layout
+
+block subContent
+  table#classifications
+    thead
+      th Parent_ID
+      th Parent
+      th Class_ID
+      th Class
+    tbody
+      for classification in classifications
+        tr
+          td
+            classification
