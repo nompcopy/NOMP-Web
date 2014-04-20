@@ -74,8 +74,9 @@ block content
         
         // contact info
       .panel.panel-default(style="margin-top: 15px;")
-        .panel-heading Contact
-        .table.table-bordered.table-condensed
+        .panel-heading
+          strong Contact
+        table.table.table-bordered.table-condensed
           each key in [{'key': 'contact_name', 'label': 'Contact name'}, {'key': 'contact_email', 'label': 'Email'}, {'key': 'contact_phone', 'label': 'Phone no.'}, {'key': 'contact_mobile', 'label': 'Mobile no.'}]
             - if (ticket[key.key] !== undefined)
               tr
