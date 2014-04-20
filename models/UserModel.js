@@ -150,6 +150,18 @@ UserModelSchema.methods = {
     }
 }
 
+UserModelSchema.statics = {
+    load: function(id, cb) {
+        this.findOne({ _id: id }).exec(cb);
+    },
+    retrieveByEmail: function(email, cb) {
+        this.findOne({ email: email }).exec(cb);
+    },
+    retrieveByEmailAndHashedPassword: function(email, password, cb) {
+        this.findOne({ email: email, hashed_password: password }).exec(cb);
+    }
+}
+
 // Built and exports Model from Schema
 mongoose.model('UserModel', UserModelSchema);
 exports.UserModel = mongoose.model('UserModel');
