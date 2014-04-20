@@ -9,6 +9,7 @@ var tickets = require('../controllers/tickets');
 var user = require('../controllers/user');
 var matchs = require('../controllers/matchs');
 var shiftings = require('../controllers/shiftings');
+var admin = require('../controllers/admin');
 var auth = require('./middlewares/authorization');
 
 /*
@@ -27,6 +28,13 @@ module.exports = function (app, passport, config) {
      * Admin routes
      */
     app.get('/admin*', adminAuth);
+    app.get('/admin', admin.index);
+    // manage class and actor type
+    app.get('/admin/classification', admin.classification);
+    app.get('/admin/actortype', admin.actorType);
+    app.put('/admin/classification', admin.editClassification);
+    app.put('/admin/actortype', admin.editActorType);
+
     /*
      * User routes
      */
