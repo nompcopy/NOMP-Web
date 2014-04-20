@@ -5,8 +5,10 @@ var ObjectId = Schema.ObjectId;
 
 // Target classification of tickets
 var ClassificationModelSchema = new Schema({
-    name: {type: String},
-    super_lever: {type: Schema.ObjectId, ref: 'super_level'},
+    name: {type: String, trim: true},
+    parent: {type: Schema.ObjectId},
+    parent_name: {type: String, trim: true},
+    is_parent: {type: Boolean, default: false},
 });
 
 
