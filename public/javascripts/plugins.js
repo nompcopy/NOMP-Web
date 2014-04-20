@@ -1,12 +1,6 @@
 var classificationData = [];
 
 $(document).ready(function() {
-    populateClassificationList();
-    populateActorTypeList();
-    // TODO: re-design structure
-    populateClassificationFilter();
-    populateSourceActorTypeFilter();
-    // default limit and offset
     var limit = 5;
     var offset = 0;
 
@@ -28,14 +22,31 @@ $(document).ready(function() {
     $('#showoffer').on('click', showOwnerOffer);
     $('#showneed').on('click', showOwnerNeed);
 
-    populateMatchingResults();
-    populateSourceTicketData();
-
     var browserInfo = navigator.userAgent.toLowerCase();
     if (browserInfo.indexOf('firefox') > -1 || browserInfo.indexOf('MSIE') > -1) {
       $('.input-date').datepicker();
     }
 });
+
+
+if (document.querySelector('#classificationList')) {
+    populateClassificationList();
+}
+if (document.querySelector('#actorTypeTargetList')){
+    populateActorTypeList();
+}
+if (document.querySelector('#classificationFilter')) {
+    populateClassificationFilter();
+}
+if (document.querySelector('#sourceActorTypeFilter')) {
+    populateSourceActorTypeFilter();
+}
+if (document.querySelector('#matching_results_list')) {
+    populateMatchingResults();
+}
+if (document.querySelector('#source_ticket')) {
+    populateSourceTicketData();
+}
 
 
 function setFilterSourceActorType(event) {
