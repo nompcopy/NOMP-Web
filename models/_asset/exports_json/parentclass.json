@@ -1,10 +1,10 @@
-{"name": "Transport", "is_parent": "true"}
-{"name": "Communication", "is_parent": "true"}
-{"name": "Safety Issues", "is_parent": "true"}
-{"name": "Shelter", "is_parent": "true"}
-{"name": "Health", "is_parent": "true"}
-{"name": "Energy", "is_parent": "true"}
-{"name": "Food and Water", "is_parent": "true"}
-{"name": "Clothing", "is_parent": "true"}
-{"name": "Funds", "is_parent": "true"}
-{"name": "Other", "is_parent": "true"}
+{"name": "Transport", "is_parent": true}
+{"name": "Communication", "is_parent": true}
+{"name": "Safety Issues", "is_parent": true}
+{"name": "Shelter", "is_parent": true}
+{"name": "Health", "is_parent": true}
+{"name": "Energy", "is_parent": true}
+{"name": "Food and Water", "is_parent": true}
+{"name": "Clothing", "is_parent": true}
+{"name": "Funds", "is_parent": true}
+{"name": "Other", "is_parent": true}
