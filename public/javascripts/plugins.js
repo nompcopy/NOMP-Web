@@ -32,7 +32,10 @@ $(document).ready(function() {
 if (document.querySelector('#classificationList')) {
     populateClassificationList();
 }
-if (document.querySelector('#actorTypeTargetList')){
+if (document.querySelector('#actorTypeTargetList')) {
+    populateActorTypeList();
+}
+if (document.querySelector('#actorTypeSourceList')) {
     populateActorTypeList();
 }
 if (document.querySelector('#classificationFilter')) {
