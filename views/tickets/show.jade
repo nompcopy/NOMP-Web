@@ -29,25 +29,34 @@ block content
       span.pull-right
         a(href='/' + ticket_type + '/' + ticket._id + '/edit') Modify
 
-  // basic info
+  // basic infobox and matching results box
   .row
     .col-md-8
-      table.table.table-bordered.table-condensed.info-box
-        each key in ['user', 'source_actor_type_name', 'target_actor_type_name', 'start_date', 'end_date', 'address']
-          tr
-            td
-              strong= key
-            td= ticket[key]
-        tr
-          td(colspan="2")
-            strong Description
-        tr
-          td(colspan="2")
-            p.list-ticket-description= ticket.description
-  
-    // display photos
-    - if (ticket.media !== undefined && ticket.media.image !== undefined && ticket.media.image.length > 0)
-      .col-md-4
+      each keys in [{'header': 'Basic', 'keys': [{'key': 'user', 'label': 'Author'}, {'key': 'source_actor_type_name', 'label': 'Source actor'}, {'key': 'target_actor_type_name', 'label': 'Target actor'}, {'key': 'address', 'label': 'Address'}]}, {'header': 'Availability', 'keys': [{'key': 'start_date', 'label': 'From'}, {'key': 'end_date', 'label': 'To'}, {'key': 'quantity', 'label': 'Quantity'}, {'key': 'cost', 'label': 'Cost'}, {'key': 'budget', 'label': 'Budget'}]}]
+        .panel.panel-default
+          .panel-heading
+            strong= keys.header
+          table.table.table-bordered.table-condensed
+            each key in keys.keys
+              - if (ticket[key.key] !== undefined)
+                tr
+                  td
+                    strong= key.label
+                  td= ticket[key.key]
+      .panel.panel-default
+        .panel-heading
+          strong Descriptions
+        .panel-body
+          p.list-ticket-description= ticket.description
+      .panel.panel-default
+        .panel-heading
+          label#matching_results_label(for='/' + ticket_type + '/matching/' + ticket._id)
+            strong Matching results
+        ul#matching_results_list.list-group
+    
+    .col-md-4
+      // display photos
+      - if (ticket.media !== undefined && ticket.media.image !== undefined && ticket.media.image.length > 0)
         #carousel-ticket-photos.carousel.slide(data-ride="carousel")
           ol.carousel-indicators
             each val, index in ticket.media.image
@@ -62,18 +71,14 @@ block content
               span.glyphicon.glyphicon-chevron-left
             a.right.carousel-control(href="#carousel-ticket-photos", data-slide="next")
               span.glyphicon.glyphicon-chevron-right
-      // contact info
-      .col-md-4(style="margin-top: 15px;")
-        .panel.panel-default
-          .panel-heading Contact
-          .table.table-bordered.table-condensed
-            each key in ['contact_phone', 'contact_mobile', 'contact_email']
-              if (ticket[key] !== undefined)
-                tr
-                  td
-                    strong= key
-                  td= ticket[key]
-
-  .row
-    h2 Matchings results
-    label#matching_results_label(for='/' + ticket_type + '/matching/' + ticket._id)
+        
+        // contact info
+      .panel.panel-default(style="margin-top: 15px;")
+        .panel-heading Contact
+        .table.table-bordered.table-condensed
+          each key in [{'key': 'contact_name', 'label': 'Contact name'}, {'key': 'contact_email', 'label': 'Email'}, {'key': 'contact_phone', 'label': 'Phone no.'}, {'key': 'contact_mobile', 'label': 'Mobile no.'}]
+            - if (ticket[key.key] !== undefined)
+              tr
+                td
+                  strong= key.label
+                td= ticket[key.key]
