@@ -1,7 +1,7 @@
 var subClassification = [];
 var subActorType = [];
 $(document).ready(function() {
-    var limit = 5;
+    var limit = 20;
     var offset = 0;
 
     // first display on page loaded
@@ -9,6 +9,7 @@ $(document).ready(function() {
     $('#classificationFilter').on('click', 'a', populateSubClassificationFilter);
     $('#classificationFilter').on('click', 'a', setFilterClassification);
 
+    $('#sourceActorTypeFilter').on('click', 'a', populateSubActorTypeFilter);
     $('#sourceActorTypeFilter').on('click', 'a', setFilterSourceActorType);
 
     // play with limit and offset variables, execute pagers without refresh
@@ -66,16 +67,21 @@ if (document.querySelector('#source_ticket')) {
 
 function setFilterSourceActorType(event) {
     event.preventDefault();
-    var limit = 5;
+    var limit = 100;
     var offset = 0;
     var filters = {};
+
+    if ($(this).attr('rel') === $(this).parents('li').last().children('a').attr('rel')) {
+        filters.is_parent = true;
+    }
+
     filters.source_actor_type = $(this).attr('rel');
     populateTicketList(limit, offset, filters);
 }
 
 function setFilterClassification(event) {
     event.preventDefault();
-    var limit = 5;
+    var limit = 100;
     var offset = 0;
     var filters = {};
 
@@ -96,10 +102,29 @@ function populateSourceActorTypeFilter() {
             tableContent += '<a href="#" rel="' + this._id + '">';
             tableContent += this.name;
             tableContent += '</a>';
-            tableContent += '<ul style="display: none" id="populateSubSourceActorTypeFilter"></ul>';
+            tableContent += '<ul style="display: none" id="populateSubSourceActorTypeFilter' + this._id + '"></ul>';
             tableContent += '</li>';
         });
         $('#sourceActorTypeFilter').html(tableContent);
+    });
+}
+
+function populateSubActorTypeFilter(event) {
+    event.preventDefault();
+
+    var parentactortype = $(this).attr('rel');
+    tableContent = '';
+    $.getJSON('/actortype/list?parentactortype=' + parentactortype, function(actortype) {
+        $.each(actortype, function() {
+            subActorType.push(this._id);
+            tableContent += '<li>';
+            tableContent += '<a href="#" rel="' + this._id + '">';
+            tableContent += this.name;
+            tableContent += '</a>'
+            tableContent += '</li>';
+        });
+        $('#populateSubSourceActorTypeFilter' + parentactortype).html(tableContent);
+        $('#populateSubSourceActorTypeFilter' + parentactortype).fadeToggle(200);
     });
 }
 
@@ -366,8 +391,15 @@ function populateTicketList(limit, offset, filters) {
                 $.each(tickets, function() {
                     if (filters) {
                         if (filters.is_parent) {
-                            if (jQuery.inArray(this.classification, subClassification) < 0) {
-                                return;
+                            if (subClassification.length > 0) {
+                                if (jQuery.inArray(this.classification, subClassification) < 0) {
+                                    return;
+                                }
+                            }
+                            if (subActorType.length > 0) {
+                                if (jQuery.inArray(this.source_actor_type, subActorType) < 0) {
+                                    return;
+                                }
                             }
                         }
                         else {
