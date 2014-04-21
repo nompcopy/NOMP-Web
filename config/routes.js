@@ -34,7 +34,7 @@ module.exports = function (app, passport, config) {
     app.get('/admin/actortype', admin.actorType);
     app.put('/admin/classification', admin.editClassification);
     app.put('/admin/actortype', admin.editActorType);
-
+    app.delete('/admin/classification/delete/:classId', admin.deleteClassification);
     /*
      * User routes
      */
@@ -141,6 +141,7 @@ module.exports = function (app, passport, config) {
  */
     // class list
     app.get('/classification/list', tickets.class_list);
+    app.get('/classification/parentlist', tickets.class_parent_list);
     // actor type list
     app.get('/actortype/list', tickets.actor_type_list);
     
