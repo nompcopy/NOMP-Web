@@ -27,7 +27,7 @@ $(document).ready(function() {
       $('.input-date').datepicker();
     }
 
-    if (document.querySelector('#adminClassification')) {
+    if (document.querySelector('#adminClassification') || document.querySelector('#adminActorType')) {
         $.getScript('/javascripts/adminPlugin.js');
     }
 });

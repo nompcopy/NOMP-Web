@@ -35,6 +35,8 @@ module.exports = function (app, passport, config) {
     app.put('/admin/classification', admin.editClassification);
     app.put('/admin/actortype', admin.editActorType);
     app.delete('/admin/classification/delete/:classId', admin.deleteClassification);
+    app.delete('/admin/actortype/delete/:actorId', admin.deleteActorType);
+
     /*
      * User routes
      */
@@ -144,7 +146,8 @@ module.exports = function (app, passport, config) {
     app.get('/classification/parentlist', tickets.class_parent_list);
     // actor type list
     app.get('/actortype/list', tickets.actor_type_list);
-    
+    app.get('/actortype/parentlist', tickets.actor_type_parent_list);
+
     // section of geomaps, development only for now
     if ('development' == app.get('env')) {
         app.get('/maps', tickets.maps)
