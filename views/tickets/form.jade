@@ -34,13 +34,13 @@ block content
                 .form-group
                   label(for="classification_parent") Choose Class
                   select.form-control(name='classification_parent')#classificationList
-                .form-group.subClassification(style='display: none')
+                .form-group.subClassification
                   label(for="classification") Choose Sub Class
                   select.form-control(name='classification')#classificationListChild
                 .form-group
                   label(for="target_actor_type_parent") Chosse Target Actor
                   select.form-control(name='target_actor_type_parent')#actorTypeTargetList
-                .form-group.subActorType(style='display: none')
+                .form-group.subActorType
                   label(for="target_actor_type") Chosse Sub Target Actor
                   select.form-control(name='target_actor_type')#actorTypeTargetListChild
                 .form-group
