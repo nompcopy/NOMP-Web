@@ -26,8 +26,11 @@ $(document).ready(function() {
     if (browserInfo.indexOf('firefox') > -1 || browserInfo.indexOf('MSIE') > -1) {
       $('.input-date').datepicker();
     }
-});
 
+    if (document.querySelector('#adminClassification')) {
+        $.getScript('/javascripts/adminPlugin.js');
+    }
+});
 
 if (document.querySelector('#classificationList')) {
     populateClassificationList();
