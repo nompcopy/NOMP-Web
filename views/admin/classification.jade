@@ -1,0 +1,32 @@
+extends _layout
+
+block subContent
+  #adminClassification
+  .row
+    .col-md-6
+      #adminClassificationList
+        table
+          thead
+            th Parent_ID
+            th Parent
+            th Class_ID
+            th Class
+            th Delete?
+          tbody
+    .col-md-6
+      #adminEditClassification
+        h3 Edit Class
+        form(action='/admin/classification', method='post', role='form')
+          input(type='hidden', name='_csrf', value='#{csrf_token}')
+          input(type='hidden', name='_method', value='PUT')
+          select#selectParentClassificationEdit(name='parent_classification')
+          input#inputClassificationNameEdit(type='text', placeholder='New class' name='name')
+          button.btn.btn-primary(type='submit') Add
+      #adminAddClassification
+        h3 Add Class
+        form(action='/admin/classification', method='post', role='form')
+          input(type='hidden', name='_csrf', value='#{csrf_token}')
+          input(type='hidden', name='_method', value='PUT')
+          select#selectParentClassification(name='parent_classification')
+          input#inputClassificationName(type='text', placeholder='New class' name='name')
+          button.btn.btn-primary(type='submit') Add
