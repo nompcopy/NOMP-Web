@@ -24,6 +24,12 @@ ClassificationModelSchema.statics = {
     },
     retrieveByValue: function(val, cb) {
         this.findOne({ name: val }).exec(cb);
+    },
+    parentList: function(cb) {
+        this.find({ is_parent: true }).exec(cb);
+    },
+    parentListToJson: function(cb) {
+        this.find({ is_parent: true }).lean().exec(cb);
     }
 };
 
