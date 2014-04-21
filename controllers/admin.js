@@ -37,7 +37,37 @@ exports.actorType = function(req, res) {
 }
 
 exports.editClassification = function(req, res) {
+    var tmp_parent_classification = JSON.parse(req.body.parent_classification);
+    req.body.parent = tmp_parent_classification.id;
+    req.body.parent_name = tmp_parent_classification.name;
 
+    // Update
+    if (typeof(req.body.id) !== 'undefined') {
+        ClassificationModel.load(req.body.id.toString(), function(err, item) {
+            item.parent = tmp_parent_classification.id;
+            item.parent_name = tmp_parent_classification.name;
+            item.name = req.body.name;
+            item.save(function(err) {
+                return res.redirect('/admin/classification');
+            });
+        });
+    }
+    else {
+        var c = new ClassificationModel(req.body);
+        c.save(function(err) {
+            return res.redirect('/admin/classification');
+        });
+    }
+}
+
+exports.deleteClassification = function(req, res) {
+    var id = req.params.classId;
+    console.log(id);
+    ClassificationModel.load(id, function(err, item) {
+        item.remove(function(err) {
+            return res.redirect('/admin/classification');
+        });
+    });
 }
 
 exports.editActorType = function(req, res) {
