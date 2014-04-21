@@ -1,12 +1,17 @@
-
+var subClassification = [];
+var subActorType = [];
 $(document).ready(function() {
-    var limit = 5;
+    var limit = 20;
     var offset = 0;
 
     // first display on page loaded
     populateTicketList(limit, offset, false);
+    $('#classificationFilter').on('click', 'a', populateSubClassificationFilter);
     $('#classificationFilter').on('click', 'a', setFilterClassification);
+
+    $('#sourceActorTypeFilter').on('click', 'a', populateSubActorTypeFilter);
     $('#sourceActorTypeFilter').on('click', 'a', setFilterSourceActorType);
+
     // play with limit and offset variables, execute pagers without refresh
     // TODO: see if we could optimize this piss
     $('#page-next').on('click', function() {
@@ -61,18 +66,29 @@ if (document.querySelector('#source_ticket')) {
 
 
 function setFilterSourceActorType(event) {
-    var limit = 5;
-    var offset = 0;
     event.preventDefault();
+    var limit = 100;
+    var offset = 0;
     var filters = {};
+
+    if ($(this).attr('rel') === $(this).parents('li').last().children('a').attr('rel')) {
+        filters.is_parent = true;
+    }
+
     filters.source_actor_type = $(this).attr('rel');
     populateTicketList(limit, offset, filters);
 }
 
 function setFilterClassification(event) {
-    var limit = 5;
+    event.preventDefault();
+    var limit = 100;
     var offset = 0;
     var filters = {};
+
+    if ($(this).attr('rel') === $(this).parents('li').last().children('a').attr('rel')) {
+        filters.is_parent = true;
+    }
+
     filters.classification = $(this).attr('rel');
     populateTicketList(limit, offset, filters);
 }
@@ -80,30 +96,70 @@ function setFilterClassification(event) {
 function populateSourceActorTypeFilter() {
     var tableContent = '';
     tableContent += '<a href="#" ref=""><b>All</b></a>';
-    $.getJSON('/actortype/list', function(actors) {
+    $.getJSON('/actortype/parentlist', function(actors) {
         $.each(actors, function() {
             tableContent += '<li>';
             tableContent += '<a href="#" rel="' + this._id + '">';
             tableContent += this.name;
-            tableContent += '</a>'
+            tableContent += '</a>';
+            tableContent += '<ul style="display: none" id="populateSubSourceActorTypeFilter' + this._id + '"></ul>';
             tableContent += '</li>';
         });
         $('#sourceActorTypeFilter').html(tableContent);
     });
 }
 
-function populateClassificationFilter() {
-    var tableContent = '';
-    tableContent += '<a href="#" ref=""><b>All</b></a>';
-    $.getJSON('/classification/list', function(classification) {
-        $.each(classification, function() {
+function populateSubActorTypeFilter(event) {
+    event.preventDefault();
+
+    var parentactortype = $(this).attr('rel');
+    tableContent = '';
+    $.getJSON('/actortype/list?parentactortype=' + parentactortype, function(actortype) {
+        $.each(actortype, function() {
+            subActorType.push(this._id);
             tableContent += '<li>';
             tableContent += '<a href="#" rel="' + this._id + '">';
             tableContent += this.name;
             tableContent += '</a>'
             tableContent += '</li>';
         });
+        $('#populateSubSourceActorTypeFilter' + parentactortype).html(tableContent);
+        $('#populateSubSourceActorTypeFilter' + parentactortype).fadeToggle(200);
+    });
+}
+
+function populateClassificationFilter() {
+    var tableContent = '';
+    tableContent += '<a href="#" ref=""><b>All</b></a>';
+    $.getJSON('/classification/parentlist', function(classification) {
+        $.each(classification, function() {
+            tableContent += '<li>';
+            tableContent += '<a href="#" rel="' + this._id + '">';
+            tableContent += this.name;
+            tableContent += '</a>'
+            tableContent += '<ul style="display: none" id="populateSubClassificationFilter' + this._id + '"></ul>';
+            tableContent += '</li>';
+        });
         $('#classificationFilter').html(tableContent);
+    });
+}
+
+function populateSubClassificationFilter(event) {
+    event.preventDefault();
+
+    var parentclass = $(this).attr('rel');
+    tableContent = '';
+    $.getJSON('/classification/list?parentclass=' + parentclass, function(classification) {
+        $.each(classification, function() {
+            subClassification.push(this._id);
+            tableContent += '<li>';
+            tableContent += '<a href="#" rel="' + this._id + '">';
+            tableContent += this.name;
+            tableContent += '</a>'
+            tableContent += '</li>';
+        });
+        $('#populateSubClassificationFilter' + parentclass).html(tableContent);
+        $('#populateSubClassificationFilter' + parentclass).fadeToggle(200);
     });
 }
 
@@ -327,7 +383,6 @@ function populateTicketList(limit, offset, filters) {
             data.offset = offset;
         }
         var ticket_list_url = '/' + ticket_type + '/list';
-
         $.getJSON(ticket_list_url, data, function(tickets) {
             var tableContent = '';
             var haveContent = false;
@@ -335,14 +390,28 @@ function populateTicketList(limit, offset, filters) {
             if (tickets.length > 0) {
                 $.each(tickets, function() {
                     if (filters) {
-                        if (typeof(filters.classification) !== 'undefined') {
-                            if (this.classification.toString() !== filters.classification.toString()) {
-                                return;
+                        if (filters.is_parent) {
+                            if (subClassification.length > 0) {
+                                if (jQuery.inArray(this.classification, subClassification) < 0) {
+                                    return;
+                                }
+                            }
+                            if (subActorType.length > 0) {
+                                if (jQuery.inArray(this.source_actor_type, subActorType) < 0) {
+                                    return;
+                                }
                             }
                         }
-                        if (typeof(filters.source_actor_type) !== 'undefined') {
-                            if (this.source_actor_type.toString() !== filters.source_actor_type.toString()) {
-                                return;
+                        else {
+                            if (typeof(filters.classification) !== 'undefined') {
+                                if (this.classification.toString() !== filters.classification.toString()) {
+                                    return;
+                                }
+                            }
+                            if (typeof(filters.source_actor_type) !== 'undefined') {
+                                if (this.source_actor_type.toString() !== filters.source_actor_type.toString()) {
+                                    return;
+                                }
                             }
                         }
                         tableContent += generateListElementView(this);
