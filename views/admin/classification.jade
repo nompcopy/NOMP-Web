@@ -3,7 +3,7 @@ extends _layout
 block subContent
   #adminClassification
   .row
-    .col-md-6
+    .col-md-8
       #adminClassificationList
         table
           thead
@@ -13,7 +13,7 @@ block subContent
             th Class
             th Delete?
           tbody
-    .col-md-6
+    .col-md-4
       #adminEditClassification
         h3 Edit Class
         form(action='/admin/classification', method='post', role='form')

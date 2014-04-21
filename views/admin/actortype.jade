@@ -1,3 +1,32 @@
 extends _layout
 
 block subContent
+  #adminActorType
+  .row
+    .col-md-8
+      #adminActorTypeList
+        table
+          thead
+            th Parent_ID
+            th Parent
+            th Actor_ID
+            th Actor
+            th Delete?
+          tbody
+    .col-md-4
+      #adminEditActorType
+        h3 Edit Actor
+        form(action='/admin/actortype', method='post', role='form')
+          input(type='hidden', name='_csrf', value='#{csrf_token}')
+          input(type='hidden', name='_method', value='PUT')
+          select#selectParentActorTypeEdit(name='parent_actortype')
+          input#inputActorTypeNameEdit(type='text', placeholder='New Actor' name='name')
+          button.btn.btn-primary(type='submit') Edit
+      #adminAddActorType
+        h3 Add Actor
+        form(action='/admin/actortype', method='post', role='form')
+          input(type='hidden', name='_csrf', value='#{csrf_token}')
+          input(type='hidden', name='_method', value='PUT')
+          select#selectParentActorType(name='parent_actortype')
+          input#inputActorTypeName(type='text', placeholder='New Actor' name='name')
+          button.btn.btn-primary(type='submit') Add
