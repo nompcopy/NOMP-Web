@@ -6,6 +6,9 @@ var ObjectId = Schema.ObjectId;
 // 
 var ActorTypeModelSchema = new Schema({
     name: {type: String},
+    parent: {type: Schema.ObjectId},
+    parent_name: {type: String, trim: true},
+    is_parent: {type: Boolean, default: false},
 });
 
 
@@ -21,6 +24,12 @@ ActorTypeModelSchema.statics = {
     },
     retrieveByValue: function(val, cb) {
         this.findOne({ name: val }).exec(cb);
+    }
+    parentList: function(cb) {
+        this.find({ is_parent: true }).exec(cb);
+    },
+    parentListToJson: function(cb) {
+        this.find({ is_parent: true }).lean().exec(cb);
     }
 };
 
