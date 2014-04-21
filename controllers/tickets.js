@@ -379,6 +379,12 @@ exports.class_list = function(req, res) {
     });
 }
 
+exports.class_parent_list = function(req, res) {
+    ClassificationModel.parentListToJson(function(err, items) {
+        res.json(items);
+    });
+}
+
 exports.actor_type_list = function(req, res) {
     ActorTypeModel.listToJson(function(err, items) {
         res.json(items);
