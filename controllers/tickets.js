@@ -391,6 +391,12 @@ exports.actor_type_list = function(req, res) {
     });
 }
 
+exports.actor_type_parent_list = function(req, res) {
+    ActorTypeModel.parentListToJson(function(err, items) {
+        res.json(items);
+    });
+}
+
 exports.maps = function(req, res) {
     console.log(Object.keys(req));
     res.render('tickets/maps', {
