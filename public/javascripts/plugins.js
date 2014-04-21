@@ -1,4 +1,3 @@
-var classificationData = [];
 
 $(document).ready(function() {
     var limit = 5;
@@ -35,12 +34,18 @@ $(document).ready(function() {
 if (document.querySelector('#classificationList')) {
     populateClassificationList();
 }
+$('#classificationList').on('change', showSubClassificationList);
+
 if (document.querySelector('#actorTypeTargetList')) {
     populateActorTypeList();
 }
+$('#actorTypeSourceList').on('change', showSubActorTypeList);
+
 if (document.querySelector('#actorTypeSourceList')) {
     populateActorTypeList();
 }
+$('#actorTypeTargetList').on('change', showSubActorTypeList);
+
 if (document.querySelector('#classificationFilter')) {
     populateClassificationFilter();
 }
@@ -137,7 +142,7 @@ function populateMatchingResults() {
 
 function populateClassificationList() {
     var tableContent = '';
-    $.getJSON('/classification/list', function(classification) {
+    $.getJSON('/classification/parentlist', function(classification) {
         $.each(classification, function() {
             var value_stringify = {
                 id: this._id,
@@ -149,9 +154,26 @@ function populateClassificationList() {
     });
 }
 
+function showSubClassificationList() {
+    var parent_classification_data = $('#classificationList').val();
+    parent_classification_data = JSON.parse(parent_classification_data);
+    parent_classification_id = parent_classification_data.id.toString();
+
+    var tableContent = '';
+
+    $.getJSON('/classification/list?parentclass=' + parent_classification_id, function(classification) {
+        $.each(classification, function() {
+            var value_stringify = feedOptionJsonValue(this);
+            tableContent += "<option value='" + JSON.stringify(value_stringify) + "'>" + this.name + "</option>";
+        });
+        $('#classificationListChild').html(tableContent);
+    });
+    $('.subClassification').fadeIn(500);
+}
+
 function populateActorTypeList() {
     var tableContent = '';
-    $.getJSON('/actortype/list', function(actorType) {
+    $.getJSON('/actortype/parentlist', function(actorType) {
         $.each(actorType, function() {
             var value_stringify = {
                 id: this._id,
@@ -164,6 +186,28 @@ function populateActorTypeList() {
     });
 }
 
+function showSubActorTypeList() {
+    if ($('#actorTypeTargetList').val()) {
+        var parent_actor_type_data = $('#actorTypeTargetList').val();
+    }
+    if ($('#actorTypeSourceList').val()) {
+        var parent_actor_type_data = $('#actorTypeSourceList').val();
+    }
+    parent_actor_type_data = JSON.parse(parent_actor_type_data);
+    parent_actor_type_id = parent_actor_type_data.id.toString();
+
+    var tableContent = '';
+
+    $.getJSON('/actortype/list?parentactortype=' + parent_actor_type_id, function(actorType) {
+        $.each(actorType, function() {
+            var value_stringify = feedOptionJsonValue(this);
+            tableContent += "<option value='" + JSON.stringify(value_stringify) + "'>" + this.name + "</option>";
+        });
+        $('#actorTypeTargetListChild').html(tableContent);
+        $('#actorTypeSourceListChild').html(tableContent);
+    });
+    $('.subActorType').fadeIn(500);
+}
 
 var displayFields = [
     { classification_name: 'Class: ' },
@@ -396,3 +440,11 @@ function parseUrl(url) {
     return url.match(reg)[1];
     // return arr;
 };
+
+function feedOptionJsonValue(obj) {
+    var value_stringify = {
+        id: obj._id,
+        name: obj.name
+    }
+    return value_stringify;
+}

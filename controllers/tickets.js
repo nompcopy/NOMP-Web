@@ -374,7 +374,11 @@ var feedClassAndActorType = function(req) {
 }
 
 exports.class_list = function(req, res) {
-    ClassificationModel.listToJson(function(err, items) {
+    var options = {};
+    if (req.query.parentclass) {
+        options.criteria = { parent: req.query.parentclass }
+    }
+    ClassificationModel.listToJson(options, function(err, items) {
         res.json(items);
     });
 }
@@ -386,7 +390,11 @@ exports.class_parent_list = function(req, res) {
 }
 
 exports.actor_type_list = function(req, res) {
-    ActorTypeModel.listToJson(function(err, items) {
+    var options = {};
+    if (req.query.parentactortype) {
+        options.criteria = { parent: req.query.parentactortype };
+    }
+    ActorTypeModel.listToJson(options, function(err, items) {
         res.json(items);
     });
 }
