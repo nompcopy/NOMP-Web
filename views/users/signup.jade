@@ -18,7 +18,7 @@ block auth
     .form-group
       label(for="actor_type_parent") Your identity
       select.form-control(name='actor_type_parent')#actorTypeSourceList
-    .form-group.subActorType(style='display: none')
+    .form-group.subActorType
       label(for="actor_type") Sub identity
       select.form-control(name='actor_type')#actorTypeSourceListChild
     - if (user.isNew)

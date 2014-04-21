@@ -39,12 +39,12 @@ $(document).ready(function() {
 if (document.querySelector('#classificationList')) {
     populateClassificationList();
 }
-$('#classificationList').on('change', showSubClassificationList);
+$('#classificationList').on('click', showSubClassificationList);
 
 if (document.querySelector('#actorTypeTargetList')) {
     populateActorTypeList();
 }
-$('#actorTypeSourceList').on('change', showSubActorTypeList);
+$('#actorTypeSourceList').on('click', showSubActorTypeList);
 
 if (document.querySelector('#actorTypeSourceList')) {
     populateActorTypeList();
@@ -224,7 +224,6 @@ function showSubClassificationList() {
         });
         $('#classificationListChild').html(tableContent);
     });
-    $('.subClassification').fadeIn(500);
 }
 
 function populateActorTypeList() {
@@ -262,7 +261,6 @@ function showSubActorTypeList() {
         $('#actorTypeTargetListChild').html(tableContent);
         $('#actorTypeSourceListChild').html(tableContent);
     });
-    $('.subActorType').fadeIn(500);
 }
 
 var displayFields = [
