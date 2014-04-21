@@ -6,7 +6,10 @@ $(document).ready(function() {
     // first display on page loaded
     populateTicketList(limit, offset, false);
     $('#classificationFilter').on('click', 'a', setFilterClassification);
+    $('#classificationFilter').on('click', 'a', populateSubClassificationFilter);
+
     $('#sourceActorTypeFilter').on('click', 'a', setFilterSourceActorType);
+
     // play with limit and offset variables, execute pagers without refresh
     // TODO: see if we could optimize this piss
     $('#page-next').on('click', function() {
@@ -80,12 +83,13 @@ function setFilterClassification(event) {
 function populateSourceActorTypeFilter() {
     var tableContent = '';
     tableContent += '<a href="#" ref=""><b>All</b></a>';
-    $.getJSON('/actortype/list', function(actors) {
+    $.getJSON('/actortype/parentlist', function(actors) {
         $.each(actors, function() {
             tableContent += '<li>';
             tableContent += '<a href="#" rel="' + this._id + '">';
             tableContent += this.name;
-            tableContent += '</a>'
+            tableContent += '</a>';
+            tableContent += '<ul style="display: none" id="populateSubSourceActorTypeFilter"></ul>';
             tableContent += '</li>';
         });
         $('#sourceActorTypeFilter').html(tableContent);
@@ -95,7 +99,23 @@ function populateSourceActorTypeFilter() {
 function populateClassificationFilter() {
     var tableContent = '';
     tableContent += '<a href="#" ref=""><b>All</b></a>';
-    $.getJSON('/classification/list', function(classification) {
+    $.getJSON('/classification/parentlist', function(classification) {
+        $.each(classification, function() {
+            tableContent += '<li>';
+            tableContent += '<a href="#" rel="' + this._id + '">';
+            tableContent += this.name;
+            tableContent += '</a>'
+            tableContent += '<ul style="display: none" id="populateSubClassificationFilter' + this._id + '"></ul>';
+            tableContent += '</li>';
+        });
+        $('#classificationFilter').html(tableContent);
+    });
+}
+
+function populateSubClassificationFilter() {
+    var parentclass = $(this).attr('rel');
+    tableContent = '';
+    $.getJSON('/classification/list?parentclass=' + parentclass, function(classification) {
         $.each(classification, function() {
             tableContent += '<li>';
             tableContent += '<a href="#" rel="' + this._id + '">';
@@ -103,7 +123,8 @@ function populateClassificationFilter() {
             tableContent += '</a>'
             tableContent += '</li>';
         });
-        $('#classificationFilter').html(tableContent);
+        $('#populateSubClassificationFilter' + parentclass).html(tableContent);
+        $('#populateSubClassificationFilter' + parentclass).fadeToggle(200);
     });
 }
 
