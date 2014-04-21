@@ -62,7 +62,6 @@ exports.editClassification = function(req, res) {
 
 exports.deleteClassification = function(req, res) {
     var id = req.params.classId;
-    console.log(id);
     ClassificationModel.load(id, function(err, item) {
         item.remove(function(err) {
             return res.redirect('/admin/classification');
@@ -71,5 +70,34 @@ exports.deleteClassification = function(req, res) {
 }
 
 exports.editActorType = function(req, res) {
+    var tmp_parent_actortype = JSON.parse(req.body.parent_actortype);
+    req.body.parent = tmp_parent_actortype.id;
+    req.body.parent_name = tmp_parent_actortype.name;
 
+    // Update
+    if (typeof(req.body.id) !== 'undefined') {
+        ActorTypeModel.load(req.body.id.toString(), function(err, item) {
+            item.parent = tmp_parent_actortype.id;
+            item.parent_name = tmp_parent_actortype.name;
+            item.name = req.body.name;
+            item.save(function(err) {
+                return res.redirect('/admin/actortype');
+            });
+        });
+    }
+    else {
+        var c = new ActorTypeModel(req.body);
+        c.save(function(err) {
+            return res.redirect('/admin/actortype');
+        });
+    }
+}
+
+exports.deleteActorType = function(req, res) {
+    var id = req.params.actorId;
+    ActorTypeModel.load(id, function(err, item) {
+        item.remove(function(err) {
+            return res.redirect('/admin/actortype');
+        });
+    });
 }
