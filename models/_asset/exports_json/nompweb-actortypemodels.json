@@ -1,2 +1,26 @@
 { "_id" : { "$oid" : "5336b94ac1bde7b41d90377a" }, "name" : "Public actor type" }
-{ "_id" : { "$oid" : "53408e2dfe74c605d53ad82c" }, "name" : "test actor type1" }
+{ "_id" : { "$oid" : "53550dbe0ef07362d78a4bdd" }, "name" : "Governmental", "is_parent" : true }
+{ "_id" : { "$oid" : "53550dbe0ef07362d78a4bde" }, "name" : "NGO", "is_parent" : true }
+{ "_id" : { "$oid" : "53550dbe0ef07362d78a4bdf" }, "name" : "Police", "is_parent" : true }
+{ "_id" : { "$oid" : "53550dbe0ef07362d78a4be0" }, "name" : "Firefighters", "is_parent" : true }
+{ "_id" : { "$oid" : "53550dbe0ef07362d78a4be1" }, "name" : "Emergency services", "is_parent" : true }
+{ "_id" : { "$oid" : "53550dbe0ef07362d78a4be2" }, "name" : "Volunteers", "is_parent" : true }
+{ "_id" : { "$oid" : "53550dbe0ef07362d78a4be3" }, "name" : "Associaltions", "is_parent" : true }
+{ "_id" : { "$oid" : "53550dbe0ef07362d78a4be4" }, "name" : "Other", "is_parent" : true }
+{ "name" : "Government", "parent" : { "$oid" : "53550dbe0ef07362d78a4bdd" }, "parent_name" : "Governmental", "_id" : { "$oid" : "53551250fa5e20f414aadb1a" }, "is_parent" : false, "__v" : 0 }
+{ "name" : "Prefet", "parent" : { "$oid" : "53550dbe0ef07362d78a4bdd" }, "parent_name" : "Governmental", "_id" : { "$oid" : "53551258fa5e20f414aadb1b" }, "is_parent" : false, "__v" : 0 }
+{ "name" : "Maire", "parent" : { "$oid" : "53550dbe0ef07362d78a4bdd" }, "parent_name" : "Governmental", "_id" : { "$oid" : "5355125cfa5e20f414aadb1c" }, "is_parent" : false, "__v" : 0 }
+{ "name" : "Other", "parent" : { "$oid" : "53550dbe0ef07362d78a4bdd" }, "parent_name" : "Governmental", "_id" : { "$oid" : "53551260fa5e20f414aadb1d" }, "is_parent" : false, "__v" : 0 }
+{ "name" : "Red Cross", "parent" : { "$oid" : "53550dbe0ef07362d78a4bde" }, "parent_name" : "NGO", "_id" : { "$oid" : "53551269fa5e20f414aadb1e" }, "is_parent" : false, "__v" : 0 }
+{ "name" : "Other", "parent" : { "$oid" : "53550dbe0ef07362d78a4bde" }, "parent_name" : "NGO", "_id" : { "$oid" : "5355126efa5e20f414aadb1f" }, "is_parent" : false, "__v" : 0 }
+{ "name" : "Police", "parent" : { "$oid" : "53550dbe0ef07362d78a4bdf" }, "parent_name" : "Police", "_id" : { "$oid" : "53551276fa5e20f414aadb20" }, "is_parent" : false, "__v" : 0 }
+{ "name" : "Other", "parent" : { "$oid" : "53550dbe0ef07362d78a4bdf" }, "parent_name" : "Police", "_id" : { "$oid" : "5355127bfa5e20f414aadb21" }, "is_parent" : false, "__v" : 0 }
+{ "name" : "Other", "parent" : { "$oid" : "53550dbe0ef07362d78a4be0" }, "parent_name" : "Firefighters", "_id" : { "$oid" : "53551281fa5e20f414aadb22" }, "is_parent" : false, "__v" : 0 }
+{ "name" : "SOS", "parent" : { "$oid" : "53550dbe0ef07362d78a4be1" }, "parent_name" : "Emergency services", "_id" : { "$oid" : "5355129cfa5e20f414aadb23" }, "is_parent" : false, "__v" : 0 }
+{ "name" : "SAMU - Emergency medical services", "parent" : { "$oid" : "53550dbe0ef07362d78a4be1" }, "parent_name" : "Emergency services", "_id" : { "$oid" : "535512a6fa5e20f414aadb24" }, "is_parent" : false, "__v" : 0 }
+{ "name" : "Other", "parent" : { "$oid" : "53550dbe0ef07362d78a4be1" }, "parent_name" : "Emergency services", "_id" : { "$oid" : "535512affa5e20f414aadb25" }, "is_parent" : false, "__v" : 0 }
+{ "name" : "Local", "parent" : { "$oid" : "53550dbe0ef07362d78a4be2" }, "parent_name" : "Volunteers", "_id" : { "$oid" : "535512bafa5e20f414aadb26" }, "is_parent" : false, "__v" : 0 }
+{ "name" : "Other", "parent" : { "$oid" : "53550dbe0ef07362d78a4be2" }, "parent_name" : "Volunteers", "_id" : { "$oid" : "535512c0fa5e20f414aadb27" }, "is_parent" : false, "__v" : 0 }
+{ "name" : "Local", "parent" : { "$oid" : "53550dbe0ef07362d78a4be3" }, "parent_name" : "Associaltions", "_id" : { "$oid" : "535512cffa5e20f414aadb28" }, "is_parent" : false, "__v" : 0 }
+{ "name" : "Other", "parent" : { "$oid" : "53550dbe0ef07362d78a4be3" }, "parent_name" : "Associaltions", "_id" : { "$oid" : "535512d7fa5e20f414aadb29" }, "is_parent" : false, "__v" : 0 }
+{ "name" : "Other", "parent" : { "$oid" : "53550dbe0ef07362d78a4be4" }, "parent_name" : "Other", "_id" : { "$oid" : "535512dbfa5e20f414aadb2a" }, "is_parent" : false, "__v" : 0 }
