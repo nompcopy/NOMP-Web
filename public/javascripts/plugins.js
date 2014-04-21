@@ -1,12 +1,13 @@
-
+var subClassification = [];
+var subActorType = [];
 $(document).ready(function() {
     var limit = 5;
     var offset = 0;
 
     // first display on page loaded
     populateTicketList(limit, offset, false);
-    $('#classificationFilter').on('click', 'a', setFilterClassification);
     $('#classificationFilter').on('click', 'a', populateSubClassificationFilter);
+    $('#classificationFilter').on('click', 'a', setFilterClassification);
 
     $('#sourceActorTypeFilter').on('click', 'a', setFilterSourceActorType);
 
@@ -64,18 +65,24 @@ if (document.querySelector('#source_ticket')) {
 
 
 function setFilterSourceActorType(event) {
+    event.preventDefault();
     var limit = 5;
     var offset = 0;
-    event.preventDefault();
     var filters = {};
     filters.source_actor_type = $(this).attr('rel');
     populateTicketList(limit, offset, filters);
 }
 
 function setFilterClassification(event) {
+    event.preventDefault();
     var limit = 5;
     var offset = 0;
     var filters = {};
+
+    if ($(this).attr('rel') === $(this).parents('li').last().children('a').attr('rel')) {
+        filters.is_parent = true;
+    }
+
     filters.classification = $(this).attr('rel');
     populateTicketList(limit, offset, filters);
 }
@@ -112,11 +119,14 @@ function populateClassificationFilter() {
     });
 }
 
-function populateSubClassificationFilter() {
+function populateSubClassificationFilter(event) {
+    event.preventDefault();
+
     var parentclass = $(this).attr('rel');
     tableContent = '';
     $.getJSON('/classification/list?parentclass=' + parentclass, function(classification) {
         $.each(classification, function() {
+            subClassification.push(this._id);
             tableContent += '<li>';
             tableContent += '<a href="#" rel="' + this._id + '">';
             tableContent += this.name;
@@ -348,7 +358,6 @@ function populateTicketList(limit, offset, filters) {
             data.offset = offset;
         }
         var ticket_list_url = '/' + ticket_type + '/list';
-
         $.getJSON(ticket_list_url, data, function(tickets) {
             var tableContent = '';
             var haveContent = false;
@@ -356,14 +365,21 @@ function populateTicketList(limit, offset, filters) {
             if (tickets.length > 0) {
                 $.each(tickets, function() {
                     if (filters) {
-                        if (typeof(filters.classification) !== 'undefined') {
-                            if (this.classification.toString() !== filters.classification.toString()) {
+                        if (filters.is_parent) {
+                            if (jQuery.inArray(this.classification, subClassification) < 0) {
                                 return;
                             }
                         }
-                        if (typeof(filters.source_actor_type) !== 'undefined') {
-                            if (this.source_actor_type.toString() !== filters.source_actor_type.toString()) {
-                                return;
+                        else {
+                            if (typeof(filters.classification) !== 'undefined') {
+                                if (this.classification.toString() !== filters.classification.toString()) {
+                                    return;
+                                }
+                            }
+                            if (typeof(filters.source_actor_type) !== 'undefined') {
+                                if (this.source_actor_type.toString() !== filters.source_actor_type.toString()) {
+                                    return;
+                                }
                             }
                         }
                         tableContent += generateListElementView(this);
