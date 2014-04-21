@@ -1,1 +1,57 @@
-{ "_id" : { "$oid" : "53408dbcfe74c605d53ad82b" }, "name" : "test class1" }
+{ "_id" : { "$oid" : "53550e4f0ef07362d78a4bed" }, "name" : "Transport", "is_parent" : true }
+{ "_id" : { "$oid" : "53550e4f0ef07362d78a4bee" }, "name" : "Communication", "is_parent" : true }
+{ "_id" : { "$oid" : "53550e4f0ef07362d78a4bef" }, "name" : "Safety Issues", "is_parent" : true }
+{ "_id" : { "$oid" : "53550e4f0ef07362d78a4bf0" }, "name" : "Shelter", "is_parent" : true }
+{ "_id" : { "$oid" : "53550e4f0ef07362d78a4bf1" }, "name" : "Health", "is_parent" : true }
+{ "_id" : { "$oid" : "53550e4f0ef07362d78a4bf2" }, "name" : "Energy", "is_parent" : true }
+{ "_id" : { "$oid" : "53550e4f0ef07362d78a4bf3" }, "name" : "Food and Water", "is_parent" : true }
+{ "_id" : { "$oid" : "53550e4f0ef07362d78a4bf4" }, "name" : "Clothing", "is_parent" : true }
+{ "_id" : { "$oid" : "53550e4f0ef07362d78a4bf6" }, "name" : "Other", "is_parent" : true }
+{ "name" : "Car", "parent" : { "$oid" : "53550e4f0ef07362d78a4bed" }, "parent_name" : "Transport", "_id" : { "$oid" : "53550ec7fa5e20f414aadaeb" }, "is_parent" : false, "__v" : 0 }
+{ "name" : "Truck", "parent" : { "$oid" : "53550e4f0ef07362d78a4bed" }, "parent_name" : "Transport", "_id" : { "$oid" : "53550ecbfa5e20f414aadaec" }, "is_parent" : false, "__v" : 0 }
+{ "name" : "Small boat", "parent" : { "$oid" : "53550e4f0ef07362d78a4bed" }, "parent_name" : "Transport", "_id" : { "$oid" : "53550ecffa5e20f414aadaed" }, "is_parent" : false, "__v" : 0 }
+{ "name" : "Carpooling", "parent" : { "$oid" : "53550e4f0ef07362d78a4bed" }, "parent_name" : "Transport", "_id" : { "$oid" : "53550ed7fa5e20f414aadaee" }, "is_parent" : false, "__v" : 0 }
+{ "name" : "Bus", "parent" : { "$oid" : "53550e4f0ef07362d78a4bed" }, "parent_name" : "Transport", "_id" : { "$oid" : "53550edbfa5e20f414aadaef" }, "is_parent" : false, "__v" : 0 }
+{ "name" : "Other", "parent" : { "$oid" : "53550e4f0ef07362d78a4bed" }, "parent_name" : "Transport", "_id" : { "$oid" : "53550edefa5e20f414aadaf0" }, "is_parent" : false, "__v" : 0 }
+{ "name" : "Make a call", "parent" : { "$oid" : "53550e4f0ef07362d78a4bee" }, "parent_name" : "Communication", "_id" : { "$oid" : "53550ee5fa5e20f414aadaf1" }, "is_parent" : false, "__v" : 0 }
+{ "name" : "Network availability", "parent" : { "$oid" : "53550e4f0ef07362d78a4bee" }, "parent_name" : "Communication", "_id" : { "$oid" : "53550eeffa5e20f414aadaf2" }, "is_parent" : false, "__v" : 0 }
+{ "name" : "Wifi hotspot", "parent" : { "$oid" : "53550e4f0ef07362d78a4bee" }, "parent_name" : "Communication", "_id" : { "$oid" : "53550ef6fa5e20f414aadaf3" }, "is_parent" : false, "__v" : 0 }
+{ "name" : "Cellular phone", "parent" : { "$oid" : "53550e4f0ef07362d78a4bee" }, "parent_name" : "Communication", "_id" : { "$oid" : "53550efefa5e20f414aadaf4" }, "is_parent" : false, "__v" : 0 }
+{ "name" : "Other", "parent" : { "$oid" : "53550e4f0ef07362d78a4bee" }, "parent_name" : "Communication", "_id" : { "$oid" : "53550f05fa5e20f414aadaf5" }, "is_parent" : false, "__v" : 0 }
+{ "name" : "Police station", "parent" : { "$oid" : "53550e4f0ef07362d78a4bef" }, "parent_name" : "Safety Issues", "_id" : { "$oid" : "53550f0ffa5e20f414aadaf6" }, "is_parent" : false, "__v" : 0 }
+{ "name" : "Fire Fighters", "parent" : { "$oid" : "53550e4f0ef07362d78a4bef" }, "parent_name" : "Safety Issues", "_id" : { "$oid" : "53550f16fa5e20f414aadaf7" }, "is_parent" : false, "__v" : 0 }
+{ "name" : "Host family accommodation", "parent" : { "$oid" : "53550e4f0ef07362d78a4bf0" }, "parent_name" : "Shelter", "_id" : { "$oid" : "53550f26fa5e20f414aadaf8" }, "is_parent" : false, "__v" : 0 }
+{ "name" : "Humanitarian camp", "parent" : { "$oid" : "53550e4f0ef07362d78a4bf0" }, "parent_name" : "Shelter", "_id" : { "$oid" : "53550f2ffa5e20f414aadaf9" }, "is_parent" : false, "__v" : 0 }
+{ "name" : "Bed/ room", "parent" : { "$oid" : "53550e4f0ef07362d78a4bf0" }, "parent_name" : "Shelter", "_id" : { "$oid" : "53550f3ffa5e20f414aadafa" }, "is_parent" : false, "__v" : 0 }
+{ "name" : "Other", "parent" : { "$oid" : "53550e4f0ef07362d78a4bf0" }, "parent_name" : "Shelter", "_id" : { "$oid" : "53550f45fa5e20f414aadafb" }, "is_parent" : false, "__v" : 0 }
+{ "name" : "Doctor", "parent" : { "$oid" : "53550e4f0ef07362d78a4bf1" }, "parent_name" : "Health", "_id" : { "$oid" : "53550f54fa5e20f414aadafc" }, "is_parent" : false, "__v" : 0 }
+{ "name" : "Medecines", "parent" : { "$oid" : "53550e4f0ef07362d78a4bf1" }, "parent_name" : "Health", "_id" : { "$oid" : "53550f5ffa5e20f414aadafd" }, "is_parent" : false, "__v" : 0 }
+{ "name" : "Medical care", "parent" : { "$oid" : "53550e4f0ef07362d78a4bf1" }, "parent_name" : "Health", "_id" : { "$oid" : "53550f67fa5e20f414aadafe" }, "is_parent" : false, "__v" : 0 }
+{ "name" : "First aid kits", "parent" : { "$oid" : "53550e4f0ef07362d78a4bf1" }, "parent_name" : "Health", "_id" : { "$oid" : "53550f7cfa5e20f414aadaff" }, "is_parent" : false, "__v" : 0 }
+{ "name" : "Other", "parent" : { "$oid" : "53550e4f0ef07362d78a4bf1" }, "parent_name" : "Health", "_id" : { "$oid" : "53550f85fa5e20f414aadb00" }, "is_parent" : false, "__v" : 0 }
+{ "name" : "Bateries", "parent" : { "$oid" : "53550e4f0ef07362d78a4bf2" }, "parent_name" : "Energy", "_id" : { "$oid" : "53550f95fa5e20f414aadb01" }, "is_parent" : false, "__v" : 0 }
+{ "name" : "Fuel", "parent" : { "$oid" : "53550e4f0ef07362d78a4bf2" }, "parent_name" : "Energy", "_id" : { "$oid" : "53550f9efa5e20f414aadb02" }, "is_parent" : false, "__v" : 0 }
+{ "name" : "Generators", "parent" : { "$oid" : "53550e4f0ef07362d78a4bf2" }, "parent_name" : "Energy", "_id" : { "$oid" : "53550fa7fa5e20f414aadb03" }, "is_parent" : false, "__v" : 0 }
+{ "name" : "Solar kits", "parent" : { "$oid" : "53550e4f0ef07362d78a4bf2" }, "parent_name" : "Energy", "_id" : { "$oid" : "53550fbdfa5e20f414aadb04" }, "is_parent" : false, "__v" : 0 }
+{ "name" : "Battery charger", "parent" : { "$oid" : "53550e4f0ef07362d78a4bf2" }, "parent_name" : "Energy", "_id" : { "$oid" : "53550fcdfa5e20f414aadb05" }, "is_parent" : false, "__v" : 0 }
+{ "name" : "Gas", "parent" : { "$oid" : "53550e4f0ef07362d78a4bf2" }, "parent_name" : "Energy", "_id" : { "$oid" : "53550fd4fa5e20f414aadb06" }, "is_parent" : false, "__v" : 0 }
+{ "name" : "Other", "parent" : { "$oid" : "53550e4f0ef07362d78a4bf2" }, "parent_name" : "Energy", "_id" : { "$oid" : "53550fdbfa5e20f414aadb07" }, "is_parent" : false, "__v" : 0 }
+{ "name" : "Non-perishable food", "parent" : { "$oid" : "53550e4f0ef07362d78a4bf3" }, "parent_name" : "Food and Water", "_id" : { "$oid" : "53550fecfa5e20f414aadb08" }, "is_parent" : false, "__v" : 0 }
+{ "name" : "For kids", "parent" : { "$oid" : "53550e4f0ef07362d78a4bf3" }, "parent_name" : "Food and Water", "_id" : { "$oid" : "53550ffafa5e20f414aadb09" }, "is_parent" : false, "__v" : 0 }
+{ "name" : "For babies", "parent" : { "$oid" : "53550e4f0ef07362d78a4bf3" }, "parent_name" : "Food and Water", "_id" : { "$oid" : "53551005fa5e20f414aadb0a" }, "is_parent" : false, "__v" : 0 }
+{ "name" : "Safe drinking water", "parent" : { "$oid" : "53550e4f0ef07362d78a4bf3" }, "parent_name" : "Food and Water", "_id" : { "$oid" : "53551012fa5e20f414aadb0b" }, "is_parent" : false, "__v" : 0 }
+{ "name" : "Warehouse", "parent" : { "$oid" : "53550e4f0ef07362d78a4bf3" }, "parent_name" : "Food and Water", "_id" : { "$oid" : "53551020fa5e20f414aadb0c" }, "is_parent" : false, "__v" : 0 }
+{ "name" : "Drop off/distribution centers", "parent" : { "$oid" : "53550e4f0ef07362d78a4bf3" }, "parent_name" : "Food and Water", "_id" : { "$oid" : "5355102bfa5e20f414aadb0d" }, "is_parent" : false, "__v" : 0 }
+{ "name" : "Other", "parent" : { "$oid" : "53550e4f0ef07362d78a4bf3" }, "parent_name" : "Food and Water", "_id" : { "$oid" : "53551036fa5e20f414aadb0e" }, "is_parent" : false, "__v" : 0 }
+{ "name" : "For babies", "parent" : { "$oid" : "53550e4f0ef07362d78a4bf4" }, "parent_name" : "Clothing", "_id" : { "$oid" : "5355103efa5e20f414aadb0f" }, "is_parent" : false, "__v" : 0 }
+{ "name" : "For kids", "parent" : { "$oid" : "53550e4f0ef07362d78a4bf4" }, "parent_name" : "Clothing", "_id" : { "$oid" : "53551046fa5e20f414aadb10" }, "is_parent" : false, "__v" : 0 }
+{ "name" : "For adults", "parent" : { "$oid" : "53550e4f0ef07362d78a4bf4" }, "parent_name" : "Clothing", "_id" : { "$oid" : "5355104ffa5e20f414aadb11" }, "is_parent" : false, "__v" : 0 }
+{ "name" : "PPE- Personal protective equipment", "parent" : { "$oid" : "53550e4f0ef07362d78a4bf4" }, "parent_name" : "Clothing", "_id" : { "$oid" : "53551058fa5e20f414aadb12" }, "is_parent" : false, "__v" : 0 }
+{ "name" : "Other", "parent" : { "$oid" : "53550e4f0ef07362d78a4bf4" }, "parent_name" : "Clothing", "_id" : { "$oid" : "53551072fa5e20f414aadb13" }, "is_parent" : false, "__v" : 0 }
+{ "_id" : { "$oid" : "535510e1e4939454b262c21e" }, "name" : "DIY- do it yourself", "is_parent" : true }
+{ "name" : "Electrical, Electronics", "parent" : { "$oid" : "535510e1e4939454b262c21e" }, "parent_name" : "DIY- do it yourself", "_id" : { "$oid" : "535510f9fa5e20f414aadb14" }, "is_parent" : false, "__v" : 0 }
+{ "name" : "Cars, trucks, boats", "parent" : { "$oid" : "535510e1e4939454b262c21e" }, "parent_name" : "DIY- do it yourself", "_id" : { "$oid" : "53551102fa5e20f414aadb15" }, "is_parent" : false, "__v" : 0 }
+{ "name" : "Plumbing, HVAC", "parent" : { "$oid" : "535510e1e4939454b262c21e" }, "parent_name" : "DIY- do it yourself", "_id" : { "$oid" : "5355110dfa5e20f414aadb16" }, "is_parent" : false, "__v" : 0 }
+{ "name" : "Carpentry", "parent" : { "$oid" : "535510e1e4939454b262c21e" }, "parent_name" : "DIY- do it yourself", "_id" : { "$oid" : "53551116fa5e20f414aadb17" }, "is_parent" : false, "__v" : 0 }
+{ "name" : "Other", "parent" : { "$oid" : "535510e1e4939454b262c21e" }, "parent_name" : "DIY- do it yourself", "_id" : { "$oid" : "53551120fa5e20f414aadb18" }, "is_parent" : false, "__v" : 0 }
+{ "name" : "Other", "parent" : { "$oid" : "53550e4f0ef07362d78a4bf6" }, "parent_name" : "Other", "_id" : { "$oid" : "5355112ffa5e20f414aadb19" }, "is_parent" : false, "__v" : 0 }
