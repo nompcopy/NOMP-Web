@@ -58,6 +58,8 @@ exports.class_list = fieldController.class_list;
 exports.class_parent_list = fieldController.class_parent_list;
 exports.actor_type_list = fieldController.actor_type_list;
 exports.actor_type_parent_list = fieldController.actor_type_parent_list;
+exports.get_class = fieldController.get_class;
+exports.get_actor_type = fieldController.get_actor_type;
 
 // maps
 exports.maps = function(req, res) {

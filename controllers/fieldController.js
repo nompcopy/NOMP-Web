@@ -36,3 +36,15 @@ exports.actor_type_parent_list = function(req, res) {
         res.json(items);
     });
 }
+
+exports.get_class = function(req, res) {
+    ClassificationModel.loadJson(req.params.classId, function(err, item) {
+        res.json(item);
+    });
+}
+
+exports.get_actor_type = function(req, res) {
+    ActorTypeModel.loadJson(req.params.actortypeId, function(err, item) {
+        res.json(item);
+    });
+}

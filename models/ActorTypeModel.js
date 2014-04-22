@@ -16,6 +16,9 @@ ActorTypeModelSchema.statics = {
     load: function(id, cb) {
         this.findOne({ _id: id }).exec(cb);
     },
+    loadJson: function(id, cb) {
+        this.findOne({ _id: id }).lean().exec(cb);
+    },
     list: function(cb) {
         this.find().exec(cb);
     },

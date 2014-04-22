@@ -20,7 +20,7 @@ block auth
       select.form-control(name='actor_type_parent')#actorTypeSourceList
     .form-group.subActorType
       label(for="actor_type") Sub identity
-      select.form-control(name='actor_type')#actorTypeSourceListChild
+      select.form-control(name='actor_type' value=user.actor_type)#actorTypeSourceListChild
     - if (user.isNew)
       .form-group
         label(for="password") Password

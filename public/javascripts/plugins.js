@@ -35,6 +35,7 @@ $(document).ready(function() {
     if (document.querySelector('#adminClassification') || document.querySelector('#adminActorType')) {
         $.getScript('/javascripts/adminPlugin.js');
     }
+
 });
 
 if (document.querySelector('#classificationList')) {
@@ -217,8 +218,27 @@ function populateClassificationList() {
             tableContent += "<option value='" + JSON.stringify(value_stringify) + "'>" + this.name + "</option>";
         });
         $('#classificationList').html(tableContent);
+        if($('#classificationListChild').attr('value')) {
+            fillClassification($('#classificationListChild').attr('value'), true);
+        }
     });
 }
+
+
+function fillClassification(childId, is_parent) {
+    $.getJSON('/classification/' + childId, function(classification) {
+        if (is_parent) {
+            var parent_option_val = makeOptionJsonValue(classification.parent, classification.parent_name);
+            $('#classificationList option[value="' + JSON.stringify(parent_option_val) + '"]').attr('selected','selected');
+            showSubClassificationList();
+        }
+        if (!is_parent) {
+            var parent_option_val = feedOptionJsonValue(classification);
+            $('#classificationListChild option[value="' + JSON.stringify(parent_option_val) + '"]').attr('selected','selected');
+        }
+    });
+}
+
 
 function showSubClassificationList() {
     var parent_classification_data = $('#classificationList').val();
@@ -233,6 +253,9 @@ function showSubClassificationList() {
             tableContent += "<option value='" + JSON.stringify(value_stringify) + "'>" + this.name + "</option>";
         });
         $('#classificationListChild').html(tableContent);
+        if($('#classificationListChild').attr('value')) {
+            fillClassification($('#classificationListChild').attr('value'), false);
+        }
     });
 }
 
@@ -248,8 +271,32 @@ function populateActorTypeList() {
         });
         $('#actorTypeSourceList').html(tableContent);
         $('#actorTypeTargetList').html(tableContent);
+        if ($('#actorTypeTargetListChild').attr('value')) {
+            fillActorType($('#actorTypeTargetListChild').attr('value'), true);
+        }
+        if ($('#actorTypeSourceListChild').attr('value')) {
+            fillActorType($('#actorTypeSourceListChild').attr('value'), true);
+        }
     });
 }
+
+
+function fillActorType(childId, is_parent) {
+    $.getJSON('/actortype/' + childId, function(actortype) {
+        if (is_parent) {
+            var parent_option_val = makeOptionJsonValue(actortype.parent, actortype.parent_name);
+            $('#actorTypeSourceList option[value="' + JSON.stringify(parent_option_val) + '"]').attr('selected','selected');
+            $('#actorTypeTargetList option[value="' + JSON.stringify(parent_option_val) + '"]').attr('selected','selected');
+            showSubActorTypeList();
+        }
+        if (!is_parent) {
+            var parent_option_val = feedOptionJsonValue(actortype);
+            $('#actorTypeSourceListChild option[value="' + JSON.stringify(parent_option_val) + '"]').attr('selected','selected');
+            $('#actorTypeTargetListChild option[value="' + JSON.stringify(parent_option_val) + '"]').attr('selected','selected');
+        }
+    });
+}
+
 
 function showSubActorTypeList() {
     if ($('#actorTypeTargetList').val()) {
@@ -270,6 +317,12 @@ function showSubActorTypeList() {
         });
         $('#actorTypeTargetListChild').html(tableContent);
         $('#actorTypeSourceListChild').html(tableContent);
+        if ($('#actorTypeTargetListChild').attr('value')) {
+            fillActorType($('#actorTypeTargetListChild').attr('value'), false);
+        }
+        if ($('#actorTypeSourceListChild').attr('value')) {
+            fillActorType($('#actorTypeSourceListChild').attr('value'), false);
+        }
     });
 }
 
@@ -495,6 +548,14 @@ function feedOptionJsonValue(obj) {
     var value_stringify = {
         id: obj._id,
         name: obj.name
+    }
+    return value_stringify;
+}
+
+function makeOptionJsonValue(id, name) {
+    var value_stringify = {
+        id: id,
+        name: name
     }
     return value_stringify;
 }
