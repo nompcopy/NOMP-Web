@@ -1,4 +1,4 @@
-{ "_id" : { "$oid" : "5336b94ac1bde7b41d90377a" }, "name" : "Public actor type" }
+{ "_id" : { "$oid" : "5336b94ac1bde7b41d90377a" }, "parent" : { "$oid" : "5336b94ac1bde7b41d90377a" }, "name" : "Public", "is_parent" : true, "parent_name" : "Public" }
 { "_id" : { "$oid" : "53550dbe0ef07362d78a4bdd" }, "name" : "Governmental", "is_parent" : true }
 { "_id" : { "$oid" : "53550dbe0ef07362d78a4bde" }, "name" : "NGO", "is_parent" : true }
 { "_id" : { "$oid" : "53550dbe0ef07362d78a4bdf" }, "name" : "Police", "is_parent" : true }
