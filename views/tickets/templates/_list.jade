@@ -24,8 +24,12 @@ block subContent
         .col-md-2
           block filters
             p Classification:
+            a(href=req.url)
+              b All
             ul#classificationFilter
             p Source Actor:
+            a(href=req.url)
+              b All
             ul#sourceActorTypeFilter
         // ticket list block
         .col-md-10(style="border-left: 1px solid #ddd;")

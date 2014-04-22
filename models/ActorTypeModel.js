@@ -21,7 +21,11 @@ ActorTypeModelSchema.statics = {
     },
     listToJson: function(options, cb) {
         var criteria = options.criteria || {};
-        this.find(criteria).lean().exec(cb);
+        var query = this.find(criteria).lean();
+        if (options.select) {
+            query.select(options.select);
+        }
+        query.exec(cb);
     },
     retrieveByValue: function(val, cb) {
         this.findOne({ name: val }).exec(cb);
