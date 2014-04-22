@@ -36,13 +36,13 @@ block content
                   select.form-control(name='classification_parent')#classificationList
                 .form-group.subClassification
                   label(for="classification") Choose Sub Class
-                  select.form-control(name='classification')#classificationListChild
+                  select.form-control(name='classification' value=ticket.classification)#classificationListChild
                 .form-group
                   label(for="target_actor_type_parent") Chosse Target Actor
                   select.form-control(name='target_actor_type_parent')#actorTypeTargetList
                 .form-group.subActorType
                   label(for="target_actor_type") Chosse Sub Target Actor
-                  select.form-control(name='target_actor_type')#actorTypeTargetListChild
+                  select.form-control(name='target_actor_type' value=ticket.target_actor_type)#actorTypeTargetListChild
                 .form-group
                   label(for="address") Address
                   input#address.form-control(type='text', name='address', placeholder='Address', value=ticket.address, required)
