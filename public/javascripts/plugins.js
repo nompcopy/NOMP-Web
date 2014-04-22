@@ -3,14 +3,15 @@ var subActorType = [];
 $(document).ready(function() {
     var limit = 20;
     var offset = 0;
-
     // first display on page loaded
     populateTicketList(limit, offset, false);
     $('#classificationFilter').on('click', 'a', populateSubClassificationFilter);
-    $('#classificationFilter').on('click', 'a', setFilterClassification);
+    $('#classificationFilter').on('click', 'a', setClassificationFilter);
 
     $('#sourceActorTypeFilter').on('click', 'a', populateSubActorTypeFilter);
-    $('#sourceActorTypeFilter').on('click', 'a', setFilterSourceActorType);
+    $('#sourceActorTypeFilter').on('click', 'a', setActorTypeFilter);
+    // make blod
+    // $('a[id*=]')
 
     // play with limit and offset variables, execute pagers without refresh
     // TODO: see if we could optimize this piss
@@ -65,9 +66,15 @@ if (document.querySelector('#source_ticket')) {
 }
 
 
-function setFilterSourceActorType(event) {
+function setActorTypeFilter(event) {
     event.preventDefault();
-    var limit = 100;
+
+    $('#sourceActorTypeFilter').children('li').children('ul').children('li').children('a').css('font-weight', 'normal');
+    $('#sourceActorTypeFilter').children('li').children('a').css('font-weight', 'normal');
+    $(this).css('font-weight', 'bold');
+    $(this).parents('li').last().children('a').css('font-weight', 'bold');
+
+    var limit = 5;
     var offset = 0;
     var filters = {};
 
@@ -79,9 +86,15 @@ function setFilterSourceActorType(event) {
     populateTicketList(limit, offset, filters);
 }
 
-function setFilterClassification(event) {
+function setClassificationFilter(event) {
     event.preventDefault();
-    var limit = 100;
+
+    $('#classificationFilter').children('li').children('ul').children('li').children('a').css('font-weight', 'normal');
+    $('#classificationFilter').children('li').children('a').css('font-weight', 'normal');
+    $(this).css('font-weight', 'bold');
+    $(this).parents('li').last().children('a').css('font-weight', 'bold');
+
+    var limit = 5;
     var offset = 0;
     var filters = {};
 
@@ -95,7 +108,6 @@ function setFilterClassification(event) {
 
 function populateSourceActorTypeFilter() {
     var tableContent = '';
-    tableContent += '<a href="#" ref=""><b>All</b></a>';
     $.getJSON('/actortype/parentlist', function(actors) {
         $.each(actors, function() {
             tableContent += '<li>';
@@ -130,7 +142,6 @@ function populateSubActorTypeFilter(event) {
 
 function populateClassificationFilter() {
     var tableContent = '';
-    tableContent += '<a href="#" ref=""><b>All</b></a>';
     $.getJSON('/classification/parentlist', function(classification) {
         $.each(classification, function() {
             tableContent += '<li>';
@@ -194,7 +205,6 @@ function populateMatchingResults() {
       });
     }
 }
-
 
 function populateClassificationList() {
     var tableContent = '';
@@ -380,6 +390,9 @@ function populateTicketList(limit, offset, filters) {
         if (offset) {
             data.offset = offset;
         }
+        if (filters) {
+            data.filters = filters;
+        }
         var ticket_list_url = '/' + ticket_type + '/list';
         $.getJSON(ticket_list_url, data, function(tickets) {
             var tableContent = '';
@@ -387,38 +400,8 @@ function populateTicketList(limit, offset, filters) {
             // check if there are tickets
             if (tickets.length > 0) {
                 $.each(tickets, function() {
-                    if (filters) {
-                        if (filters.is_parent) {
-                            if (subClassification.length > 0) {
-                                if (jQuery.inArray(this.classification, subClassification) < 0) {
-                                    return;
-                                }
-                            }
-                            if (subActorType.length > 0) {
-                                if (jQuery.inArray(this.source_actor_type, subActorType) < 0) {
-                                    return;
-                                }
-                            }
-                        }
-                        else {
-                            if (typeof(filters.classification) !== 'undefined') {
-                                if (this.classification.toString() !== filters.classification.toString()) {
-                                    return;
-                                }
-                            }
-                            if (typeof(filters.source_actor_type) !== 'undefined') {
-                                if (this.source_actor_type.toString() !== filters.source_actor_type.toString()) {
-                                    return;
-                                }
-                            }
-                        }
-                        tableContent += generateListElementView(this);
-                        haveContent = true;
-                    }
-                    else {
-                        tableContent += generateListElementView(this);
-                        haveContent = true;
-                    }
+                    tableContent += generateListElementView(this);
+                    haveContent = true;
                 });
             }
             if (!haveContent) {
