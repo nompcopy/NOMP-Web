@@ -14,13 +14,15 @@ exports.feedTicketJsonList = function(req, options, cb) {
 }
 
 
-exports.feedOwnerJsonList = function(req, cb) {
-    var options = { criteria: { user: req.user._id } };
+exports.feedOwnerJsonList = function(req, options, cb) {
+    var userOptions = options;
+    userOptions.criteria.user = req.user._id;
+
     if (req.params.type === 'need') {
-        NeedModel.listToJson(options, cb);
+        NeedModel.listToJson(userOptions, cb);
     }
     else if (req.params.type === 'offer') {
-        OfferModel.listToJson(options, cb)
+        OfferModel.listToJson(userOptions, cb)
     }
 }
 

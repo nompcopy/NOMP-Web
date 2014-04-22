@@ -6,7 +6,8 @@ var async = require('async');
 var mongoose = require('mongoose');
 var NeedModel = mongoose.model('NeedModel');
 var OfferModel = mongoose.model('OfferModel');
-
+var ClassificationModel = mongoose.model('ClassificationModel');
+var ActorTypeModel = mongoose.model('ActorTypeModel');
 /*
  * Logic: the index ticket page is empty concerning mongoose
  * We may use REST conception to get the list of tickets
@@ -69,21 +70,59 @@ exports.list = function(req, res) {
     if (req.query.offset) {
         options.offset = req.query.offset;
     }
-    if (req.query.classification) {
-        options.criteria.classification = req.query.classification;
-    }
 
     var render_items = [];
     // Use async fonction to manage the general feed and user owner list feed
     async.waterfall([
+        // actor type and classification
         function(callback) {
+            if (req.query.filters) {
+                var fieldOptions = {}
+                if (req.query.filters.is_parent) {
+                    fieldOptions.select = '_id';
+                    if (typeof(req.query.filters.classification) !== 'undefined') {
+                        fieldOptions.criteria = {
+                            parent: req.query.filters.classification
+                        };
+                        ClassificationModel.listToJson(fieldOptions, function(err, items) {
+                            // Make arr of ids classification
+                            options.criteria.classification = {$in: utils.getIdsArray(items)};
+                            callback(null, options);
+                        });
+                    }
+                    else if (typeof(req.query.filters.source_actor_type) !== 'undefined') {
+                        fieldOptions.criteria = {
+                            parent: req.query.filters.source_actor_type
+                        };
+                        ActorTypeModel.listToJson(fieldOptions, function(err, items) {
+                            // Make arr of ids classification
+                            options.criteria.source_actor_type = {$in: utils.getIdsArray(items)};
+                            callback(null, options);
+                        });
+                    }
+                }
+                else {
+                    if (typeof(req.query.filters.classification) !== 'undefined') {
+                        options.criteria.classification = req.query.filters.classification;
+                    }
+                    else if (typeof(req.query.filters.source_actor_type) !== 'undefined') {
+                        options.criteria.source_actor_type = req.query.filters.source_actor_type;
+                    }
+                    callback(null, options);
+                }
+            }
+            else {
+                callback(null, options);
+            }
+        },
+        function(options, callback) {
             ticketUtils.feedTicketJsonList(req, options, function(err, items) {
                 callback(null, render_items.concat(items));
             });
         },
         function(render_items, callback) {
             if (req.isAuthenticated()) {
-                ticketUtils.feedOwnerJsonList(req, function(err, items) {
+                ticketUtils.feedOwnerJsonList(req, options, function(err, items) {
                     callback(null, render_items.concat(items));
                 });
             }
