@@ -5,7 +5,7 @@ var path = require('path');
 var mongoose = require('mongoose');
 
 // var routes = require('../controllers/index');
-var tickets = require('../controllers/tickets');
+var tickets = require('../controllers/baseTicketController');
 var user = require('../controllers/user');
 var matchs = require('../controllers/matchs');
 var shiftings = require('../controllers/shiftings');
