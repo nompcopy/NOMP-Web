@@ -8,7 +8,7 @@ var async = require('async');
 var mongoose = require('mongoose');
 var NeedModel = mongoose.model('NeedModel');
 var OfferModel = mongoose.model('OfferModel');
-
+var UserModel = mongoose.model('UserModel');
 
 exports.new = function(req, res) {
     if (req.params.type === 'need') {
@@ -52,6 +52,8 @@ exports.create = function(req, res) {
         function(ticket, callback) {
             if (req.isAuthenticated()) {
                 ticket.user = req.user._id;
+                ticket.source_actor_type = req.user.actor_type;
+                ticket.source_actor_type_name = req.user.actor_type_name;
                 callback(null, ticket);
             }
             else {

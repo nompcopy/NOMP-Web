@@ -77,39 +77,64 @@ exports.list = function(req, res) {
         // actor type and classification
         function(callback) {
             if (req.query.filters) {
-                var fieldOptions = {}
-                if (req.query.filters.is_parent) {
-                    fieldOptions.select = '_id';
-                    if (typeof(req.query.filters.classification) !== 'undefined') {
-                        fieldOptions.criteria = {
-                            parent: req.query.filters.classification
-                        };
-                        ClassificationModel.listToJson(fieldOptions, function(err, items) {
-                            // Make arr of ids classification
-                            options.criteria.classification = {$in: utils.getIdsArray(items)};
-                            callback(null, options);
-                        });
+                var fieldOptions = {};
+                // Try to uniform the filters
+                async.waterfall([
+                    // Manage classifications
+                    function(class_callback) {
+                        if (typeof(req.query.filters.classification) !== 'undefined') {
+                            // exist of parent class
+                            if (typeof(req.query.filters.is_parent) !== 'undefined'
+                                && req.query.filters.is_parent.indexOf('classification') > -1) {
+                                fieldOptions.select = '_id';
+                                fieldOptions.criteria = {
+                                    parent: req.query.filters.classification
+                                };
+                                ClassificationModel.listToJson(fieldOptions, function(err, items) {
+                                    // Make arr of ids classification
+                                    options.criteria.classification = {$in: utils.getIdsArray(items)};
+                                    class_callback(null, options);
+                                });
+                            }
+                            // Child class
+                            else {
+                                options.criteria.classification = req.query.filters.classification;
+                                class_callback(null, options);
+                            }
+                        }
+                        else {
+                            class_callback(null, options);
+                        }
+                    },
+                    // Manage actor type
+                    function(options, actor_callback) {
+                        if (typeof(req.query.filters.source_actor_type) !== 'undefined') {
+                            // exist of parent actor type
+                            if (typeof(req.query.filters.is_parent) !== 'undefined'
+                                && req.query.filters.is_parent.indexOf('actortype') > -1) {
+                                fieldOptions.select = '_id';
+                                fieldOptions.criteria = {
+                                    parent: req.query.filters.source_actor_type
+                                };
+                                ActorTypeModel.listToJson(fieldOptions, function(err, items) {
+                                    // Make arr of ids actor types
+                                    options.criteria.source_actor_type = {$in: utils.getIdsArray(items)};
+                                    actor_callback(null, options);
+                                });
+                            }
+                            // Child actor type
+                            else {
+                                options.criteria.source_actor_type = req.query.filters.source_actor_type;
+                                actor_callback(null, options);
+                            }
+                        }
+                        else {
+                            actor_callback(null, options);
+                        }
                     }
-                    else if (typeof(req.query.filters.source_actor_type) !== 'undefined') {
-                        fieldOptions.criteria = {
-                            parent: req.query.filters.source_actor_type
-                        };
-                        ActorTypeModel.listToJson(fieldOptions, function(err, items) {
-                            // Make arr of ids classification
-                            options.criteria.source_actor_type = {$in: utils.getIdsArray(items)};
-                            callback(null, options);
-                        });
-                    }
-                }
-                else {
-                    if (typeof(req.query.filters.classification) !== 'undefined') {
-                        options.criteria.classification = req.query.filters.classification;
-                    }
-                    else if (typeof(req.query.filters.source_actor_type) !== 'undefined') {
-                        options.criteria.source_actor_type = req.query.filters.source_actor_type;
-                    }
+                ], function(err, options) {
                     callback(null, options);
-                }
+                });
             }
             else {
                 callback(null, options);
