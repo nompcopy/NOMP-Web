@@ -6,10 +6,10 @@ $(document).ready(function() {
     // first display on page loaded
     populateTicketList(limit, offset, false);
     $('#classificationFilter').on('click', 'a', populateSubClassificationFilter);
-    $('#classificationFilter').on('click', 'a', setClassificationFilter);
+    $('#classificationFilter').on('click', 'a', setFilter);
 
     $('#sourceActorTypeFilter').on('click', 'a', populateSubActorTypeFilter);
-    $('#sourceActorTypeFilter').on('click', 'a', setActorTypeFilter);
+    $('#sourceActorTypeFilter').on('click', 'a', setFilter);
     // make blod
     // $('a[id*=]')
 
@@ -51,7 +51,7 @@ $('#actorTypeSourceList').on('click', showSubActorTypeList);
 if (document.querySelector('#actorTypeSourceList')) {
     populateActorTypeList();
 }
-$('#actorTypeTargetList').on('change', showSubActorTypeList);
+$('#actorTypeTargetList').on('click', showSubActorTypeList);
 
 if (document.querySelector('#classificationFilter')) {
     populateClassificationFilter();
@@ -67,17 +67,62 @@ if (document.querySelector('#source_ticket')) {
 }
 
 
+function setFilter(event) {
+    var limit = 5;
+    var offset = 0;
+    var filters = {
+        is_parent: []
+    };
+
+    // manage the filter dict and the display
+    // block classification
+    var filter_type = $(this).parents('ul').last().attr('id');
+    if (filter_type == 'classificationFilter') {
+        $('a[class="classificationFilterSet"]').removeClass();
+        $('#classificationFilter').children('li').children('ul').children('li').children('a').css('font-weight', 'normal');
+        $('#classificationFilter').children('li').children('a').css('font-weight', 'normal');
+        $(this).css('font-weight', 'bold');
+        $(this).addClass('classificationFilterSet');
+        $(this).parents('li').last().children('a').css('font-weight', 'bold');
+    }
+    // block actor type
+    if (filter_type == 'sourceActorTypeFilter') {
+        $('a[class="sourceActorTypeFilterSet"]').removeClass();
+        $('#sourceActorTypeFilter').children('li').children('ul').children('li').children('a').css('font-weight', 'normal');
+        $('#sourceActorTypeFilter').children('li').children('a').css('font-weight', 'normal');
+        $(this).css('font-weight', 'bold');
+        $(this).parents('li').last().children('a').css('font-weight', 'bold');
+        $(this).addClass('sourceActorTypeFilterSet');
+    }
+
+    // construction of filters
+    if ($('.classificationFilterSet').length > 0) {
+        filters.classification = $('.classificationFilterSet').attr('rel');
+        if ($('.classificationFilterSet').attr('rel') === $('.classificationFilterSet').parents('li').last().children('a').attr('rel')) {
+            filters.is_parent.push('classification');
+        }
+    }
+    if ($('.sourceActorTypeFilterSet').length > 0) {
+        filters.source_actor_type = $('.sourceActorTypeFilterSet').attr('rel');
+        if ($('.sourceActorTypeFilterSet').attr('rel') === $('.sourceActorTypeFilterSet').parents('li').last().children('a').attr('rel')) {
+            filters.is_parent.push('actortype');
+        }
+    }
+
+    populateTicketList(limit, offset, filters);
+}
+
+
 function setActorTypeFilter(event) {
     event.preventDefault();
 
+    $('a[class="sourceActorTypeFilterSet"]').removeClass();
     $('#sourceActorTypeFilter').children('li').children('ul').children('li').children('a').css('font-weight', 'normal');
     $('#sourceActorTypeFilter').children('li').children('a').css('font-weight', 'normal');
     $(this).css('font-weight', 'bold');
     $(this).parents('li').last().children('a').css('font-weight', 'bold');
+    $(this).addClass('sourceActorTypeFilterSet');
 
-    var limit = 5;
-    var offset = 0;
-    var filters = {};
 
     if ($(this).attr('rel') === $(this).parents('li').last().children('a').attr('rel')) {
         filters.is_parent = true;
@@ -90,9 +135,11 @@ function setActorTypeFilter(event) {
 function setClassificationFilter(event) {
     event.preventDefault();
 
+    $('a[class="classificationFilterSet"]').removeClass();
     $('#classificationFilter').children('li').children('ul').children('li').children('a').css('font-weight', 'normal');
     $('#classificationFilter').children('li').children('a').css('font-weight', 'normal');
     $(this).css('font-weight', 'bold');
+    $(this).addClass('classificationFilterSet');
     $(this).parents('li').last().children('a').css('font-weight', 'bold');
 
     var limit = 5;
@@ -559,3 +606,14 @@ function makeOptionJsonValue(id, name) {
     }
     return value_stringify;
 }
+
+$.fn.wrapInTag = function(opts) {
+  var tag = opts.tag || 'strong'
+    , words = opts.words || []
+    , regex = RegExp(words.join('|'), 'gi') // case insensitive
+    , replacement = '<'+ tag +'>$&</'+ tag +'>';
+
+  return this.html(function() {
+    return $(this).text().replace(regex, replacement);
+  });
+};
