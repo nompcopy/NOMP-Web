@@ -125,6 +125,7 @@ exports.update = function(req, res) {
     // fetch actor type
     var tmp_actor_type = JSON.parse(req.body.actor_type);
     req.body.actor_type = tmp_actor_type.id;
+    req.body.actor_type_name = tmp_actor_type.name;
 
     // If password bloc is touched
     if (req.body.old_password || req.body.new_password || req.body.confirm_password) {
