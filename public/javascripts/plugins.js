@@ -112,48 +112,6 @@ function setFilter(event) {
     populateTicketList(limit, offset, filters);
 }
 
-
-function setActorTypeFilter(event) {
-    event.preventDefault();
-
-    $('a[class="sourceActorTypeFilterSet"]').removeClass();
-    $('#sourceActorTypeFilter').children('li').children('ul').children('li').children('a').css('font-weight', 'normal');
-    $('#sourceActorTypeFilter').children('li').children('a').css('font-weight', 'normal');
-    $(this).css('font-weight', 'bold');
-    $(this).parents('li').last().children('a').css('font-weight', 'bold');
-    $(this).addClass('sourceActorTypeFilterSet');
-
-
-    if ($(this).attr('rel') === $(this).parents('li').last().children('a').attr('rel')) {
-        filters.is_parent = true;
-    }
-
-    filters.source_actor_type = $(this).attr('rel');
-    populateTicketList(limit, offset, filters);
-}
-
-function setClassificationFilter(event) {
-    event.preventDefault();
-
-    $('a[class="classificationFilterSet"]').removeClass();
-    $('#classificationFilter').children('li').children('ul').children('li').children('a').css('font-weight', 'normal');
-    $('#classificationFilter').children('li').children('a').css('font-weight', 'normal');
-    $(this).css('font-weight', 'bold');
-    $(this).addClass('classificationFilterSet');
-    $(this).parents('li').last().children('a').css('font-weight', 'bold');
-
-    var limit = 5;
-    var offset = 0;
-    var filters = {};
-
-    if ($(this).attr('rel') === $(this).parents('li').last().children('a').attr('rel')) {
-        filters.is_parent = true;
-    }
-
-    filters.classification = $(this).attr('rel');
-    populateTicketList(limit, offset, filters);
-}
-
 function populateSourceActorTypeFilter() {
     var tableContent = '';
     $.getJSON('/actortype/parentlist', function(actors) {
