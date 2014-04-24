@@ -97,15 +97,26 @@ function setFilter(event) {
 
     // construction of filters
     if ($('.classificationFilterSet').length > 0) {
-        filters.classification = $('.classificationFilterSet').attr('rel');
-        if ($('.classificationFilterSet').attr('rel') === $('.classificationFilterSet').parents('li').last().children('a').attr('rel')) {
-            filters.is_parent.push('classification');
+        // If all
+        if ($('.classificationFilterSet').text() == 'All') {
+            // Do nothing
+        }
+        else {
+            filters.classification = $('.classificationFilterSet').attr('rel');
+            if ($('.classificationFilterSet').attr('rel') === $('.classificationFilterSet').parents('li').last().children('a').attr('rel')) {
+                filters.is_parent.push('classification');
+            }
         }
     }
     if ($('.sourceActorTypeFilterSet').length > 0) {
-        filters.source_actor_type = $('.sourceActorTypeFilterSet').attr('rel');
-        if ($('.sourceActorTypeFilterSet').attr('rel') === $('.sourceActorTypeFilterSet').parents('li').last().children('a').attr('rel')) {
-            filters.is_parent.push('actortype');
+        if ($('.sourceActorTypeFilterSet').text() == 'All') {
+            // Do nothing
+        }
+        else {
+            filters.source_actor_type = $('.sourceActorTypeFilterSet').attr('rel');
+            if ($('.sourceActorTypeFilterSet').attr('rel') === $('.sourceActorTypeFilterSet').parents('li').last().children('a').attr('rel')) {
+                filters.is_parent.push('actortype');
+            }
         }
     }
 
@@ -114,6 +125,7 @@ function setFilter(event) {
 
 function populateSourceActorTypeFilter() {
     var tableContent = '';
+    tableContent += '<li><a href="#">All</a></li>';
     $.getJSON('/actortype/parentlist', function(actors) {
         $.each(actors, function() {
             tableContent += '<li>';
@@ -148,6 +160,7 @@ function populateSubActorTypeFilter(event) {
 
 function populateClassificationFilter() {
     var tableContent = '';
+    tableContent += '<li><a href="#">All</a></li>';
     $.getJSON('/classification/parentlist', function(classification) {
         $.each(classification, function() {
             tableContent += '<li>';
