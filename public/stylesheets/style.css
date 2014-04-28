@@ -102,3 +102,15 @@ p.list-ticket-description {
 }
 
 /***************************************/
+
+/*    Custom styles in map section    */
+
+#map-wrapper {
+  height: 550px;
+}
+
+#map-canvas {
+  height: 100%;
+}
+
+/***************************************/
