@@ -83,6 +83,7 @@ module.exports = function (app, passport, config) {
     app.get('/user/:userId/edit', globalAuth, user.edit);
     // app.post('/user/:userId/edit', user.edit);
     app.put('/user/:userId', user.update);
+    app.get('/user/:userId/profile', user.getUserProfileJson);
 
     /*
      * Forgot password

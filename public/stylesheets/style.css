@@ -104,14 +104,24 @@ p.list-ticket-description {
   border: 0;
 }
 
+p#ticket-description {
+  height: 120px;
+  overflow-y: scroll;
+}
+
 #carousel-ticket-photos {
   padding: 0;
-  height: 300px;
+  height: 120px;
 }
 
 #carousel-ticket-photos .carousel-inner .item img {
   width: 100%;
-  height: 300px;
+  height: 120px;
+}
+
+ul#matching_results_list {
+  height: 470px;
+  overflow-y: scroll;
 }
 
 /***************************************/

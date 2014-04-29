@@ -74,6 +74,14 @@ if (document.querySelector('#source_ticket')) {
     populateSourceTicketData();
 }
 
+if (document.querySelector('#ticket_user')) {
+    showAuthorName();
+}
+
+if (document.querySelector('.ticket-date')) {
+    showConvertedDate();
+}
+
 
 function setFilter(event) {
     var limit = 5;
@@ -551,6 +559,19 @@ function showOwnerNeed(event) {
         });
         $('#ownerNeedList').html(tableContent);
     });
+}
+
+function showAuthorName() {
+    var userId = $('#ticket_user').text();
+    $.getJSON('/user/' + userId + '/profile', function(userProfile) {
+        $('#ticket_user').text(userProfile.name);
+    })
+}
+
+function showConvertedDate() {
+    $.each($('.ticket-date'), function() {
+        $(this).text($.format.date($(this).text(), "dd/MM/yyyy"));
+    })
 }
 
 function getTicketType(ticket) {
