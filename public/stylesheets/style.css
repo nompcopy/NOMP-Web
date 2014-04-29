@@ -55,6 +55,19 @@ form fieldset.ticket-info legend {
   margin-left: 8px;
 }
 
+label sup.required-field {
+  color: #FF0000;
+}
+
+form textarea#description {
+  height: 183px;
+}
+
+p#confidential-message {
+  color: #FF0000;
+  font-style: italic;
+}
+
 /******************************************/
 
 /*    Custom styles in ticket list    */

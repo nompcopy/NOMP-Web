@@ -1,10 +1,6 @@
 var subClassification = [];
 var subActorType = [];
 $(document).ready(function() {
-    var limit = 20;
-    var offset = 0;
-    // first display on page loaded
-    populateTicketList(limit, offset, false);
     $('#classificationFilter').on('click', 'a', populateSubClassificationFilter);
     $('#classificationFilter').on('click', 'a', setFilter);
 
@@ -12,6 +8,12 @@ $(document).ready(function() {
     $('#sourceActorTypeFilter').on('click', 'a', setFilter);
     // make blod
     // $('a[id*=]')
+    
+    /* pager piss */
+    var limit = 20;
+    var offset = 0;
+    // first display on page loaded
+    populateTicketList(limit, offset, false);
 
     // play with limit and offset variables, execute pagers without refresh
     // TODO: see if we could optimize this piss
@@ -23,14 +25,20 @@ $(document).ready(function() {
         offset -= limit;
         populateTicketList(limit, offset, false);
     });
+    /*****************/
 
     $('#showoffer').on('click', showOwnerOffer);
     $('#showneed').on('click', showOwnerNeed);
 
+    /* date pickers in ticket form */
     var browserInfo = navigator.userAgent.toLowerCase();
     if (browserInfo.indexOf('firefox') > -1 || browserInfo.indexOf('MSIE') > -1) {
       $('.input-date').datepicker();
     }
+    $('#start_date').on('change', function() {
+        $('#end_date').val($(this).val());
+    })
+    /************************************/
 
     if (document.querySelector('#adminClassification') || document.querySelector('#adminActorType')) {
         $.getScript('/javascripts/adminPlugin.js');
@@ -41,7 +49,7 @@ $(document).ready(function() {
 if (document.querySelector('#classificationList')) {
     populateClassificationList();
 }
-$('#classificationList').on('click', showSubClassificationList);
+$('#classificationList').on('change', showSubClassificationList);
 
 if (document.querySelector('#actorTypeTargetList')) {
     populateActorTypeList();
@@ -51,7 +59,7 @@ $('#actorTypeSourceList').on('click', showSubActorTypeList);
 if (document.querySelector('#actorTypeSourceList')) {
     populateActorTypeList();
 }
-$('#actorTypeTargetList').on('click', showSubActorTypeList);
+$('#actorTypeTargetList').on('change', showSubActorTypeList);
 
 if (document.querySelector('#classificationFilter')) {
     populateClassificationFilter();
@@ -226,7 +234,7 @@ function populateMatchingResults() {
 }
 
 function populateClassificationList() {
-    var tableContent = '';
+    var tableContent = '<option value="">--- Choose main class ---</option>';
     $.getJSON('/classification/parentlist', function(classification) {
         $.each(classification, function() {
             var value_stringify = {
@@ -263,13 +271,20 @@ function showSubClassificationList() {
     parent_classification_data = JSON.parse(parent_classification_data);
     parent_classification_id = parent_classification_data.id.toString();
 
-    var tableContent = '';
+    var tableContent = '<option value="">--- Choose sub class ---</option>';
 
     $.getJSON('/classification/list?parentclass=' + parent_classification_id, function(classification) {
-        $.each(classification, function() {
-            var value_stringify = feedOptionJsonValue(this);
-            tableContent += "<option value='" + JSON.stringify(value_stringify) + "'>" + this.name + "</option>";
-        });
+        if(classification.length > 0) {
+            $.each(classification, function() {
+                var value_stringify = feedOptionJsonValue(this);
+                tableContent += "<option value='" + JSON.stringify(value_stringify) + "'>" + this.name + "</option>";
+            });
+        } 
+        // if there is no child, duplicate the selected main class
+        else {
+            tableContent = $('#classificationList option:selected').clone();
+        }
+        
         $('#classificationListChild').html(tableContent);
         if($('#classificationListChild').attr('value')) {
             fillClassification($('#classificationListChild').attr('value'), false);
@@ -278,7 +293,7 @@ function showSubClassificationList() {
 }
 
 function populateActorTypeList() {
-    var tableContent = '';
+    var tableContent = '<option value="">--- Choose main actor ---</option>';
     $.getJSON('/actortype/parentlist', function(actorType) {
         $.each(actorType, function() {
             var value_stringify = {
@@ -326,21 +341,28 @@ function showSubActorTypeList() {
     parent_actor_type_data = JSON.parse(parent_actor_type_data);
     parent_actor_type_id = parent_actor_type_data.id.toString();
 
-    var tableContent = '';
+    var tableContent = '<option value="">--- Choose sub actor ---</option>';
 
     $.getJSON('/actortype/list?parentactortype=' + parent_actor_type_id, function(actorType) {
-        $.each(actorType, function() {
-            var value_stringify = feedOptionJsonValue(this);
-            tableContent += "<option value='" + JSON.stringify(value_stringify) + "'>" + this.name + "</option>";
-        });
+        if (actorType.length > 0) {
+            $.each(actorType, function() {
+                var value_stringify = feedOptionJsonValue(this);
+                tableContent += "<option value='" + JSON.stringify(value_stringify) + "'>" + this.name + "</option>";
+            });
+        } 
+        // if there is no child, duplicate the selected main actor type
+        else {
+            tableContent = $('#actorTypeTargetList option:selected').clone();
+        }
+        
         $('#actorTypeTargetListChild').html(tableContent);
-        $('#actorTypeSourceListChild').html(tableContent);
+        //$('#actorTypeSourceListChild').html(tableContent);
         if ($('#actorTypeTargetListChild').attr('value')) {
             fillActorType($('#actorTypeTargetListChild').attr('value'), false);
         }
-        if ($('#actorTypeSourceListChild').attr('value')) {
-            fillActorType($('#actorTypeSourceListChild').attr('value'), false);
-        }
+        //if ($('#actorTypeSourceListChild').attr('value')) {
+        //    fillActorType($('#actorTypeSourceListChild').attr('value'), false);
+        //}
     });
 }
 
