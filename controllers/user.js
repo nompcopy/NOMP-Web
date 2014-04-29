@@ -346,3 +346,7 @@ function handleAssociation(req, user_id) {
 exports.list = function(req, res){
   res.send("respond with a resource");
 };
+
+exports.getUserProfileJson = function(req, res) {
+    res.json(req.profile);
+}
