@@ -9,9 +9,9 @@ head
   link(rel="icon", type="image/x-icon", href="data:image/x-icon;base64,AAABAAEAEBAQAAEABAAoAQAAFgAAACgAAAAQAAAAIAAAAAEABAAAAAAAgAAAAAAAAAAAAAAAEAAAAAAAAADuqgAA6KIzAAAAAAD9//8A6KIAAP///wD0uh0A7KIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAIiIiIiIiIiIiIiIiIiIiIiIiVVVVVSIiIiVVVVFVUiIiVFVVFBVVIiVRFVUUFVVSJVFlV0VBVVIlUUVRBRFVUiVVEVR1EVVSJVUXV1VUFVIlVRFHVVEVUiJVUXdVUxEiIiVVFVVVUiIiIlVVVVUiIiIiIiIiIiIiIiIiIiIiIiLwDwAA4AcAAMADAACAAQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACAAQAAwAMAAOAHAADwDwAA")
 
   //Style
-  // link the bootstrap css via cdn to enable the uses of glyphicons
-  link(rel="stylesheet", href="//netdna.bootstrapcdn.com/bootstrap/3.0.3/css/bootstrap.min.css")
-  link(rel="stylesheet", href="//netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.min.css")
-  link(rel="stylesheet", href="//cdnjs.cloudflare.com/ajax/libs/jasny-bootstrap/3.1.1/css/jasny-bootstrap.min.css")
-  link(rel="stylesheet", href="//code.jquery.com/ui/1.10.4/themes/smoothness/jquery-ui.css")
+  -var cssLibPath = "/stylesheets/lib/"
+  link(rel="stylesheet", href=cssLibPath + "bootstrap.min.css")
+  link(rel="stylesheet", href=cssLibPath + "font-awesome.min.css")
+  link(rel="stylesheet", href=cssLibPath + "jasny-bootstrap.min.css")
+  link(rel="stylesheet", href=cssLibPath + "jquery-ui.min.css")
   link(rel="stylesheet", href="/stylesheets/style.css")
