@@ -61,18 +61,20 @@ block content
                 .form-group
                   label(for="start_date") From
                     sup.required-field *
-                  input#start_date.form-control.input-date(type='date', name='start_date', placeholder='From', value=ticket.start_date, required)
+                  input#start_date.form-control.input-date(type='text', name='start_date', placeholder='From', value=ticket.start_date, required)
                 .form-group
                   label(for="end_date") To
                     sup.required-field *
-                  input#end_date.form-control.input-date(type='date', name='end_date', placeholder='To', value=ticket.end_date, required)
+                  input#end_date.form-control.input-date(type='text', name='end_date', placeholder='To', value=ticket.end_date, required)
                 .form-group
                   label(for="quantity") Quantity
                     sup.required-field *
                   input#quantity.form-control(type='number', name='quantity', placeholder='Quantity', value=ticket.quantity, min='1', required)
                 .form-group
                   label(for="#{price_key}")= price_key
-                  input.form-control(type='number', id='#{price_key}', name='#{price_key}', placeholder='#{price_key}', value='#{price_value}', min='0')
+                  .input-group
+                    input.form-control(type='number', id='#{price_key}', name='#{price_key}', placeholder='#{price_key}', value='#{price_value}', min='0')
+                    span.input-group-addon $
           .col-md-12
             fieldset.ticket-info
               legend Details
