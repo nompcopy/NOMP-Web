@@ -31,10 +31,7 @@ $(document).ready(function() {
     $('#showneed').on('click', showOwnerNeed);
 
     /* date pickers in ticket form */
-    var browserInfo = navigator.userAgent.toLowerCase();
-    if (browserInfo.indexOf('firefox') > -1 || browserInfo.indexOf('MSIE') > -1) {
-      $('.input-date').datepicker();
-    }
+    $('.input-date').datepicker();
     $('#start_date').on('change', function() {
         $('#end_date').val($(this).val());
     })
@@ -78,7 +75,7 @@ if (document.querySelector('#ticket_user')) {
     showAuthorName();
 }
 
-if (document.querySelector('.ticket-date')) {
+if (document.querySelector('.ticket-date') || document.querySelector('.input-date')) {
     showConvertedDate();
 }
 
@@ -262,13 +259,18 @@ function populateClassificationList() {
 function fillClassification(childId, is_parent) {
     $.getJSON('/classification/' + childId, function(classification) {
         if (is_parent) {
-            var parent_option_val = makeOptionJsonValue(classification.parent, classification.parent_name);
-            $('#classificationList option[value="' + JSON.stringify(parent_option_val) + '"]').attr('selected','selected');
+            if (classification.is_parent) {
+                var parent_option_val = makeOptionJsonValue(classification._id, classification.name);
+            } else {
+                var parent_option_val = makeOptionJsonValue(classification.parent, classification.parent_name);
+            }
+            
+            $('#classificationList option[value="' + JSON.stringify(parent_option_val) + '"]').prop('selected','selected');
             showSubClassificationList();
         }
         if (!is_parent) {
             var parent_option_val = feedOptionJsonValue(classification);
-            $('#classificationListChild option[value="' + JSON.stringify(parent_option_val) + '"]').attr('selected','selected');
+            $('#classificationListChild option[value="' + JSON.stringify(parent_option_val) + '"]').prop('selected','selected');
         }
     });
 }
@@ -325,15 +327,20 @@ function populateActorTypeList() {
 function fillActorType(childId, is_parent) {
     $.getJSON('/actortype/' + childId, function(actortype) {
         if (is_parent) {
-            var parent_option_val = makeOptionJsonValue(actortype.parent, actortype.parent_name);
-            $('#actorTypeSourceList option[value="' + JSON.stringify(parent_option_val) + '"]').attr('selected','selected');
-            $('#actorTypeTargetList option[value="' + JSON.stringify(parent_option_val) + '"]').attr('selected','selected');
+            if (actortype.is_parent) {
+                var parent_option_val = makeOptionJsonValue(actortype._id, actortype.name);
+            } else {
+                var parent_option_val = makeOptionJsonValue(actortype.parent, actortype.parent_name);
+            }
+            
+            $('#actorTypeSourceList option[value="' + JSON.stringify(parent_option_val) + '"]').prop('selected','selected');
+            $('#actorTypeTargetList option[value="' + JSON.stringify(parent_option_val) + '"]').prop('selected','selected');
             showSubActorTypeList();
         }
         if (!is_parent) {
             var parent_option_val = feedOptionJsonValue(actortype);
-            $('#actorTypeSourceListChild option[value="' + JSON.stringify(parent_option_val) + '"]').attr('selected','selected');
-            $('#actorTypeTargetListChild option[value="' + JSON.stringify(parent_option_val) + '"]').attr('selected','selected');
+            $('#actorTypeSourceListChild option[value="' + JSON.stringify(parent_option_val) + '"]').prop('selected','selected');
+            $('#actorTypeTargetListChild option[value="' + JSON.stringify(parent_option_val) + '"]').prop('selected','selected');
         }
     });
 }
@@ -571,7 +578,21 @@ function showAuthorName() {
 function showConvertedDate() {
     $.each($('.ticket-date'), function() {
         $(this).text($.format.date($(this).text(), "dd/MM/yyyy"));
-    })
+    });
+    $.each($('.input-date'), function() {
+        $(this).val($.format.date($(this).val(), "dd/MM/yyyy"));
+    });
+}
+
+function getAllCountryPhoneCodes() {
+    var countryPhoneCodes = [33];
+    $.getJSON('http://restcountries.eu/rest/v1/all', function(countries) {
+        $.each(countries, function() {
+            if ($(this)[0].callingCodes[0] !== '' && $(this)[0].callingCodes[0] !== '33') {
+                countryPhoneCodes.push(parseInt($(this)[0].callingCodes[0]));
+            }
+        });
+    });
 }
 
 function getTicketType(ticket) {
