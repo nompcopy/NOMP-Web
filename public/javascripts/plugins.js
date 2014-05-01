@@ -66,6 +66,7 @@ if (document.querySelector('#sourceActorTypeFilter')) {
 }
 if (document.querySelector('#matching_results_list')) {
     populateMatchingResults();
+    adjustTicketShow();
 }
 if (document.querySelector('#source_ticket')) {
     populateSourceTicketData();
@@ -566,6 +567,12 @@ function showOwnerNeed(event) {
         });
         $('#ownerNeedList').html(tableContent);
     });
+}
+
+function adjustTicketShow() {
+    var listHeight = $('#ticket-info-box').height() - 41 - 20 - 1;
+    console.log(listHeight);
+    $('#matching_results_list').css('height', listHeight);
 }
 
 function showAuthorName() {

@@ -43,7 +43,7 @@ block content
 
   // basic infobox and matching results box
   .row
-    .col-md-7
+    #ticket-info-box.col-md-7
       each keys in [{'header': 'Basic', 'keys': [{'key': 'user', 'label': 'Author'}, {'key': 'source_actor_type_name', 'label': 'Source actor'}, {'key': 'target_actor_type_name', 'label': 'Target actor'}, {'key': 'address', 'label': 'Address'}]}, {'header': 'Availability', 'keys': [{'key': 'start_date', 'label': 'From'}, {'key': 'end_date', 'label': 'To'}, {'key': 'quantity', 'label': 'Quantity'}, {'key': 'cost', 'label': 'Cost'}, {'key': 'budget', 'label': 'Budget'}]}]
         .panel.panel-default
           .panel-heading
@@ -60,11 +60,10 @@ block content
           strong Description
         .panel-body
           .row
-            .col-md-8
-              p#ticket-description.list-ticket-description= ticket.description
-            .col-md-4
-              // display photos
-              - if (ticket.media !== undefined && ticket.media.image !== undefined && ticket.media.image.length > 0)
+            -var hasImages = ticket.media !== undefined && ticket.media.image !== undefined && ticket.media.image.length > 0
+            - if (hasImages)
+              .col-md-4
+                // display photos
                 #carousel-ticket-photos.carousel.slide(data-ride="carousel")
                   ol.carousel-indicators
                     each val, index in ticket.media.image
@@ -79,8 +78,10 @@ block content
                       span.glyphicon.glyphicon-chevron-left
                     a.right.carousel-control(href="#carousel-ticket-photos", data-slide="next")
                       span.glyphicon.glyphicon-chevron-right
+            div(class= hasImages ? 'col-md-8' : 'col-md-12')
+              p#ticket-description.list-ticket-description= ticket.description
 
-    .col-md-5
+    #ticket-matching-results.col-md-5
       .panel.panel-default
         .panel-heading
           strong Matching results
