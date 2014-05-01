@@ -508,10 +508,12 @@ function populateTicketList(limit, offset, filters) {
             var haveContent = false;
             // check if there are tickets
             if (tickets.length > 0) {
+                var ticketNames = [];
                 $.each(tickets, function(i, ticket) {
-                    if (i % 2 == 0) {
+                    if ($.inArray(ticket.name, ticketNames) === -1) {
                         tableContent += generateListElementView(ticket);
                         haveContent = true;
+                        ticketNames.push(ticket.name);
                     }
                 });
             }
