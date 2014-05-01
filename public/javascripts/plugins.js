@@ -508,9 +508,11 @@ function populateTicketList(limit, offset, filters) {
             var haveContent = false;
             // check if there are tickets
             if (tickets.length > 0) {
-                $.each(tickets, function() {
-                    tableContent += generateListElementView(this);
-                    haveContent = true;
+                $.each(tickets, function(i, ticket) {
+                    if (i % 2 == 0) {
+                        tableContent += generateListElementView(ticket);
+                        haveContent = true;
+                    }
                 });
             }
             if (!haveContent) {
