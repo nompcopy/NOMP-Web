@@ -125,7 +125,6 @@ p#ticket-description {
 }
 
 ul#matching_results_list {
-  height: 470px;
   overflow-y: scroll;
 }
 
