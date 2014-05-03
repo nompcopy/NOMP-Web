@@ -2,17 +2,38 @@ extends _layout
 
 block subContent
   #adminClassification
-  .row
-    .col-md-8
-      #adminClassificationList
-        table
-          thead
-            th Parent_ID
-            th Parent
-            th Class_ID
-            th Class
-            th Delete?
-          tbody
+    #adminClassificationList.panel.panel-default
+      .panel-heading
+        strong List of classifications
+        button.btn.btn-default.btn-xs.pull-right(data-toggle='modal', data-target='#admin-form-add-classification')
+          span.glyphicon.glyphicon-plus.text-primary
+            |Add
+        #admin-form-add-classification.modal.fade(role='dialog', aria-labelledby='admin-form-add-label', aria-hidden='true')
+          .modal-dialog
+            .modal-content
+              .modal-header
+                button.close(type='button', data-dismiss='modal', aria-hidden='true') &times;
+                strong#admin-form-add-label.modal-title Add new classification
+              .modal-body
+                form(action='/admin/classification', method='post', role='form')
+                  input(type='hidden', name='_csrf', value='#{csrf_token}')
+                  input(type='hidden', name='_method', value='PUT')
+                  .form-group
+                    .input-group
+                      span.input-group-addon
+                        select#selectParentClassification(name='parent_classification')
+                      input#inputClassificationName.form-control(type='text', placeholder='New class' name='name')
+                      span.input-group-btn
+                        button.btn.btn-primary(type='submit') Add
+      table.table.table-condensed.table-bordered
+        thead
+          th Parent_ID
+          th Parent
+          th Class_ID
+          th Class
+          th Actions
+        tbody
+  //
     .col-md-4
       #adminEditClassification
         h3 Edit Class

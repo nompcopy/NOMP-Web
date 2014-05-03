@@ -2,17 +2,38 @@ extends _layout
 
 block subContent
   #adminActorType
-  .row
-    .col-md-8
-      #adminActorTypeList
-        table
-          thead
-            th Parent_ID
-            th Parent
-            th Actor_ID
-            th Actor
-            th Delete?
-          tbody
+    #adminActorTypeList.panel.panel-default
+      .panel-heading
+        strong List of actor types
+        button.btn.btn-default.btn-xs.pull-right(data-toggle='modal', data-target='#admin-form-add-actortype')
+          span.glyphicon.glyphicon-plus.text-primary
+            |Add
+        #admin-form-add-actortype.modal.fade(role='dialog', aria-labelledby='admin-form-add-label', aria-hidden='true')
+          .modal-dialog
+            .modal-content
+              .modal-header
+                button.close(type='button', data-dismiss='modal', aria-hidden='true') &times;
+                strong#admin-form-add-label.modal-title Add new actortype
+              .modal-body
+                form(action='/admin/actortype', method='post', role='form')
+                  input(type='hidden', name='_csrf', value='#{csrf_token}')
+                  input(type='hidden', name='_method', value='PUT')
+                  .form-group
+                    .input-group
+                      span.input-group-addon
+                        select#selectParentActorType(name='parent_actortype')
+                      input#inputActorTypeName.form-control(type='text', placeholder='New actor type' name='name')
+                      span.input-group-btn
+                        button.btn.btn-primary(type='submit') Add
+      table.table.table-condensed.table-bordered
+        thead
+          th Parent_ID
+          th Parent
+          th Actor_ID
+          th Actor
+          th Actions
+        tbody
+  //
     .col-md-4
       #adminEditActorType
         h3 Edit Actor
