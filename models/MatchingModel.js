@@ -180,10 +180,22 @@ function match(data, cb) {
                 callback(null, data, list);
             }
             else {
+                var search_score_results = [];
+                for (var index=0; index<list.length; index++) {
+                    var ticket = list[index];
+                    search_score_results.push({
+                        ticket: ticket,
+                        score: 0
+                    });
+                }
+                callback(null, data, search_score_results);
+            }
+            /*
                 searchKeyWords(data, list, function(err, search_score_results) {
                     callback(null, data, search_score_results);
                 });
             }
+            */
         },
         // Compute Distance score
         // We can put it before the search, with elimination of K value
@@ -313,8 +325,8 @@ function searchKeyWords(data, list, cb) {
             });
         },
         // Add up the scores from results
-        function(results, callback) {
-            callback(null, mergeResults(results));
+        function(callback) {
+            callback(null, mergeResults(list));
         }
     ], cb);
 }
