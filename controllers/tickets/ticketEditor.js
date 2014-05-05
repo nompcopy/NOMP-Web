@@ -80,6 +80,7 @@ exports.create = function(req, res) {
                     var login_link = '<a href="/login"><b>Login</b></a>';
                     req.flash('info', 'Or do you want to ' + signup_link + ' or ' + login_link + '?');
                 }
+                ticketUtils.fetchGeocode(ticket, false);
                 // load ticket view once created
                 return res.redirect(req.body.ticket_type + '/' + ticket._id);
             }
@@ -178,6 +179,7 @@ exports.update = function(req, res) {
 
     req = ticketUtils.feedClassAndActorType(req);
     req.body.update_date = Date.now();
+    ticketUtils.fetchGeocode(ticket, true);
     ticket.update(req.body, function(err) {
         if (!err) {
             return res.redirect('/' + ticket_type + '/' + ticket._id);
