@@ -141,3 +141,12 @@ ul#matching_results_list {
 }
 
 /***************************************/
+
+/*    Custom styles in admin    */
+
+.admin-action-form-edit, .admin-action-form-delete {
+  margin-left: 2px;
+  display: inline-block;
+}
+
+/*************************************/
