@@ -52,13 +52,15 @@ MatchingModelSchema.methods = {
                             target_actor_type: [ticket.target_actor_type],
                             source_type: source_type,
                             // TODO, may use google location or latitude longitude data
-                            location: ticket.address,
                             is_match: true,
                             start_date: ticket.start_date,
                             end_date: ticket.end_date,
                             quantity: ticket.quantity
                             // TODO, cost
                         };
+                        if (ticket.geometry) {
+                            data.geometry = ticket.geometry;
+                        }
                         callback(null, data);
                     });
                 }
@@ -70,10 +72,12 @@ MatchingModelSchema.methods = {
                             classification: [ticket.classification],
                             target_actor_type: [ticket.target_actor_type],
                             source_type: source_type,
-                            location: ticket.address,
                             is_match: true,
                             start_date: ticket.start_date,
                             end_date: ticket.end_date
+                        }
+                        if (ticket.geometry) {
+                            data.geometry = ticket.geometry;
                         }
                         callback(null, data);
                     });
@@ -279,27 +283,21 @@ function computeDistance(data, target_list, cb) {
             var index = 0;
             async.each(target_list, function(target_ticket, iterator_callback) {
                 index++;
-                distance.get({
-                    origin: data.location,
-                    destination: target_ticket.ticket.address,
-                    units: 'metric'
-                }, function(err, distance_result) {
-                    if (typeof(distance_result) === 'undefined') {
-                        console.log('Address not found');
-                        distance_score_results.push(target_ticket);
+                if (target_ticket.ticket.geometry && data.geometry) {
+                    var distance = utils.getDistance(data.geometry, target_ticket.ticket.geometry);
+                    if (distance < 700) {
+                        target_ticket.score += 1;
                     }
-                    else {
-                        // TODO, an evaluation algo
-                        if (distance_result.distance <'700 km') {
-                            target_ticket.score += 1;
-                        }
-                        distance_score_results.push(target_ticket);
-                    }
-                    // callback to higher level if complete
-                    if (distance_score_results.length === index) {
-                        callback(null, distance_score_results);
-                    }
-                });
+                    distance_score_results.push(target_ticket);
+                }
+                else {
+                    console.log('Geometry not found');
+                    distance_score_results.push(target_ticket);
+                }
+                // callback to higher level if complete
+                if (distance_score_results.length === index) {
+                    callback(null, distance_score_results);
+                }
                 iterator_callback();
             });
         },
