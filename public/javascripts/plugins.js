@@ -372,7 +372,7 @@ function showSubActorTypeList() {
         }
         
         $('#actorTypeTargetListChild').html(tableContent);
-        //$('#actorTypeSourceListChild').html(tableContent);
+        $('#actorTypeSourceListChild').html(tableContent);
         if ($('#actorTypeTargetListChild').attr('value')) {
             fillActorType($('#actorTypeTargetListChild').attr('value'), false);
         }
