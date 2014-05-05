@@ -36,7 +36,7 @@ var TicketModelSchema = new Schema({
     keywords: [{type: String}],
 
     address: {type: String, trim: true},
-    geolocation: {},
+    geometry: {},
 
     media: {
         image: [],
@@ -76,20 +76,24 @@ for (var index=0; index<validation_fields.length; index++) {
     TicketModelSchema.path(validation_fields[index]).required(true, 'Field ' + validation_fields[index] + ' cannot be blank')
 }
 // If is a valid custom address
+/*
 TicketModelSchema.path('address').validate(function(address, fn) {
-    gm.geocode(address, function(err, result) {
-        if (result.results.length === 0) {
-            fn(false);
-        }
-        // TODO: 2 or 1
-        else if (result.results.length > 2) {
-            fn(false);
-        }
-        else {
-            fn(true);
-        }
-    }, false);
+ 
+        gm.geocode(address, function(err, result) {
+            if (result.results.length === 0) {
+                fn(false);
+            }
+            // TODO: 2 or 1
+            else if (result.results.length > 2) {
+                fn(true);
+            }
+            else {
+                fn(true);
+            }
+        }, false);
+ 
 }, 'Invalid address - address not found or ambiguous');
+*/
 // Limitation of name length
 TicketModelSchema.path('name').validate(function(name) {
     // 50 limitation
