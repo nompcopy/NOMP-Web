@@ -10,6 +10,8 @@ block content
         a(href="/need") Needs
       li(class=ticket_type === 'offer' ? 'active' : '')
         a(href="/offer") Offers
+      li(class=req.route.path === '/graph' ? 'active' : '')
+        a(href="/graph") Graph
       li(class=req.route.path === '/maps' ? 'active' : '')
         a(href="/maps") Maps
           sup

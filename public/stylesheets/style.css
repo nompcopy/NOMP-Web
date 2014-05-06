@@ -130,6 +130,18 @@ ul#matching_results_list {
 
 /***************************************/
 
+/*    Custom styles in graph section    */
+
+#graph-wrapper {
+  height: 550px;
+}
+
+#graph-canvas {
+  height: 100%;
+}
+
+/***************************************/
+
 /*    Custom styles in map section    */
 
 #map-wrapper {
