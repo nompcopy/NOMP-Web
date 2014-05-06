@@ -133,6 +133,7 @@ module.exports = function (app, passport, config) {
     app.post('/matching/confirm', matchs.confirm);
     // I just left this routes for execute script, we run it after the environment is done
     app.get('/matching/update', matchs.matching_update);
+    app.get('/matching/list', matchs.list);
 /*
  * Import and Export
  */
@@ -152,6 +153,9 @@ module.exports = function (app, passport, config) {
     app.get('/actortype/parentlist', tickets.actor_type_parent_list);
     app.get('/actortype/:actortypeId', tickets.get_actor_type);
 
+    // section of graph for displaying matching results
+    app.get('/graph', tickets.graph);
+    
     // section of geomaps, development only for now
     if ('development' == app.get('env')) {
         app.get('/maps', tickets.maps)

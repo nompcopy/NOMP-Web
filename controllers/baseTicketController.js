@@ -61,9 +61,15 @@ exports.actor_type_parent_list = fieldController.actor_type_parent_list;
 exports.get_class = fieldController.get_class;
 exports.get_actor_type = fieldController.get_actor_type;
 
+// matching results graph
+exports.graph = function(req, res) {
+    res.render('tickets/graph', {
+        req: req
+    });
+}
+
 // maps
 exports.maps = function(req, res) {
-    console.log(Object.keys(req));
     res.render('tickets/maps', {
         req: req
     });
