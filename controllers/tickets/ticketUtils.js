@@ -17,8 +17,11 @@ exports.feedTicketJsonList = function(req, options, cb) {
 
 
 exports.feedOwnerJsonList = function(req, options, cb) {
-    var userOptions = options;
-    userOptions.criteria.user = req.user._id;
+    var userOptions = options || {};
+
+    if (typeof(userOptions.criteria) == 'undefined') {
+        userOptions.criteria = { user: req.user._id }
+    }
 
     if (req.params.type === 'need') {
         NeedModel.listToJson(userOptions, cb);

@@ -177,7 +177,7 @@ exports.showJson = function(req, res) {
 
 
 exports.ownerJsonList = function(req, res) {
-    return ticketUtils.feedOwnerJsonList(req, function(err, items) {
+    return ticketUtils.feedOwnerJsonList(req, {}, function(err, items) {
         res.json(items);
     });
 }
