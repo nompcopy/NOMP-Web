@@ -166,9 +166,8 @@ TicketModelSchema.inherits = {
     },
     generateKeyWords: function() {
         var keywords = [];
-        if (this.name) {
-            keywords = utils.generateKeywords(this.name);
-        }
+        keywords = utils.generateKeywords(this.name, this.description);
+
         return keywords;
     },
     // Delete function. We don't really delete tickets in the DB
