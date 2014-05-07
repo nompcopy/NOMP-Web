@@ -99,7 +99,7 @@ module.exports = function (app, passport, config) {
     // All list without inactive tickets
     app.get('/:type(need|offer)/list', tickets.list);
     // User owns list RESTful
-    app.get('/user/:type(need|offer)/list', listAuth, tickets.ownerJsonList);
+    app.get('/user/:userId/:type(need|offer)/list', listAuth, tickets.ownerJsonList);
     // User owns list display
     app.get('/user/:userId/ticket', listAuth, user.ownerList);
 

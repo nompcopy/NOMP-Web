@@ -554,7 +554,10 @@ function populateTicketList(limit, offset, filters) {
 function showOwnerOffer(event) {
     event.preventDefault();
     var tableContent = '';
-    $.getJSON('/user/offer/list', function(offers) {
+    var pathname = window.location.pathname;
+    var user_id = pathname.split('/')[2]
+    console.log(user_id);
+    $.getJSON('/user/' + user_id + '/offer/list', function(offers) {
         $.each(offers, function() {
             tableContent += '<tr>';
             tableContent += '<td><a href="/offer/' + this._id + '">' + this.name + '</a></td>';
@@ -569,7 +572,10 @@ function showOwnerNeed(event) {
     event.preventDefault();
 
     var tableContent = '';
-    $.getJSON('/user/need/list', function(offers) {
+    var pathname = window.location.pathname;
+    var user_id = pathname.split('/')[2]
+    console.log(user_id);
+    $.getJSON('/user/' + user_id + '/offer/list', function(offers) {
         $.each(offers, function() {
             tableContent += '<tr>';
             tableContent += '<td><a href="/need/' + this._id + '">' + this.name + '</a></td>';
