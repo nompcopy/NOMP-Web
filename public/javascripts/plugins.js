@@ -526,7 +526,7 @@ function populateTicketList(limit, offset, filters) {
             
             // display the list content
             $('table tbody', container).html(tableContent);
-            
+            showParentClassification();
             // toggle pager next
             if (tickets.length < limit) {
                 $('#page-next', container).hide();
