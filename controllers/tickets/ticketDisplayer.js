@@ -56,7 +56,8 @@ exports.list = function(req, res) {
     if (req.isAuthenticated() && req.session.admin) {
         options.criteria.is_active = {$in: [0, 1]};
     }
-    else if (req.isAuthenticated()) {
+    else if (req.isAuthenticated() && req.user.actor_type.toString() !== '5336b94ac1bde7b41d90377a') {
+        console.log(req.user.actor_type);
         options.criteria.target_actor_type = {$in: ['5336b94ac1bde7b41d90377a', req.user.actor_type]};
     }
     else {
@@ -147,6 +148,8 @@ exports.list = function(req, res) {
         },
         function(render_items, callback) {
             if (req.isAuthenticated()) {
+                options.criteria.user = req.user._id;
+                delete options.criteria.target_actor_type;
                 ticketUtils.feedOwnerJsonList(req, options, function(err, items) {
                     callback(null, render_items.concat(items));
                 });
