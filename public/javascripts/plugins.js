@@ -423,7 +423,7 @@ function generateListElementView(ticket, ticket_url, isCondensed) {
     // append ticket title
     content += '<a class="list-ticket-title" href="' + ticket_url + '" title="' + ticket.name + '"><strong>' + cutName(ticket.name) + '</strong></a>';
     // append ticket class
-    content += '&nbsp;<small>' + ticket.classification_name + '</small>';
+    content += '&nbsp;<small class="display-classification" id="' + ticket.classification + '">' + ticket.classification_name + '</small>';
     content += '</p>';
     
     // append keywords
@@ -575,9 +575,20 @@ function showOwnerNeed(event) {
 
 function adjustTicketShow() {
     var listHeight = $('#ticket-info-box').height() - 41 - 20 - 1;
-    console.log(listHeight);
+    // console.log(listHeight);
     $('#matching_results_list').css('height', listHeight);
 }
+
+
+function showParentClassification() {
+    var classification_id = $('.display-classification').attr('id');
+    $.getJSON('/classification/' + classification_id, function(classification) {
+        var text = '';
+        text = classification.parent_name + ' - ' + classification.name;
+        $('.display-classification').html(text);
+    });
+}
+
 
 function showAuthorName() {
     var userId = $('#ticket_user').text();
