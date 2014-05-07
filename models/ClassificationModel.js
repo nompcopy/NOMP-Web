@@ -33,6 +33,9 @@ ClassificationModelSchema.statics = {
     retrieveByValue: function(val, cb) {
         this.findOne({ name: val }).exec(cb);
     },
+    retrieveParentListByValue: function(val, cb) {
+        this.find({ parent_name: val }).exec(cb);
+    },
     parentList: function(cb) {
         this.find({ is_parent: true }).exec(cb);
     },
