@@ -71,6 +71,9 @@ if (document.querySelector('#matching_results_list')) {
 if (document.querySelector('#source_ticket')) {
     populateSourceTicketData();
 }
+if (document.querySelector('#display-classification')) {
+    showParentClassification();
+}
 
 if (document.querySelector('#ticket_user')) {
     showAuthorName();
@@ -526,7 +529,10 @@ function populateTicketList(limit, offset, filters) {
             
             // display the list content
             $('table tbody', container).html(tableContent);
-            showParentClassification();
+            // fetch parent classification
+            if (document.querySelector('#display-classification')) {
+                showParentClassification();
+            }
             // toggle pager next
             if (tickets.length < limit) {
                 $('#page-next', container).hide();
