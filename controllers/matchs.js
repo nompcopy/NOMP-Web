@@ -146,10 +146,9 @@ exports.matching_update = function(req, res) {
 
 exports.searching = function(req, res) {
     var m = new MatchingModel();
-
     var query_data = {
         is_match: false,
-        keywords: utils.generateKeywords(req.query.keywords),
+        keywords: utils.generateKeywords(req.query.keywords, ''),
         is_admin: false
     };
     // prepare target_actor_type
