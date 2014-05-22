@@ -10,7 +10,7 @@ $(document).ready(function() {
     // $('a[id*=]')
     
     /* pager piss */
-    var limit = 20;
+    var limit = 5;
     var offset = 0;
     // first display on page loaded
     populateTicketList(limit, offset, false);
@@ -19,11 +19,11 @@ $(document).ready(function() {
     // TODO: see if we could optimize this piss
     $('#page-next').on('click', function() {
         offset += limit;
-        populateTicketList(limit, offset, false);
+        populateTicketList(limit, offset, retrieveFilters());
     });
     $('#page-previous').on('click', function() {
         offset -= limit;
-        populateTicketList(limit, offset, false);
+        populateTicketList(limit, offset, retrieveFilters());
     });
     /*****************/
 
@@ -85,11 +85,6 @@ if (document.querySelector('.ticket-date') || document.querySelector('.input-dat
 
 
 function setFilter(event) {
-    var limit = 5;
-    var offset = 0;
-    var filters = {
-        is_parent: []
-    };
 
     // manage the filter dict and the display
     // block classification
@@ -112,6 +107,16 @@ function setFilter(event) {
         $(this).addClass('sourceActorTypeFilterSet');
     }
 
+    var limit = 5;
+    var offset = 0;
+    populateTicketList(limit, offset, retrieveFilters());
+}
+
+function retrieveFilters() {
+    var filters = {
+        is_parent: []
+    };
+    
     // construction of filters
     if ($('.classificationFilterSet').length > 0) {
         // If all
@@ -136,8 +141,8 @@ function setFilter(event) {
             }
         }
     }
-
-    populateTicketList(limit, offset, filters);
+    
+    return filters;
 }
 
 function populateSourceActorTypeFilter() {
