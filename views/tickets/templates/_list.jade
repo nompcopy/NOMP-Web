@@ -4,14 +4,14 @@ block subContent
 
   .row
     - if (!ticket_type)
-      .col-md-6.overview-list(style="padding-left: 0;")
+      .col-md-6.col-xs-6.overview-list(style="padding-left: 0;")
         .panel.panel-default(id=req.route.path === '/search' ? 'searchNeedList' : 'needList')
           .panel-heading
             block needListHeading
           table.table.table-condensed
             tbody
               block overviewNeedList
-      .col-md-6.overview-list(style="padding-right: 0;")
+      .col-md-6.col-xs-6.overview-list(style="padding-right: 0;")
         .panel.panel-default(id=req.route.path === '/search' ? 'searchOfferList' : 'offerList')
           .panel-heading
             block offerListHeading
@@ -21,14 +21,14 @@ block subContent
     - else
       .row
         // filters block
-        .col-md-2
+        .col-md-2.col-xs-2
           block filters
             p Classification:
             ul#classificationFilter
             p Source Actor:
             ul#sourceActorTypeFilter
         // ticket list block
-        .col-md-10(style="border-left: 1px solid #ddd;")
+        .col-md-10.col-xs-10(style="border-left: 1px solid #ddd;")
           .panel.panel-default(id=ticket_type + 'List')
             table.table.table-condensed
               thead
