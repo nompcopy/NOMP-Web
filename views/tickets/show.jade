@@ -12,7 +12,8 @@ block content
         input(type='hidden', name='id', value=ticket._id)
         input(type='hidden', name='source_type', value=source_type)
         input(type='hidden', name='source_id', value=source_id)
-        button.btn.btn-success(type='submit') Match!
+        #match-button
+        //button.btn.btn-success(type='submit') Match!
 
   .page-header
     h1= title
@@ -24,7 +25,7 @@ block content
           strong Open
       when 1
         span.label.label-success
-          strong Matched
+          strong In Progress
       when 2
         span.label.label-warning
           strong End

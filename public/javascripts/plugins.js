@@ -219,11 +219,20 @@ function populateSourceTicketData() {
     var content = '';
     var source_ticket_json_url = $('#source_ticket').attr('for');
     $.getJSON(source_ticket_json_url, function(ticket) {
-        content += ticket.name;
-        content += '<br>TODO: data display';
-        $('#source_ticket').html(content);
-    });
 
+        content += '<table class="table table-condensed">';
+        content += generateListElementView(ticket);
+        content += '</table>';
+
+        $('#source_ticket').html(content);
+        if (ticket.quantity !== 0) {
+            var match_button = '<button type="submit" class="btn btn-success">Match!</button>';
+        }
+        else {
+            var match_button = '<div class="alert alert-info">Matched With</div>'
+        }
+        $('#match-button').html(match_button);
+    });
 }
 
 function populateMatchingResults() {

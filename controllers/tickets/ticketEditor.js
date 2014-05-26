@@ -29,7 +29,6 @@ exports.new = function(req, res) {
 
 exports.create = function(req, res) {
     req = ticketUtils.feedClassAndActorType(req);
-
     if (req.body.ticket_type === 'need') {
         var ticket = new NeedModel(req.body);
     }
@@ -63,8 +62,9 @@ exports.create = function(req, res) {
     ], function(err, ticket) {
         ticket.creatAndSave(function(err) {
             if (err) {
+                console.log(err);
                 return res.render('tickets/form', {
-                    error: utils.errors(err.errors),
+                    error: utils.errors(err),
                     ticket: ticket,
                     title: 'Create a new ' + req.body.ticket_type,
                     ticket_type: req.body.ticket_type,

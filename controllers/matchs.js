@@ -42,75 +42,112 @@ exports.matching = function(req, res) {
 
 exports.confirm = function(req, res) {
     // TODO: calculate quantities and remove from matching and results
-
-    // Target ticket status
-    // Delete target item from source matching results
-    // MatchingModel.retrieveByTicket(req.body.source_id, req.body.source_type, function(err, matching_results) {
-        // var item_index = utils.findItemIndexInArray(req.body.id, matching_results.results);
-        // matching_results.results.splice(item_index, 1);
-        // matching_results.save(function(err) {
-            // if (err) console.log(err);
-        // });
-    // });
-    if (req.body.ticket_type == 'need') {
-        NeedModel.load(req.body.id, function(err, ticket) {
-            if (err) console.log(err);
-            ticket.statut = 1;
-            if (ticket.matched.contains(req.body.source_id)) {
+    async.waterfall([
+        // Load models
+        function(callback) {
+            if (req.body.ticket_type == 'need') {
+                var targetModel = NeedModel;
+                var sourceModel = OfferModel;
             }
             else {
-                ticket.matched.push(req.body.source_id);
+                var targetModel = OfferModel;
+                var sourceModel = NeedModel;
             }
-            ticket.save(function (err) {
-                if (err) console.log(err);
+            callback(null, sourceModel, targetModel);
+        },
+        // Load source
+        function(sourceModel, targetModel, callback) {
+            sourceModel.load(req.body.source_id, function(err, source_ticket) {
+                if (err) {
+                    console.log(err);
+                }
+                callback(null, source_ticket, targetModel);
             });
-        });
-    }
-    else {
-        OfferModel.load(req.body.id, function(err, ticket) {
-            if (err) console.log(err);
-            ticket.statut = 1;
-            if (ticket.matched.contains(req.body.source_id)) {
-            }
-            else {
-                ticket.matched.push(req.body.source_id);
-            }
-            ticket.save(function (err) {
-                if (err) console.log(err);
+        },
+        // load target
+        function(source_ticket, targetModel, callback) {
+            targetModel.load(req.body.id, function(err, target_ticket) {
+                if (err) {
+                    console.log(err);
+                }
+                callback(null, source_ticket, target_ticket);
             });
-        });
-    }
-
-    // Source ticket status
-    if (req.body.source_type == 'need') {
-        NeedModel.load(req.body.source_id, function(err, ticket) {
-            if (err) console.log(err);
-            ticket.statut = 1;
-            if (ticket.matched.contains(req.body.source_id)) {
+        },
+        // Calculate quantities
+        function(source_ticket, target_ticket, callback) {
+            if (source_ticket.quantity > target_ticket.quantity) {
+                source_ticket.quantity = source_ticket.quantity - target_ticket.quantity;
+                target_ticket.quantity = 0;
+                source_ticket.statut = 1;
+                target_ticket.statut = 2;
             }
-            else {
-                ticket.matched.push(req.body.source_id);
+            else if (source_ticket.quantity < target_ticket.quantity) {
+                target_ticket.quantity = target_ticket.quantity - source_ticket.quantity;
+                source_ticket.quantity = 0;
+                target_ticket.statut = 1;
+                source_ticket.statut = 2;
             }
-            ticket.save(function (err) {
-                if (err) console.log(err);
+            else if (source_ticket.quantity == target_ticket.quantity) {
+                source_ticket.quantity = 0;
+                target_ticket.quantity = 0;
+                target_ticket.statut = 2;
+                source_ticket.statut = 2;
+            }
+            callback(null, source_ticket, target_ticket);
+        },
+        // Store tickets in order
+        function(source_ticket, target_ticket, callback) {
+            source_ticket.save(function(err) {
+                if (err) {
+                    console.log(err);
+                }
+                callback(null, source_ticket, target_ticket);
             });
-        });
-    }
-    else {
-        OfferModel.load(req.body.source_id, function(err, ticket) {
-            if (err) console.log(err);
-            ticket.statut = 1;
-            if (ticket.matched.contains(req.body.source_id)) {
-            }
-            else {
-                ticket.matched.push(req.body.source_id);
-            }
-            ticket.save(function (err) {
-                if (err) console.log(err);
+        },
+        function(source_ticket, target_ticket, callback) {
+            target_ticket.save(function(err) {
+                if (err) {
+                    console.log(err);
+                }
+                callback(null, source_ticket, target_ticket);
             });
-        });
-    }
-    return res.redirect('/' + req.body.source_type + '/' + req.body.source_id.toString());
+        },
+        // update matching results
+        function(source_ticket, target_ticket, callback) {
+            MatchingModel.retrieveByTicketId(source_ticket._id.toString(), function(err, source_matching) {
+                source_matching.results = [];
+                source_matching.matchEngine(function(err, items) {
+                    if (err) {
+                        console.log(err);
+                    }
+                    source_matching.save(function(err) {
+                        if (err) {
+                            console.log(err);
+                        }
+                        callback(null, source_ticket, target_ticket);
+                    });
+                });
+            });
+        },
+        function(source_ticket, target_ticket, callback) {
+            MatchingModel.retrieveByTicketId(target_ticket._id.toString(), function(err, target_matching) {
+                target_matching.results = [];
+                target_matching.matchEngine(function(err, items) {
+                    if (err) {
+                        console.log(err);
+                    }
+                    target_matching.save(function(err) {
+                        if (err) {
+                            console.log(err);
+                        }
+                        callback(null, source_ticket, target_ticket);
+                    });
+                });
+            });
+        }
+    ], function(err, source_ticket, target_ticket) {
+        return res.redirect('/' + req.body.source_type + '/' + req.body.source_id.toString());
+    });
 }
 
 

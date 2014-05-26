@@ -38,14 +38,17 @@ MatchingModelSchema.methods = {
     },
     // TODO: I know those if statements are shit
     matchEngine: function(cb) {
-        var source_id = this.source_id;
+        var source_id = this.source_id.toString();
         var source_type = this.source_type;
 
         async.waterfall([
             function(callback) {
                 if (source_type == 'need') {
-                    NeedModel.load(source_id, function(err, ticket) {
+                    NeedModel.load(source_id.toString(), function(err, ticket) {
                         // Prepare data
+                        if (typeof(ticket.keywords) == 'undefined') {
+                            ticket.keywords = '';
+                        }
                         var data = {
                             keywords: ticket.keywords,
                             classification: [ticket.classification],
@@ -66,6 +69,9 @@ MatchingModelSchema.methods = {
                 }
                 else if (source_type == 'offer') {
                     OfferModel.load(source_id, function(err, ticket) {
+                        if (typeof(ticket.keywords) == 'undefined') {
+                            ticket.keywords = '';
+                        }
                         // Prepare data
                         var data = {
                             keywords: ticket.keywords,
@@ -96,6 +102,11 @@ MatchingModelSchema.statics = {
     },
     list: function(cb) {
         this.find().exec(cb);
+    },
+    retrieveByTicketId: function(ticket_id, cb) {
+        this.findOne({
+            source_id: ticket_id
+        }).exec(cb);
     },
     retrieveByTicket: function(ticket_id, ticket_type, cb) {
         this.findOne({

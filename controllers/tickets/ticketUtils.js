@@ -53,6 +53,9 @@ exports.feedClassAndActorType = function(req) {
         req.body.source_actor_type = '5336b94ac1bde7b41d90377a';
         req.body.source_actor_type_name = 'Public actor type';
     }
+    // Parse start date and end date
+    req.body.start_date = new Date(req.body.start_date);
+    req.body.end_date = new Date(req.body.end_date);
     return req;
 }
 
