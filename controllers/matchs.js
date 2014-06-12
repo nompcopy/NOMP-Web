@@ -248,7 +248,7 @@ exports.list = function(req, res) {
             
             async.eachSeries(data, function(matchingResult, callback) {
                 var model = matchingResult.source_type == 'need' ? NeedModel : OfferModel;
-                model.load(matchingResult.source_id, function(err, sourceTicket) {
+                model.load(matchingResult.source_id.toString(), function(err, sourceTicket) {
                     if (!sourceTicket) {
                         callback('Source ticket not found');
                     } else {

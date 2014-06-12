@@ -45,47 +45,59 @@ MatchingModelSchema.methods = {
             function(callback) {
                 if (source_type == 'need') {
                     NeedModel.load(source_id.toString(), function(err, ticket) {
-                        // Prepare data
-                        if (typeof(ticket.keywords) == 'undefined') {
-                            ticket.keywords = '';
+                        if (err) console.log(err);
+                        if (!ticket) {
+
                         }
-                        var data = {
-                            keywords: ticket.keywords,
-                            classification: [ticket.classification],
-                            target_actor_type: [ticket.target_actor_type],
-                            source_type: source_type,
-                            // TODO, may use google location or latitude longitude data
-                            is_match: true,
-                            start_date: ticket.start_date,
-                            end_date: ticket.end_date,
-                            quantity: ticket.quantity
-                            // TODO, cost
-                        };
-                        if (ticket.geometry) {
-                            data.geometry = ticket.geometry;
+                        else {
+                            // Prepare data
+                            if (typeof(ticket.keywords) == 'undefined') {
+                                ticket.keywords = '';
+                            }
+                            var data = {
+                                keywords: ticket.keywords,
+                                classification: [ticket.classification],
+                                target_actor_type: [ticket.target_actor_type],
+                                source_type: source_type,
+                                // TODO, may use google location or latitude longitude data
+                                is_match: true,
+                                start_date: ticket.start_date,
+                                end_date: ticket.end_date,
+                                quantity: ticket.quantity
+                                // TODO, cost
+                            };
+                            if (ticket.geometry) {
+                                data.geometry = ticket.geometry;
+                            }
+                            callback(null, data);
                         }
-                        callback(null, data);
                     });
                 }
                 else if (source_type == 'offer') {
                     OfferModel.load(source_id, function(err, ticket) {
-                        if (typeof(ticket.keywords) == 'undefined') {
-                            ticket.keywords = '';
+                        if (err) console.log(err);
+                        if (!ticket) {
+
                         }
-                        // Prepare data
-                        var data = {
-                            keywords: ticket.keywords,
-                            classification: [ticket.classification],
-                            target_actor_type: [ticket.target_actor_type],
-                            source_type: source_type,
-                            is_match: true,
-                            start_date: ticket.start_date,
-                            end_date: ticket.end_date
-                        }
-                        if (ticket.geometry) {
-                            data.geometry = ticket.geometry;
-                        }
-                        callback(null, data);
+                        else {
+                            if (typeof(ticket.keywords) == 'undefined') {
+                                ticket.keywords = '';
+                            }
+                            // Prepare data
+                            var data = {
+                                keywords: ticket.keywords,
+                                classification: [ticket.classification],
+                                target_actor_type: [ticket.target_actor_type],
+                                source_type: source_type,
+                                is_match: true,
+                                start_date: ticket.start_date,
+                                end_date: ticket.end_date
+                            }
+                            if (ticket.geometry) {
+                                data.geometry = ticket.geometry;
+                            }
+                            callback(null, data);
+                            }
                     });
                 }
             },
