@@ -44,7 +44,7 @@ module.exports = function(app, config, passport) {
     // should be after session
     app.use(flash());
 
-    app.use(express.csrf());
+    //app.use(express.csrf());
 
     // This could be moved to view-helpers :-)
     app.use(function(req, res, next){
