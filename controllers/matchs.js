@@ -238,6 +238,22 @@ exports.searching = function(req, res) {
 
 exports.list = function(req, res) {
     MatchingModel.list(function(err, data) {
+
+        var options = {
+            criteria: {
+                is_active: [1],
+        }};
+        // filters for actor types
+        if (req.isAuthenticated() && req.session.admin) {
+            options.criteria.is_active = [0, 1];
+        }
+        else if (req.isAuthenticated() && req.user.actor_type.toString() !== '5336b94ac1bde7b41d90377a') {
+            options.criteria.source_actor_type = ['5336b94ac1bde7b41d90377a', req.user.actor_type.toString()];
+        }
+        else {
+            options.criteria.source_actor_type = ['5336b94ac1bde7b41d90377a'];
+        }
+
         if (req.query.graph == 'true') {
             // format data to adapt graph
             var list = {nodes: [], edges: [], width: 0, height: 0};
@@ -251,105 +267,120 @@ exports.list = function(req, res) {
             // counting of nodes and edges
             var nodesCount = 0;
             var edgesCount = 0;
-            
+
             // map ticket id with node id
             var ticketsNodesMapping = {};
-            
             async.eachSeries(data, function(matchingResult, callback) {
                 var model = matchingResult.source_type == 'need' ? NeedModel : OfferModel;
                 model.load(matchingResult.source_id.toString(), function(err, sourceTicket) {
                     if (!sourceTicket) {
                         callback('Source ticket not found');
-                    } else {
-                        // source node id for building edges
-                        var sourceNodeId = nodesCount;
-                        
-                        if (ticketsNodesMapping[matchingResult.source_id] === undefined) {
-                            // resize the bounding of the graph if necessary
-                            if (Math.abs(sourceTicket.geometry.lat) < Math.abs(minLat)) {
-                                minLat = sourceTicket.geometry.lat;
-                            } else if (Math.abs(sourceTicket.geometry.lat) > Math.abs(maxLat)) {
-                                maxLat = sourceTicket.geometry.lat
+                    }
+                    else {
+                        var filter_ok = false;
+                        if (options.criteria.is_active.indexOf(sourceTicket.is_active) > -1) {
+                            if (typeof(options.criteria.source_actor_type) !== 'undefined') {
+                                if (options.criteria.source_actor_type.indexOf(sourceTicket.source_actor_type.toString()) > -1) {
+                                    // fuck off
+                                    filter_ok = true;
+                                }
                             }
-                            
-                            if (Math.abs(sourceTicket.geometry.lng) < Math.abs(minLng)) {
-                                minLng = sourceTicket.geometry.lng;
-                            } else if (Math.abs(sourceTicket.geometry.lng) > Math.abs(maxLng)) {
-                                maxLng = sourceTicket.geometry.lng
-                            }
-                            
-                            // add a node representing the source ticket
-                            list.nodes.push({
-                                id: 'n' + nodesCount,
-                                label: sourceTicket.name,
-                                x: sourceTicket.geometry.lng,
-                                y: sourceTicket.geometry.lat,
-                                size: matchingResult.results.length
-                            });
-                            
-                            // map the ticket id with the position of the ticket in the nodes list
-                            ticketsNodesMapping[matchingResult.source_id] = nodesCount;
-                            
-                            // count nodes for next node id
-                            nodesCount++;
-                        } else {
-                            // mark the mapped index of the ticket
-                            sourceNodeId = ticketsNodesMapping[matchingResult.source_id];
                         }
-                        
-                        for (var j = 0; j < matchingResult.results.length; j++) {
-                            var matchedTicket = matchingResult.results[j].ticket;
-                            
-                            // target node id for building edges
-                            var targetNodeId = nodesCount;
-                            
-                            if (ticketsNodesMapping[matchedTicket._id] === undefined) {
+                        if (filter_ok) {
+                            // source node id for building edges
+                            var sourceNodeId = nodesCount;
+
+                            if (ticketsNodesMapping[matchingResult.source_id] === undefined) {
                                 // resize the bounding of the graph if necessary
-                                if (Math.abs(matchedTicket.geometry.lat) < Math.abs(minLat)) {
-                                    minLat = matchedTicket.geometry.lat;
-                                } else if (Math.abs(matchedTicket.geometry.lat) > Math.abs(maxLat)) {
-                                    maxLat = matchedTicket.geometry.lat
+                                if (Math.abs(sourceTicket.geometry.lat) < Math.abs(minLat)) {
+                                    minLat = sourceTicket.geometry.lat;
+                                } else if (Math.abs(sourceTicket.geometry.lat) > Math.abs(maxLat)) {
+                                    maxLat = sourceTicket.geometry.lat
                                 }
                                 
-                                if (Math.abs(matchedTicket.geometry.lng) < Math.abs(minLng)) {
-                                    minLng = matchedTicket.geometry.lng;
-                                } else if (Math.abs(matchedTicket.geometry.lng) > Math.abs(maxLng)) {
-                                    maxLng = matchedTicket.geometry.lng
+                                if (Math.abs(sourceTicket.geometry.lng) < Math.abs(minLng)) {
+                                    minLng = sourceTicket.geometry.lng;
+                                } else if (Math.abs(sourceTicket.geometry.lng) > Math.abs(maxLng)) {
+                                    maxLng = sourceTicket.geometry.lng
                                 }
-                                
-                                // add a node representing the target ticket of matching
-                                list.nodes.push({
+
+                                var node = {
                                     id: 'n' + nodesCount,
-                                    label: matchedTicket.name,
-                                    x: matchedTicket.geometry.lng,
-                                    y: matchedTicket.geometry.lat,
-                                    size: 1
-                                });
+                                    label: sourceTicket.name,
+                                    x: sourceTicket.geometry.lng,
+                                    y: sourceTicket.geometry.lat,
+                                    size: matchingResult.results.length
+                                }
+
+                                // add a node representing the source ticket
+                                list.nodes.push(node);
                                 
                                 // map the ticket id with the position of the ticket in the nodes list
-                                ticketsNodesMapping[matchedTicket._id] = nodesCount;
+                                ticketsNodesMapping[matchingResult.source_id] = nodesCount;
                                 
                                 // count nodes for next node id
                                 nodesCount++;
                             } else {
-                                // mark the mapped index of the target ticket
-                                targetNodeId = ticketsNodesMapping[matchedTicket._id];
-                                
-                                // enlarge the size of node representing the frequency of relations
-                                list.nodes[targetNodeId].size++;
+                                // mark the mapped index of the ticket
+                                sourceNodeId = ticketsNodesMapping[matchingResult.source_id];
                             }
                             
-                            // build an edge
-                            list.edges.push({
-                                id: 'e' + edgesCount,
-                                source: 'n' + sourceNodeId,
-                                target: 'n' + targetNodeId
-                            });
-                            
-                            // count edges for next edge id
-                            edgesCount++;
+                            for (var j = 0; j < matchingResult.results.length; j++) {
+                                var matchedTicket = matchingResult.results[j].ticket;
+                                
+                                // target node id for building edges
+                                var targetNodeId = nodesCount;
+                                
+                                if (ticketsNodesMapping[matchedTicket._id] === undefined) {
+                                    // resize the bounding of the graph if necessary
+                                    if (Math.abs(matchedTicket.geometry.lat) < Math.abs(minLat)) {
+                                        minLat = matchedTicket.geometry.lat;
+                                    } else if (Math.abs(matchedTicket.geometry.lat) > Math.abs(maxLat)) {
+                                        maxLat = matchedTicket.geometry.lat
+                                    }
+
+                                    if (Math.abs(matchedTicket.geometry.lng) < Math.abs(minLng)) {
+                                        minLng = matchedTicket.geometry.lng;
+                                    } else if (Math.abs(matchedTicket.geometry.lng) > Math.abs(maxLng)) {
+                                        maxLng = matchedTicket.geometry.lng
+                                    }
+                                    
+                                    // add a node representing the target ticket of matching
+                                    var node = {
+                                        id: 'n' + nodesCount,
+                                        label: matchedTicket.name,
+                                        x: matchedTicket.geometry.lng,
+                                        y: matchedTicket.geometry.lat,
+                                        size: 1
+                                    };
+
+                                    list.nodes.push(node);
+                                    
+                                    // map the ticket id with the position of the ticket in the nodes list
+                                    ticketsNodesMapping[matchedTicket._id] = nodesCount;
+                                    
+                                    // count nodes for next node id
+                                    nodesCount++;
+                                } else {
+                                    // mark the mapped index of the target ticket
+                                    targetNodeId = ticketsNodesMapping[matchedTicket._id];
+                                    
+                                    // enlarge the size of node representing the frequency of relations
+                                    list.nodes[targetNodeId].size++;
+                                }
+                                
+                                // build an edge
+                                list.edges.push({
+                                    id: 'e' + edgesCount,
+                                    source: 'n' + sourceNodeId,
+                                    target: 'n' + targetNodeId
+                                });
+                                
+                                // count edges for next edge id
+                                edgesCount++;
+                            }
                         }
-                        callback(null);
+                        callback();
                     }
                 });
             }, function(err) {
@@ -377,7 +408,6 @@ exports.list = function(req, res) {
                         if (err) {
                             console.log(err);
                         } else {
-                            console.log(list);
                             res.json(list);
                         }
                     });
