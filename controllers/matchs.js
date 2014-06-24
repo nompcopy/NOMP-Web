@@ -112,6 +112,10 @@ exports.confirm = function(req, res) {
                 callback(null, source_ticket, target_ticket);
             });
         },
+        function(source_ticket, target_ticket, callback) {
+            return res.redirect('/' + req.body.source_type + '/' + req.body.source_id.toString());
+            callback(null, source_ticket, target_ticket);
+        },
         // update matching results
         function(source_ticket, target_ticket, callback) {
             MatchingModel.retrieveByTicketId(source_ticket._id.toString(), function(err, source_matching) {
@@ -151,7 +155,7 @@ exports.confirm = function(req, res) {
             });
         }
     ], function(err, source_ticket, target_ticket) {
-        return res.redirect('/' + req.body.source_type + '/' + req.body.source_id.toString());
+        console.log('new matching updated');
     });
 }
 
@@ -183,7 +187,7 @@ exports.matching_update = function(req, res) {
             });
         }
     });
-    res.redirect('/');
+    return res.redirect('/');
 }
 
 exports.searching = function(req, res) {

@@ -3,6 +3,8 @@
 var utils = require('../lib/utils');
 
 var mongoose = require('mongoose');
+var NeedModel = mongoose.model('NeedModel');
+var OfferModel = mongoose.model('OfferModel');
 var ClassificationModel = mongoose.model('ClassificationModel');
 var ActorTypeModel = mongoose.model('ActorTypeModel');
 
@@ -100,4 +102,18 @@ exports.deleteActorType = function(req, res) {
             return res.redirect('/admin/actortype');
         });
     });
+}
+
+exports.ticketUpdate = function(req, res) {
+    NeedModel.list({}, function(err, need_list) {
+        for (var index=0; index<need_list.length; index++) {
+            need_list[index].save();
+        }
+    });
+    OfferModel.list({}, function(err, offer_list) {
+        for (var index=0; index<offer_list.length; index++) {
+            offer_list[index].save();
+        }
+    });
+    return res.json({statuts: 'OK'});
 }

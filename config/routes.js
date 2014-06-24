@@ -36,6 +36,8 @@ module.exports = function (app, passport, config) {
     app.put('/admin/actortype', admin.editActorType);
     app.delete('/admin/classification/delete/:classId', admin.deleteClassification);
     app.delete('/admin/actortype/delete/:actorId', admin.deleteActorType);
+    // update all tickets
+    app.get('/admin/tickets/update', admin.ticketUpdate);
 
     /*
      * User routes
