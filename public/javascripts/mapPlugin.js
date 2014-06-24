@@ -9,7 +9,7 @@ if (document.querySelector("#map-canvas")) {
 
 function initializeMap() {
     var mapOptions = {
-        zoom: 8,
+        zoom: 3,
         center: new google.maps.LatLng(48.3, 4.08333)
     };
     if (document.querySelector("#map-canvas")) {
