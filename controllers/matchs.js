@@ -131,18 +131,23 @@ exports.confirm = function(req, res) {
         },
         function(source_ticket, target_ticket, callback) {
             MatchingModel.retrieveByTicketId(target_ticket._id.toString(), function(err, target_matching) {
-                target_matching.results = [];
-                target_matching.matchEngine(function(err, items) {
-                    if (err) {
-                        console.log(err);
-                    }
-                    target_matching.save(function(err) {
+                if (!target_matching) {
+                    callback(null, source_ticket, target_ticket);
+                }
+                else {
+                    target_matching.results = [];
+                    target_matching.matchEngine(function(err, items) {
                         if (err) {
                             console.log(err);
                         }
-                        callback(null, source_ticket, target_ticket);
+                        target_matching.save(function(err) {
+                            if (err) {
+                                console.log(err);
+                            }
+                            callback(null, source_ticket, target_ticket);
+                        });
                     });
-                });
+                }
             });
         }
     ], function(err, source_ticket, target_ticket) {
