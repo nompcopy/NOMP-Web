@@ -384,6 +384,8 @@ exports.list = function(req, res) {
                             callback();
                         }
                     });
+                } catch (e) {
+                    console.log(e);
                 }
                 
             }, function(err) {
