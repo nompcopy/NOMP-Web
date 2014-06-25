@@ -131,8 +131,8 @@ TicketModelSchema.pre('save', function(next) {
                     console.log("Upload completed");
                 });
                 */
-                var is = fs.createReadStream(originalPath);
-                var os = fs.createWriteStream(targetPath);
+                // var is = fs.createReadStream(originalPath);
+                // var os = fs.createWriteStream(targetPath);
                 // is.pipe(os);
                 // is.on('end', function() {
                 //     fs.unlink(originalPath, function(err) {
