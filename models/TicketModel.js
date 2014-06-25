@@ -133,15 +133,15 @@ TicketModelSchema.pre('save', function(next) {
                 */
                 var is = fs.createReadStream(originalPath);
                 var os = fs.createWriteStream(targetPath);
-                is.pipe(os);
-                is.on('end', function() {
-                    fs.unlink(originalPath, function(err) {
-                        if (err) {
-                            // TODO: handle the error but not suspend the server
-                        }
-                        console.log('Upload completed');
-                    })
-                });
+                // is.pipe(os);
+                // is.on('end', function() {
+                //     fs.unlink(originalPath, function(err) {
+                //         if (err) {
+                //             // TODO: handle the error but not suspend the server
+                //         }
+                //         console.log('Upload completed');
+                //     })
+                // });
             }
         }
     }

@@ -48,35 +48,39 @@ function markTickets() {
         var ticket_list_url = '/' + ticket_type + '/list';
         $.getJSON(ticket_list_url, {}, function(tickets) {
             $.each(tickets, function(i, ticket) {
-                // Use directly geometry
-                var lat = ticket.geometry.lat;
-                var lng = ticket.geometry.lng;
+                try {
+                    // Use directly geometry
+                    var lat = ticket.geometry.lat;
+                    var lng = ticket.geometry.lng;
 
-                if (markers[ticket_type] === undefined) {
-                    markers[ticket_type] = {};
+                    if (markers[ticket_type] === undefined) {
+                        markers[ticket_type] = {};
+                    }
+                    
+                    // mark the ticket
+                    markers[ticket_type][ticket._id] = new google.maps.Marker({
+                        position: new google.maps.LatLng(lat, lng),
+                        map: map,
+                        title: ticket.name,
+                        icon: pin_images[ticket_type]
+                    });
+
+                    if (infowindows[ticket_type] === undefined) {
+                        infowindows[ticket_type] = {};
+                    }
+
+                    // create an info window of the ticket
+                    infowindows[ticket_type][ticket._id] = new google.maps.InfoWindow({
+                        content: '<table class="table table-condensed table-info-window">' + generateListElementView(ticket) + '</table>'
+                    });
+
+                    // associate the info window with the mark on click
+                    google.maps.event.addListener(markers[ticket_type][ticket._id], 'click', function() {
+                        infowindows[ticket_type][ticket._id].open(map, markers[ticket_type][ticket._id]);
+                    });
+                } catch(e) {
+                    console.log(e);
                 }
-                
-                // mark the ticket
-                markers[ticket_type][ticket._id] = new google.maps.Marker({
-                    position: new google.maps.LatLng(lat, lng),
-                    map: map,
-                    title: ticket.name,
-                    icon: pin_images[ticket_type]
-                });
-
-                if (infowindows[ticket_type] === undefined) {
-                    infowindows[ticket_type] = {};
-                }
-
-                // create an info window of the ticket
-                infowindows[ticket_type][ticket._id] = new google.maps.InfoWindow({
-                    content: '<table class="table table-condensed table-info-window">' + generateListElementView(ticket) + '</table>'
-                });
-
-                // associate the info window with the mark on click
-                google.maps.event.addListener(markers[ticket_type][ticket._id], 'click', function() {
-                    infowindows[ticket_type][ticket._id].open(map, markers[ticket_type][ticket._id]);
-                });
             })
         });
     });
