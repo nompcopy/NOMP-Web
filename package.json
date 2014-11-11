@@ -1,7 +1,8 @@
 {
   "name": "Need-Offer-Matcher-Platform",
   "version": "0.0.1",
-  "private": true,
+  "main": "server.js",
+  //"private": true,
   "scripts": {
     "start": "node app.js"
   },
